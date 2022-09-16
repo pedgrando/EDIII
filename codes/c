@@ -1,0 +1,15 @@
+    printf("Firstname:");
+    for(int i = 0; i < 51; i++) printf("%c", arq++);
+    printf("\n");
+    printf("Lastname:");
+    for(int i = 0; i < 51; i++) printf("%c", arq++);
+    printf("\n");    
+    printf("Email:");
+    for(int i = 0; i < 81; i++) printf("%c", arq++);
+    printf("\n");
+    printf("Nationality:");
+    for(int i = 0; i < 51; i++) printf("%c", arq++);
+    printf("\n");    
+    printf("Age:");
+    for(int i = 0; i < 4; i++) printf("%c", arq++);
+    printf("\n\n");
