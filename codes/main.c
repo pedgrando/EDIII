@@ -25,6 +25,7 @@ int main(int argv, char *argc[]){
 		write_register(reg, arq);
 	}
 	free(reg);
+	
         break;
 
     case 2:
