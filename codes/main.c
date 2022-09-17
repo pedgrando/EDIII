@@ -34,6 +34,8 @@ int main(int argv, char *argc[]){
             fseek(arq, i * REG, SEEK_SET);
             read_register(arq, reg); 
             print_register(reg);
+
+            
         }
         break;
 
