@@ -13,7 +13,7 @@ int main(int argv, char *argc[]){
     switch (option)
     {
     case 1:
-        if(nome_arq == NULL || !(arq = fopen(nome_arq, "wb"))) {
+        if(!(arq = fopen(nome_arq, "wb"))) {
             printf("Falha no processamento do arquivo\n");
             break;
         }
@@ -23,10 +23,12 @@ int main(int argv, char *argc[]){
             get_register(reg);
             write_register(reg, arq);
         }
+        fclose(arq);
+        binarioNaTela(nome_arq);
         break;
 
     case 2:
-        if(nome_arq == NULL || !(arq = fopen(nome_arq, "rb"))) {
+        if(!(arq = fopen(nome_arq, "rb"))) {
             printf("Falha no processamento do arquivo\n");
             break;
         }
@@ -37,10 +39,11 @@ int main(int argv, char *argc[]){
             read_register(arq, reg); 
             print_register(reg);
         }
+        fclose(arq);
         break;
 
     case 3:
-        if(nome_arq == NULL || !(arq = fopen(nome_arq, "rb"))) {
+        if(!(arq = fopen(nome_arq, "rb"))) {
             printf("Falha no processamento do arquivo\n");
             break;
         }
@@ -49,6 +52,7 @@ int main(int argv, char *argc[]){
         fseek(arq, RRN * REG, SEEK_SET);
         read_register(arq, reg);
         print_register(reg);
+        fclose(arq);
         break;
     
     default:
@@ -58,5 +62,4 @@ int main(int argv, char *argc[]){
 
 	// libera memoria pro registro;
     free(reg);
-    fclose(arq);
 }
