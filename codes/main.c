@@ -6,26 +6,29 @@
 
 int main(int argv, char *argc[]){
     int option;
-    char nome_arq[15];
+    char nome_arq[32];
     scanf("%d %s", &option, nome_arq);
     FILE *arq;
     registro *reg = malloc(sizeof(registro));
     switch (option)
     {
     case 1:
-        arq = fopen(nome_arq, "wb");
+        if(nome_arq == NULL || !(arq = fopen(nome_arq, "wb"))) {
+            printf("Falha no processamento do arquivo\n");
+            break;
+        }
         int num_reg;
         scanf("%d", &num_reg);
-        // for(int i = 0; i < num_reg; i++){
-        //     get_register(reg);
-        //     write_register(reg, arq);
-        // }
+        for(int i = 0; i < num_reg; i++){
+            get_register(reg);
+            write_register(reg, arq);
+        }
         break;
 
     case 2:
-        if(!(arq = fopen(nome_arq, "rb"))) {
+        if(nome_arq == NULL || !(arq = fopen(nome_arq, "rb"))) {
             printf("Falha no processamento do arquivo\n");
-            return;
+            break;
         }
         int tam = get_tam(arq);
         // printf("\n\nExistem %d registros.\n\n", tam);
@@ -37,7 +40,7 @@ int main(int argv, char *argc[]){
         break;
 
     case 3:
-        if(!(arq = fopen(nome_arq, "rb"))) {
+        if(nome_arq == NULL || !(arq = fopen(nome_arq, "rb"))) {
             printf("Falha no processamento do arquivo\n");
             break;
         }
