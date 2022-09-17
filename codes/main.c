@@ -17,26 +17,13 @@ int main(int argv, char *argc[]){
     switch (option)
     {
     case 1:
-<<<<<<< HEAD
-	arq = fopen(nome_arq, "wb");
-	int num_reg;
-	scanf("%d", &num_reg);
-	registro *reg = malloc(sizeof(registro));
-	for(int i = 0; i < num_reg; i++){
-		get_register(reg);
-		write_register(reg, arq);
-	}
-	free(reg);
-	
-=======
         arq = fopen(nome_arq, "wb");
         int num_reg;
         scanf("%d", &num_reg);
-        // for(int i = 0; i < num_reg; i++){
-        //     get_register(reg);
-        //     write_register(reg, arq);
-        // }
->>>>>>> 0bc25cee56e3a0d4299f4b2ff317902f34c60067
+        /*for(int i = 0; i < num_reg; i++){
+            get_register(reg);
+            write_register(reg, arq);
+        }*/
         break;
 
     case 2:
