@@ -70,6 +70,7 @@ void print_register(registro *reg){
     printf("Age: %d\n\n", reg->age); 
 }
 
+
 // le registro 
 
 void read_register(FILE *arq, registro *reg){  
@@ -77,7 +78,7 @@ void read_register(FILE *arq, registro *reg){
     fread(reg->lastname, sizeof(char), 51, arq);
     fread(reg->email, sizeof(char), 81, arq);
     fread(reg->nationality, sizeof(char), 51, arq);
-    fread(&reg->age, 4, 1, arq);
+    fread(&reg->age, sizeof(int), 1, arq);
 }
 
 
