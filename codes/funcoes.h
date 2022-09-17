@@ -36,8 +36,11 @@ void binarioNaTela(char *nomeArquivoBinario); /* Você não precisa entender o c
 
 // funcao para imprimir registros consultados na tela
 
-void printa_registro(FILE *arq);    
+void print_register(registro *reg);    
 
+// le registro
+
+void read_register(FILE *arq, registro *reg); 
 
 // funcao para descobrir o tamanho de um arquivo
 

@@ -13,9 +13,11 @@ int main(int argv, char *argc[]){
     char *nome_arq;
     scanf("%d %s", &option, nome_arq);
     FILE *arq;
+    registro *reg = malloc(sizeof(registro));
     switch (option)
     {
     case 1:
+<<<<<<< HEAD
 	arq = fopen(nome_arq, "wb");
 	int num_reg;
 	scanf("%d", &num_reg);
@@ -26,15 +28,25 @@ int main(int argv, char *argc[]){
 	}
 	free(reg);
 	
+=======
+        arq = fopen(nome_arq, "wb");
+        int num_reg;
+        scanf("%d", &num_reg);
+        // for(int i = 0; i < num_reg; i++){
+        //     get_register(reg);
+        //     write_register(reg, arq);
+        // }
+>>>>>>> 0bc25cee56e3a0d4299f4b2ff317902f34c60067
         break;
 
     case 2:
         arq = fopen(nome_arq, "rb");
         int tam = get_tam(arq);
-        printf("\n\nExistem %d registros.\n\n", tam);
+        // printf("\n\nExistem %d registros.\n\n", tam);
         for(int i = 0; i < tam; i++) {
             fseek(arq, i * REG, SEEK_SET);
-            printa_registro(arq);
+            read_register(arq, reg); 
+            print_register(reg);
         }
         break;
 
@@ -43,7 +55,8 @@ int main(int argv, char *argc[]){
         int RRN;
         scanf("%d", &RRN);
         fseek(arq, RRN * REG, SEEK_SET);
-        printa_registro(arq);
+        read_register(arq, reg);
+        print_register(reg);
         break;
     
     default:
@@ -52,6 +65,6 @@ int main(int argv, char *argc[]){
     }
 
 	// libera memoria pro registro;
-
+    free(reg);
     fclose(arq);
 }
