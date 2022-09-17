@@ -2,15 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define REG 238
-
-#define TRASH '$'
-
 #include "funcoes.h"
 
 int main(int argv, char *argc[]){
     int option;
-    char *nome_arq;
+    char nome_arq[15];
     scanf("%d %s", &option, nome_arq);
     FILE *arq;
     registro *reg = malloc(sizeof(registro));
@@ -27,7 +23,10 @@ int main(int argv, char *argc[]){
         break;
 
     case 2:
-        arq = fopen(nome_arq, "rb");
+        if(!(arq = fopen(nome_arq, "rb"))) {
+            printf("Falha no processamento do arquivo\n");
+            return;
+        }
         int tam = get_tam(arq);
         // printf("\n\nExistem %d registros.\n\n", tam);
         for(int i = 0; i < tam; i++) {
@@ -38,7 +37,10 @@ int main(int argv, char *argc[]){
         break;
 
     case 3:
-        arq = fopen(nome_arq, "rb");
+        if(!(arq = fopen(nome_arq, "rb"))) {
+            printf("Falha no processamento do arquivo\n");
+            break;
+        }
         int RRN;
         scanf("%d", &RRN);
         fseek(arq, RRN * REG, SEEK_SET);
@@ -50,9 +52,6 @@ int main(int argv, char *argc[]){
         printf("Entrada indisponível.");
         break;
     }
-
-
-
 
 	// libera memoria pro registro;
     free(reg);
