@@ -10,14 +10,15 @@ int main(int argv, char *argc[]){
     scanf("%d %s", &option, nome_arq);
     FILE *arq;
     registro *reg = malloc(sizeof(registro));
+    int num_reg;
     switch (option)
     {
     case 1:
+	// testa se o arquivo existe
         if(!(arq = fopen(nome_arq, "wb"))) {
             printf("Falha no processamento do arquivo\n");
             break;
         }
-        int num_reg;
         scanf("%d", &num_reg);
         for(int i = 0; i < num_reg; i++){
             get_register(reg);
@@ -28,13 +29,13 @@ int main(int argv, char *argc[]){
         break;
 
     case 2:
+	// testa se o arquivo existe
         if(!(arq = fopen(nome_arq, "rb"))) {
             printf("Falha no processamento do arquivo\n");
             break;
         }
-        int tam = get_tam(arq);
-        // printf("\n\nExistem %d registros.\n\n", tam);
-        for(int i = 0; i < tam; i++) {
+        num_reg = get_num_reg(arq);
+        for(int i = 0; i < num_reg; i++) {
             fseek(arq, i * REG, SEEK_SET);
             read_register(arq, reg); 
             print_register(reg);
@@ -43,13 +44,14 @@ int main(int argv, char *argc[]){
         break;
 
     case 3:
+	// testa se o arquivo existe
         if(!(arq = fopen(nome_arq, "rb"))) {
             printf("Falha no processamento do arquivo\n");
             break;
         }
         int RRN;
         scanf("%d", &RRN);
-        fseek(arq, RRN * REG, SEEK_SET);
+        fseek(arq, RRN * REG, SEEK_SET);  // coloca o ponteiro no inicio do registro (byte offset)
         read_register(arq, reg);
         print_register(reg);
         fclose(arq);
@@ -59,7 +61,6 @@ int main(int argv, char *argc[]){
         printf("Entrada indisponível.");
         break;
     }
-
-	// libera memoria pro registro;
+    // libera memoria do registro;
     free(reg);
 }

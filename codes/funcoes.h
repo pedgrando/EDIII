@@ -44,7 +44,7 @@ void read_register(FILE *arq, registro *reg);
 
 // funcao para descobrir o tamanho de um arquivo
 
-int get_tam(FILE *arq);
+int get_num_reg(FILE *arq);
 
 
 // funcoes para adicao de lixo ao registro

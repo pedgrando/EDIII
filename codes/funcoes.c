@@ -68,7 +68,7 @@ void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o 
 
 void print_register(registro *reg){  
     printf("Firstname: %s\n", reg->firstname);
-	printf("Lastname: %s\n", reg->lastname);    
+    printf("Lastname: %s\n", reg->lastname);    
     printf("Email: %s\n", reg->email);
     printf("Nationality: %s\n", reg->nationality);
     printf("Age: %d\n\n", reg->age); 
@@ -89,10 +89,10 @@ void read_register(FILE *arq, registro *reg){
 
 // funcao para descobrir o tamanho de um arquivo
 
-int get_tam(FILE *arq){
+int get_num_reg(FILE *arq){
     long counter = 0;
     char temp[1]; 
-    while(fread(temp, 1, 1, arq)) counter++;
+    while(fread(temp, 1, 1, arq)) counter++;  // conta um por um dos caracteres ate o final
     return counter / REG;
 }
 
