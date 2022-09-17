@@ -51,6 +51,9 @@ int main(int argv, char *argc[]){
         break;
     }
 
+
+
+
 	// libera memoria pro registro;
     free(reg);
     fclose(arq);
