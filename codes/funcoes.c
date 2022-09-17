@@ -62,25 +62,23 @@ void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o 
 
 // funcao para imprimir registros consultados na tela
 
-void printa_registro(FILE *arq){    
-    printf("Firstname: ");
-    char buffer[81];
-    fread(buffer, 51, 1, arq);
-    printf("%s\n", buffer);
-    printf("Lastname: ");
-    fread(buffer, 51, 1, arq);
-    printf("%s\n", buffer);    
-    printf("Email: ");
-    fread(buffer, 81, 1, arq);
-    printf("%s\n", buffer);
-    printf("Nationality: ");
-    fread(buffer, 51, 1, arq);
-    printf("%s\n", buffer);  
-    printf("Age: ");
-    fread(buffer, 4, 1, arq);
-    printf("%s\n\n", buffer);        
+void print_register(registro *reg){  
+    printf("Firstname: %s\n", reg->firstname);
+	printf("Lastname: %s\n", reg->lastname);    
+    printf("Email: %s\n", reg->email);
+    printf("Nationality: %s\n", reg->nationality);
+    printf("Age: %d\n\n", reg->age); 
 }
 
+// le registro 
+
+void read_register(FILE *arq, registro *reg){  
+    fread(reg->firstname, sizeof(char), 51, arq);
+    fread(reg->lastname, sizeof(char), 51, arq);
+    fread(reg->email, sizeof(char), 81, arq);
+    fread(reg->nationality, sizeof(char), 51, arq);
+    fread(&reg->age, 4, 1, arq);
+}
 
 
 
@@ -122,7 +120,7 @@ void add_trash_2_string(char *str){
 void write_register(registro *reg, FILE *arq){
 	fwrite(reg->firstname, sizeof(char), 51, arq);  
 	fwrite(reg->lastname, sizeof(char), 51, arq);  
-	fwrite(reg->email, sizeof(char), 51, arq);  
+	fwrite(reg->email, sizeof(char), 81, arq);  
 	fwrite(reg->nationality, sizeof(char), 51, arq);  
 	fwrite(&reg->age, sizeof(int), 1, arq);  
 	return;
