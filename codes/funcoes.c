@@ -4,8 +4,12 @@
 
 #include "funcoes.h"
 
-#define REG 238
+#define REG 238   // tamanho de cada registro
 #define TRASH '$'
+#define FN 51   // tamanho de cada campo
+#define LN 51
+#define EMAIL 81
+#define NAT 51
 
 
 // funcao fornecida para leitura de string da entrada padrao
@@ -98,15 +102,14 @@ int get_tam(FILE *arq){
 // funcoes para adicao de lixo ao registro
 
 void add_trash_2_register(registro *reg){
-	add_trash_2_string(reg->firstname);
-	add_trash_2_string(reg->lastname);
-	add_trash_2_string(reg->email);
-	add_trash_2_string(reg->nationality);
+	add_trash_2_string(reg->firstname, FN);
+	add_trash_2_string(reg->lastname, LN);
+	add_trash_2_string(reg->email, EMAIL);
+	add_trash_2_string(reg->nationality, NAT);
 	return;
 }
 
-void add_trash_2_string(char *str){
-	int sizeof_field = sizeof(str);
+void add_trash_2_string(char *str, int sizeof_field){
 	int str_length = strlen(str) + 1; // pegar o tamanho da string, incluindo o \0
 	for(int i = str_length; i < (sizeof_field - 1); i++){
 		str[i] = TRASH; 		// completa de lixo a partir do \0 ate o final do campo
@@ -138,23 +141,24 @@ void get_register(registro *reg){
 	char aux_c[81];
 
 
-	// le nome e sobrenome e separa os respectivos campos
+	// le nome
 	readline(aux_c);
-	int i = 0, j = 0;
+	int i = 0;
 	while(aux_c[i] != ' '){
 		reg->firstname[i] = aux_c[i];
 		i++;
 	}
 	i++;
 	reg->firstname[i] = '\0';
-
+	
+	// le sobrenome	
+	readline(aux_c);
+	i = 0;
 	while(aux_c[i] != '\0'){
-		reg->lastname[j] = aux_c[i];
+		reg->lastname[i] = aux_c[i];
 		i++;
-		j++;
 	}
-	j++;
-	reg->lastname[j] = '\0';
+	reg->lastname[i] = '\0';
 
 	// le email	
 	readline(aux_c);
@@ -177,7 +181,7 @@ void get_register(registro *reg){
 	reg->nationality[i] = '\0';
 
 	// le idade
-	scanf("%d ", &aux);
+	scanf("%d", &aux);
 	reg->age = aux;
 	
 	add_trash_2_register(reg); // adiciona lixo aos byte nao preenchidos dos campos do registro

@@ -51,7 +51,7 @@ int get_tam(FILE *arq);
 
 void add_trash_2_register(registro *reg);
 
-void add_trash_2_string(char *str);
+void add_trash_2_string(char *str, int sizeof_field);
 
 
 
