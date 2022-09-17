@@ -11,3 +11,7 @@ clear:
 debug:
 	gcc -g main.c funcoes.c
 	gdb a.out
+
+memcheck:
+	gcc -g main.c funcoes.c
+	valgrind a.out

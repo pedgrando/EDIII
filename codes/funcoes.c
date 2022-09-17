@@ -111,7 +111,7 @@ void add_trash_2_register(registro *reg){
 
 void add_trash_2_string(char *str, int sizeof_field){
 	int str_length = strlen(str) + 1; // pegar o tamanho da string, incluindo o \0
-	for(int i = str_length; i < (sizeof_field - 1); i++){
+	for(int i = str_length; i < sizeof_field; i++){
 		str[i] = TRASH; 		// completa de lixo a partir do \0 ate o final do campo
 	}	
 }
@@ -136,53 +136,21 @@ void write_register(registro *reg, FILE *arq){
 // le informacoes da entrada padrao e atribui aos respectivos campos de um registro
 
 void get_register(registro *reg){
-	// variaveis auxiliares
-	int aux;
-	char aux_c[81];
-
 
 	// le nome
-	readline(aux_c);
-	int i = 0;
-	while(aux_c[i] != ' '){
-		reg->firstname[i] = aux_c[i];
-		i++;
-	}
-	i++;
-	reg->firstname[i] = '\0';
+	readline(reg->firstname);
 	
 	// le sobrenome	
-	readline(aux_c);
-	i = 0;
-	while(aux_c[i] != '\0'){
-		reg->lastname[i] = aux_c[i];
-		i++;
-	}
-	reg->lastname[i] = '\0';
+	readline(reg->lastname);
 
 	// le email	
-	readline(aux_c);
-	i = 0;
-	while(aux_c[i] != '\0'){
-		reg->email[i] = aux_c[i];
-		i++;
-	}	
-	i++;
-	reg->email[i] = '\0';
+	readline(reg->email);
 	
 	// le nacionalidade
-	readline(aux_c);
-	i = 0;
-	while(aux_c[i] != '\0'){
-		reg->nationality[i] = aux_c[i];
-		i++;
-	}
-	i++;
-	reg->nationality[i] = '\0';
+	readline(reg->nationality);
 
 	// le idade
-	scanf("%d", &aux);
-	reg->age = aux;
+	scanf("%d", &(reg->age));
 	
 	add_trash_2_register(reg); // adiciona lixo aos byte nao preenchidos dos campos do registro
 
