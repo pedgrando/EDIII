@@ -125,8 +125,8 @@ void write_register(registro *reg, FILE *arq){
 	fwrite(reg->firstname, sizeof(char), 51, arq);  
 	fwrite(reg->lastname, sizeof(char), 51, arq);  
 	fwrite(reg->email, sizeof(char), 81, arq);  
-	fwrite(reg->nationality, sizeof(char), 51, arq);  
-	fwrite(&reg->age, sizeof(int), 1, arq);  
+	fwrite(reg->nationality, sizeof(char), 51, arq);
+	fwrite(&reg->age, sizeof(int), 1, arq);
 	return;
 }
 
