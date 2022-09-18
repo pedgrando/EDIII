@@ -49,7 +49,7 @@ int main(int argv, char *argc[]){
         }
         int RRN;
         scanf("%d", &RRN);
-        if(get_num_reg(nome_arq) < RRN) {
+        if(get_num_reg(nome_arq) <=cd desko RRN) {
             printf("“Não foi possivel ler o arquivo");
             break;
         }
