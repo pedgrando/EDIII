@@ -11,11 +11,11 @@ int main(int argv, char *argc[]){
     FILE *arq;
     registro *reg = malloc(sizeof(registro));
     int num_reg;
+
     switch (option)
     {
     case 1:
-	// testa se o arquivo existe
-        if(!(arq = fopen(nome_arq, "wb"))) {
+        if(!(arq = fopen(nome_arq, "wb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
         }
@@ -29,8 +29,7 @@ int main(int argv, char *argc[]){
         break;
 
     case 2:
-	// testa se o arquivo existe
-        if(!(arq = fopen(nome_arq, "rb"))) {
+        if(!(arq = fopen(nome_arq, "rb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
         }
@@ -44,13 +43,16 @@ int main(int argv, char *argc[]){
         break;
 
     case 3:
-	// testa se o arquivo existe
-        if(!(arq = fopen(nome_arq, "rb"))) {
+        if(!(arq = fopen(nome_arq, "rb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
         }
         int RRN;
         scanf("%d", &RRN);
+        if(get_num_reg(nome_arq) <=cd desko RRN) {
+            printf("“Não foi possivel ler o arquivo");
+            break;
+        }
         fseek(arq, RRN * REG, SEEK_SET);  // coloca o ponteiro no inicio do registro (byte offset)
         read_register(arq, reg);
         print_register(reg);
@@ -61,6 +63,7 @@ int main(int argv, char *argc[]){
         printf("Entrada indisponível.");
         break;
     }
-    // libera memoria do registro;
-    free(reg);
+    
+    free(reg);  // libera memoria do registro;
+
 }
