@@ -49,8 +49,8 @@ int main(int argv, char *argc[]){
         }
         int RRN;
         scanf("%d", &RRN);
-        if(get_num_reg(nome_arq) <=cd desko RRN) {
-            printf("“Não foi possivel ler o arquivo");
+        if(get_num_reg(arq) <= RRN) {
+            printf("Nao foi possivel ler o arquivo");
             break;
         }
         fseek(arq, RRN * REG, SEEK_SET);  // coloca o ponteiro no inicio do registro (byte offset)
