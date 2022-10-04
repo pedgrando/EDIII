@@ -3,13 +3,15 @@
 
 #include "funcoes.h"
 
-void main(){
+int main(int argv, char *argc[]){
     int option;
     char arq_entrada[32];
     char arq_saida[32];
+
     scanf("%d %s %s", &option, arq_entrada, arq_saida);
-    FILE *file_in;
-    FILE *file_out;
+
+    FILE *file_in = NULL;
+    FILE *file_out = NULL;
 
     Cabecalho *header = malloc(sizeof(Cabecalho));
     *header = InicializaStructCabecalho();
@@ -25,7 +27,16 @@ void main(){
         TransfereDados(file_in, file_out);
 
         break;
-    
+    case 2:
+	break;
+    case 3:
+	break;
+    case 4:
+	break;
+    case 5:
+	break;
+    case 6:
+	break;	
     default:
         break;
     }
