@@ -23,5 +23,5 @@ zip:
 commit:
 	git add .
 	git commit -m "automatic make commit"
-
+	git push origin main
 
