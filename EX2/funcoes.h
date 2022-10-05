@@ -51,4 +51,6 @@ void LeRegistro(FILE *file_in, Registro *Register);
 
 void TransfereDados(FILE *file_in, FILE *file_out);
 
+int ChecaStatus(FILE *file_in);
+
 #endif
