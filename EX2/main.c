@@ -30,38 +30,72 @@ int main(int argv, char *argc[]){
 
         break;
     case 2:
+	
+	// lista todos os registros de um arquivo sequencialmente ---------------------------------------------------------------------------
+
+	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
         }
-	scanf("%d", &n);
 
 	break;
     case 3:
+
+	// faz n consultas dados que atendam a uma exigencia especifica ----------------------------------------------------------------------
+
+	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
         }
 	scanf("%d", &n);
+
+	// realiza as n consultas
+	for(int i = 0; i < n; i++){
+	
+	}
 
 	break;
     case 4:
+
+	// remove logicamente n registros ---------------------------------------------------------------------------------------------------
+
+	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
         }
 	scanf("%d", &n);
+
+	// realiza as n remocoes
+	for(int i = 0; i < n; i++){
+	
+	}
 
 	break;
     case 5:
+
+	//
+
+	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
         }
 	scanf("%d", &n);
 
+	// realiza as n execucoes da consulta
+	for(int i = 0; i < n; i++){
+	
+	}
+
 	break;
     case 6:
+
+	//
+
+	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
