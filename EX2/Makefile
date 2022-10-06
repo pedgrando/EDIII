@@ -21,6 +21,7 @@ zip:
 	zip atv2.zip Makefile funcoes.h funcoes.c main.c
 
 commit:
+	git pull origin main
 	git add .
 	git commit -m "automatic make commit"
 	git push origin main

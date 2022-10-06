@@ -4,6 +4,8 @@
 
 #include "funcoes.h"
 
+//teste
+
 Cabecalho InicializaStructCabecalho(){
     Cabecalho aux;
     aux.status = 0;
