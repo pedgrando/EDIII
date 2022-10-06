@@ -4,7 +4,7 @@
 
 #include "funcoes.h"
 
-//teste
+//teste parte 2
 
 Cabecalho InicializaStructCabecalho(){
     Cabecalho aux;
