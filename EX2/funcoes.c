@@ -66,7 +66,7 @@ void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o 
 	fclose(fs);
 }
 
-//FUNCOES DE MANIPULAÇÃO DE ARQUIVOS
+//FUNCOES DE MANIPULAÇÃO DE ARQUIVOS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 void CriaHeader(FILE *file, Cabecalho *header){
@@ -90,7 +90,7 @@ void LeRegistro(FILE *file_in, Registro *Register){
     char aux2;
     char aux[64];
     while((aux2 = fgetc(file_in)) != '\n');
-    printf("%c", aux);
+    printf("%s", aux);
     fscanf(file_in, "%s", aux);
     printf("%s\n\n\n", aux);
     fscanf(file_in, "%s", aux);
@@ -109,3 +109,44 @@ void TransfereDados(FILE *file_in, FILE *file_out){
     LeRegistro(file_in, Register);
     free(Register);
 }
+
+
+// FUNCOES PARA EXIBIR REGISTROS
+
+void imprime_arq_tela(FILE *arq_entrada){
+	Registro *
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
