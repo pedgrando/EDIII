@@ -88,6 +88,8 @@ void resetaRegistro(Registro *Register){
     Register->idConecta;
     Register->nomePoPs[0] = DEL;
     Register->nomePais[0] = DEL;
+    Register->nomePoPs[1] = '\0';
+    Register->nomePais[1] = '\0';
     strcpy(Register->siglaPais, "$$");
     Register->idPoPsConectado = -1;
     Register->unidadeMedida = '$';
@@ -175,17 +177,24 @@ int LeRegistro(FILE *file_in, Registro *Register){
         Register->velocidade = atoi(aux2);
     }
 
-    printf("%d\n%s\n%s\n%s\n%d\n%c\n%d\n\n\n", Register->idConecta, Register->nomePoPs, Register->nomePais, Register->siglaPais, Register->idPoPsConectado, Register->unidadeMedida, Register->velocidade);
+    //printf("%d\n%s\n%s\n%s\n%d\n%c\n%d\n\n\n", Register->idConecta, Register->nomePoPs, Register->nomePais, Register->siglaPais, Register->idPoPsConectado, Register->unidadeMedida, Register->velocidade);
     return 1;
 }   
  
+void ImprimeRegistro(Registro *Register){
+    printf("Identificador do ponto: %d\n", Register->idConecta);
+    printf("Nome do Ponto: %s\n", Register->nomePoPs);
+    printf("Pais de localizacao: %s\n", Register->nomePais);
+    printf("Sigla do Pais: %s\n", Register->siglaPais);
+    printf("Identificador do ponto conectado: %d\n", Register->idPoPsConectado);
+    printf("Velocidade de transmissao: %d %cbps\n\n", Register->velocidade, Register->unidadeMedida);
+}
 
 void TransfereDados(FILE *file_in, FILE *file_out){
     char aux[64];
     while(fgetc(file_in) != '\n');
     Registro *Register = malloc(sizeof(Registro)); 
     while (LeRegistro(file_in, Register)){
-        
         EscreveRegistro(file_out, Register);
     }    
     free(Register);

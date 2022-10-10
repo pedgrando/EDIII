@@ -7,7 +7,7 @@ void main(){
     int option;
     char arq_entrada[32];
     char arq_saida[32];
-    scanf("%d %s %s", &option, arq_entrada, arq_saida);
+    scanf("%d", &option);
     FILE *file_in;
     FILE *file_out;
 
@@ -17,6 +17,7 @@ void main(){
     switch (option)
     {
     case 1:    //CREATE TABLE
+        scanf("%s %s", arq_entrada, arq_saida);
         if(!(file_out = fopen(arq_saida, "wb")) || !(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
@@ -25,6 +26,10 @@ void main(){
         TransfereDados(file_in, file_out);
         break;
     
+    case 2:
+        
+        break;
+
     default:
         break;
     }
