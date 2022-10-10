@@ -23,7 +23,6 @@ void main(){
         }
         CriaHeader(file_out, header);
         TransfereDados(file_in, file_out);
-
         break;
     
     default:

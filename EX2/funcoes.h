@@ -47,7 +47,7 @@ void CriaHeader(FILE *arq_out, Cabecalho *header);
 
 void PreencheLixo(FILE *file);
 
-void LeRegistro(FILE *file_in, Registro *Register);
+int LeRegistro(FILE *file_in, Registro *Register);
 
 void TransfereDados(FILE *file_in, FILE *file_out);
 
