@@ -17,5 +17,12 @@ memcheck:
 	valgrind a.out
 
 zip:
-	rm -f atv1.zip
-	zip atv1.zip Makefile funcoes.h funcoes.c main.c
+	rm -f atv2.zip
+	zip atv2.zip Makefile funcoes.h funcoes.c main.c
+
+commit:
+	git pull origin main
+	git add .
+	git commit -m "automatic make commit"
+	git push origin main
+
