@@ -31,7 +31,6 @@ int main(int argv, char *argc[]){
         }
         CriaHeader(file_out, header);
         TransfereDados(file_in, file_out);
-
         break;
     case 2:
 

@@ -30,8 +30,8 @@ typedef struct registro{
     int idPoPsConectado;
     char unidadeMedida;
     int velocidade;
-    char *nomePoPs;
-    char *nomePais;
+    char nomePoPs[30];
+    char nomePais[30];
 } Registro;
 
 Cabecalho InicializaStructCabecalho();
@@ -47,9 +47,11 @@ void CriaHeader(FILE *arq_out, Cabecalho *header);
 
 void PreencheLixo(FILE *file);
 
-void LeRegistro(FILE *file_in, Registro *Register);
+int LeRegistro(FILE *file_in, Registro *Register);
 
 void TransfereDados(FILE *file_in, FILE *file_out);
+
+void EscreveRegistro(FILE *file_out, Registro *Register);
 
 int ChecaStatus(FILE *file_in);
 

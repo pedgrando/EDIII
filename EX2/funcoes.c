@@ -86,29 +86,125 @@ void PreencheLixo(FILE *file){
     fseek(file, 0, SEEK_SET);
 }
 
-void LeRegistro(FILE *file_in, Registro *Register){
-    char aux2;
-    char aux[64];
-    while((aux2 = fgetc(file_in)) != '\n');
-    printf("%s", aux);
-    fscanf(file_in, "%s", aux);
-    printf("%s\n\n\n", aux);
-    fscanf(file_in, "%s", aux);
-    printf("%s\n\n\n", aux);
-    fscanf(file_in, "%s", aux);
-    printf("%s\n\n\n", aux);
-    fscanf(file_in, "%d,%s,%d,%c,%d,%s,%s", &Register->idConecta, Register->siglaPais, &Register->idPoPsConectado, &Register->unidadeMedida, &Register->velocidade, Register->nomePoPs, Register->nomePais);
-    printf("%d\n%s\n%d\n%c\n%d\n%s\n%s\n\n\n", Register->idConecta, Register->siglaPais, Register->idPoPsConectado, Register->unidadeMedida, Register->velocidade, Register->nomePoPs, Register->nomePais);
 
+void resetaRegistro(Registro *Register){
+    Register->idConecta;
+    Register->nomePoPs[0] = DEL;
+    Register->nomePais[0] = DEL;
+    strcpy(Register->siglaPais, "$$");
+    Register->idPoPsConectado = -1;
+    Register->unidadeMedida = '$';
+    Register->velocidade = -1;
+}
+
+int LeRegistro(FILE *file_in, Registro *Register){
+    char aux;
+    char aux2[5];
+    resetaRegistro(Register);
+    
+    int i = 0;
+    while(1) {
+        aux = fgetc(file_in);
+        if (aux == ',') break;
+        if (aux == EOF) return 0;
+        aux2[i] = aux;
+        i++;
+    }
+    if(i > 0){
+        aux2[i] = '\0';
+        Register->idConecta = atoi(aux2);
+    }
+
+    i = 0;
+    while(1) {
+        aux = fgetc(file_in);
+        if (aux == ',') break;
+        Register->nomePoPs[i] = aux;
+        i++;
+    }
+    if (i > 0) Register->nomePoPs[i] = '\0';
+
+    i = 0;
+    while(1) {
+        aux = fgetc(file_in);
+        if (aux == ',') break;
+        Register->nomePais[i] = aux;
+        i++;
+    } 
+    if (i > 0) Register->nomePais[i] = '\0';
+
+    i = 0;
+    while(1) {
+        aux = fgetc(file_in);
+        if (aux == ',') break;
+        Register->siglaPais[i] = aux;
+        i++;
+    }
+    if (i > 0) Register->siglaPais[i] = '\0';
+
+    i = 0;
+    while(1) {
+        aux = fgetc(file_in);
+        if (aux == ',') break;
+        aux2[i] = aux;
+        i++;
+    }
+    if(i > 0){
+        aux2[i] = '\0';
+        Register->idPoPsConectado = atoi(aux2);
+    }
+
+    i = 0;
+    while(1) {
+        aux = fgetc(file_in);
+        if (aux == ',') break;
+        aux2[i] = aux;
+        i++;
+    }
+    if(i > 0){
+        Register->unidadeMedida = aux2[0];
+    }
+
+    i = 0;
+    while(1) {
+        aux = fgetc(file_in);
+        if (aux == '\n' || aux == '\r' || aux == '\0') break;
+        aux2[i] = aux;
+        i++;
+    }
+    if(i > 0) {
+        aux2[i] = '\0';
+        Register->velocidade = atoi(aux2);
+    }
+
+    //printf("%d\n%s\n%s\n%s\n%d\n%c\n%d\n\n\n", Register->idConecta, Register->nomePoPs, Register->nomePais, Register->siglaPais, Register->idPoPsConectado, Register->unidadeMedida, Register->velocidade);
+    return 1;
 }   
  
 
 void TransfereDados(FILE *file_in, FILE *file_out){
-    Registro *Register = malloc(sizeof(Registro)); 
     char aux[64];
-    LeRegistro(file_in, Register);
+    while(fgetc(file_in) != '\n');
+    Registro *Register = malloc(sizeof(Registro)); 
+    while (LeRegistro(file_in, Register)){
+        
+        EscreveRegistro(file_out, Register);
+    }    
     free(Register);
 }
+
+void EscreveRegistro(FILE *file, Registro *Register){
+    fwrite(&Register->removido, sizeof(char), 1, file);
+    fwrite(&Register->encadeamento, sizeof(int), 1, file);
+    fwrite(&Register->idConecta, sizeof(char), 1, file);
+    fwrite(Register->siglaPais, sizeof(char), 2, file);
+    fwrite(&Register->idPoPsConectado, sizeof(int), 1, file);
+    fwrite(&Register->unidadeMedida, sizeof(char), 1, file);
+    fwrite(&Register->velocidade, sizeof(int), 1, file);
+    fwrite(Register->nomePoPs, sizeof(Register->nomePoPs), 1, file);
+    fwrite(Register->nomePais, sizeof(Register->nomePais), 1, file);
+}
+
 
 
 // FUNCOES PARA EXIBIR REGISTROS
@@ -123,7 +219,6 @@ void imprime_arq_tela(FILE *arq_entrada){
 
 
 }
-
 
 
 
