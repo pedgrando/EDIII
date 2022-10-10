@@ -4,6 +4,8 @@
 
 #include "funcoes.h"
 
+//teste parte 2
+
 Cabecalho InicializaStructCabecalho(){
     Cabecalho aux;
     aux.status = 0;
@@ -64,7 +66,7 @@ void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o 
 	fclose(fs);
 }
 
-//FUNCOES DE MANIPULAÇÃO DE ARQUIVOS
+//FUNCOES DE MANIPULAÇÃO DE ARQUIVOS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 void CriaHeader(FILE *file, Cabecalho *header){
@@ -83,6 +85,7 @@ void PreencheLixo(FILE *file){
     fwrite(lixo, sizeof(char), PAG_DISCO, file);  
     fseek(file, 0, SEEK_SET);
 }
+
 
 void resetaRegistro(Registro *Register){
     Register->idConecta;
@@ -141,7 +144,6 @@ int LeRegistro(FILE *file_in, Registro *Register){
     }
     if (i > 0) Register->siglaPais[i] = '\0';
 
-
     i = 0;
     while(1) {
         aux = fgetc(file_in);
@@ -198,7 +200,6 @@ void TransfereDados(FILE *file_in, FILE *file_out){
         EscreveRegistro(file_out, Register);
     }    
     free(Register);
-    
 }
 
 void EscreveRegistro(FILE *file, Registro *Register){
@@ -212,3 +213,44 @@ void EscreveRegistro(FILE *file, Registro *Register){
     fwrite(Register->nomePoPs, sizeof(Register->nomePoPs), 1, file);
     fwrite(Register->nomePais, sizeof(Register->nomePais), 1, file);
 }
+
+
+
+// FUNCOES PARA EXIBIR REGISTROS
+
+void imprime_arq_tela(FILE *arq_entrada){
+	Registro *
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
