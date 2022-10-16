@@ -100,7 +100,7 @@ void PreencheLixo(FILE *file){
 
 
 void resetaRegistro(Registro *Register){
-    Register->campoVazio = 0;
+    for (int i = 0; i < 7; i++) Register->campoVazio[i] = 1;
     Register->removido = '0';
     Register->encadeamento = -1;
     Register->nomePoPs[0] = DEL;
@@ -118,8 +118,6 @@ int LeRegistro(FILE *file_in, Registro *Register){
     char aux2[5];
     resetaRegistro(Register);
     
-    int camposVazios[7];
-    for(int i = 0; i < 7; i++) camposVazios[i] = 1;
     int j = 0;
 
     int i = 0;
@@ -133,7 +131,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     if(i > 0){
         aux2[i] = '\0';
         Register->idConecta = atoi(aux2);
-        camposVazios[j] = 0;
+        Register->campoVazio[j] = 0;
     }
 
     j++;
@@ -146,7 +144,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     }
     if (i > 0) {
         Register->nomePoPs[i] = '\0';
-        camposVazios[j] = 0;
+        Register->campoVazio[j] = 0;;
     }
 
     j++;
@@ -159,7 +157,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     } 
     if (i > 0){
         Register->nomePais[i] = '\0';
-        camposVazios[j] = 0;
+        Register->campoVazio[j] = 0;;
     }
 
     j++;
@@ -172,7 +170,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     }
     if (i > 0) {
         Register->siglaPais[i] = '\0';
-        camposVazios[j] = 0;
+        Register->campoVazio[j] = 0;;
     }
 
     j++;
@@ -186,7 +184,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     if(i > 0){
         aux2[i] = '\0';
         Register->idPoPsConectado = atoi(aux2);
-        camposVazios[j] = 0;
+        Register->campoVazio[j] = 0;;
     }
 
     j++;
@@ -199,7 +197,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     }
     if(i > 0){
         Register->unidadeMedida = aux2[0];
-        camposVazios[j] = 0;
+        Register->campoVazio[j] = 0;;
     }
 
     j++;
@@ -213,23 +211,21 @@ int LeRegistro(FILE *file_in, Registro *Register){
     if(i > 0) {
         aux2[i] = '\0';
         Register->velocidade = atoi(aux2);
-        camposVazios[j] = 0;
+        Register->campoVazio[j] = 0;;
     }
 
-    for(int i = 0; i < 7; i++) if(camposVazios[i] == 1) Register->campoVazio = 1;
-    //printf("%d\n%s\n%s\n%s\n%d\n%c\n%d\n\n\n", Register->idConecta, Register->nomePoPs, Register->nomePais, Register->siglaPais, Register->idPoPsConectado, Register->unidadeMedida, Register->velocidade);
+    
     return 1;
 }   
  
 void ImprimeRegistro(Registro *Register){
-    if(!Register->campoVazio){
-        printf("Identificador do ponto: %d\n", Register->idConecta);
-        printf("Nome do Ponto: %s\n", Register->nomePoPs);
-        printf("Pais de localizacao: %s\n", Register->nomePais);
-        printf("Sigla do Pais: %s\n", Register->siglaPais);
-        printf("Identificador do ponto conectado: %d\n", Register->idPoPsConectado);
-        printf("Velocidade de transmissao: %d %cbps\n\n", Register->velocidade, Register->unidadeMedida);
-    }
+    if(!Register->campoVazio[0]) printf("Identificador do ponto: %d\n", Register->idConecta);
+    if(!Register->campoVazio[1]) printf("Nome do Ponto: %s\n", Register->nomePoPs);
+    if(!Register->campoVazio[2]) printf("Pais de localizacao: %s\n", Register->nomePais);
+    if(!Register->campoVazio[3]) printf("Sigla do Pais: %s\n", Register->siglaPais);
+    if(!Register->campoVazio[4]) printf("Identificador do ponto conectado: %d\n", Register->idPoPsConectado);
+    if(!Register->campoVazio[5] && !Register->campoVazio[6]) printf("Velocidade de transmissao: %d %cbps\n", Register->velocidade, Register->unidadeMedida);
+    printf("\n");
 }
 
 void TransfereDados(FILE *file_in, FILE *file_out){
@@ -258,18 +254,18 @@ void EscreveRegistro(FILE *file, Registro *Register){
 void CompactaArquivo(FILE* origem){
     FILE *aux = fopen("aux.bin", "wb");
     Registro *Register;
-    long long B64 = 0;                                          //Variavel de 64 bits
+    char linha[64];                                          
         
     Cabecalho *header = malloc(sizeof(Cabecalho));
     *header = InicializaStructCabecalho();
     CriaHeader(aux, header);
 
-    fseek(origem, 21, SEEK_SET);
-    while(!feof(origem)) {
+    fseek(origem, 960, SEEK_SET);
+    while(!feof(origem)) {                  //MUDAR SEEK END
 
-        fread (&B64, sizeof(unsigned long long), 1, origem);
-        if(B64 % 64 == 0){                                      //NUM SEI SE FUNCIONA 
-            fwrite(&B64, sizeof(unsigned long long), 1, aux);
+        fread (linha, sizeof(char), 64, origem);
+        if(linha[0] == '0'){                                      //NUM SEI SE FUNCIONA 
+            fwrite(linha, sizeof(char), 64, aux);
         }
 
     }

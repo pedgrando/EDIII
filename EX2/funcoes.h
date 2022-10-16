@@ -23,7 +23,7 @@ typedef struct cabecalho{
 } Cabecalho;
 
 typedef struct registro{
-    int campoVazio;
+    int campoVazio[7];
     char removido;
     int encadeamento;
     unsigned int idConecta; //sem valores repetidos
@@ -37,7 +37,7 @@ typedef struct registro{
 
 Cabecalho InicializaStructCabecalho();
 
-Cabecalho getHeader(FILE* file);
+Cabecalho *getHeader(FILE* file);
 
 
 //FUNCOES FORNECIDAS 
@@ -58,5 +58,7 @@ void TransfereDados(FILE *file_in, FILE *file_out);
 void EscreveRegistro(FILE *file_out, Registro *Register);
 
 int ChecaStatus(FILE *file_in);
+
+void CompactaArquivo(FILE *file_in);
 
 #endif
