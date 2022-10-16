@@ -16,6 +16,7 @@ int main(int argv, char *argc[]){
 
     Cabecalho *header = malloc(sizeof(Cabecalho));
     *header = InicializaStructCabecalho();
+    printf("%d",header->nroPagDisco);
     
     switch (option)
     {
@@ -44,7 +45,7 @@ int main(int argv, char *argc[]){
             break;
         }
 
-	imprime_arq_tela(arq_entrada);
+	//imprime_arq_tela(arq_entrada);
 
 	break;
     case 3:
@@ -65,7 +66,7 @@ int main(int argv, char *argc[]){
 		// executa a funcionalidade 3 n vezes
 		// dentro da funcao, recebe os parametros da busca 
 		 
-		imprime_registros(arq_entrada);
+		//imprime_registros(arq_entrada);
 	}
 
 	break;
@@ -115,6 +116,8 @@ int main(int argv, char *argc[]){
             printf("Falha no processamento do arquivo\n");
             break;
         }
+        *header = getHeader(file_in);
+        
 
 	break;	
 

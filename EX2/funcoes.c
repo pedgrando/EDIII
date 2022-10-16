@@ -9,13 +9,25 @@
 Cabecalho InicializaStructCabecalho(){
     Cabecalho aux;
     aux.status = 0;
-    aux.status = -1;
+    aux.topo = -1;
     aux.proxRRN = 0;
     aux.nroRegRem = 0;
     aux.nroPagDisco = 0;
     aux.qttCompacta = 0;
     return aux;
 }
+
+Cabecalho getHeader(FILE *arq){
+    Cabecalho aux;
+    fread(arq, sizeof(char), 1, aux.status);
+    fread(arq, sizeof(int), 1, aux.topo);
+    fread(arq, sizeof(int), 1, aux.proxRRN);
+    fread(arq, sizeof(int), 1, aux.nroRegRem);
+    fread(arq, sizeof(int), 1, aux.nroPagDisco);
+    fread(arq, sizeof(int), 1, aux.qttCompacta);
+	return aux;
+}
+
 
 //FUNCOES FORNECIDAS
 
@@ -88,7 +100,7 @@ void PreencheLixo(FILE *file){
 
 
 void resetaRegistro(Registro *Register){
-    Register->idConecta;
+    Register->campoVazio = 0;
     Register->nomePoPs[0] = DEL;
     Register->nomePais[0] = DEL;
     Register->nomePoPs[1] = '\0';
@@ -104,6 +116,10 @@ int LeRegistro(FILE *file_in, Registro *Register){
     char aux2[5];
     resetaRegistro(Register);
     
+    int camposVazios[7];
+    for(int i = 0; i < 7; i++) camposVazios[i] = 1;
+    int j = 0;
+
     int i = 0;
     while(1) {
         aux = fgetc(file_in);
@@ -115,8 +131,10 @@ int LeRegistro(FILE *file_in, Registro *Register){
     if(i > 0){
         aux2[i] = '\0';
         Register->idConecta = atoi(aux2);
+        camposVazios[j] = 0;
     }
 
+    j++;
     i = 0;
     while(1) {
         aux = fgetc(file_in);
@@ -124,8 +142,12 @@ int LeRegistro(FILE *file_in, Registro *Register){
         Register->nomePoPs[i] = aux;
         i++;
     }
-    if (i > 0) Register->nomePoPs[i] = '\0';
+    if (i > 0) {
+        Register->nomePoPs[i] = '\0';
+        camposVazios[j] = 0;
+    }
 
+    j++;
     i = 0;
     while(1) {
         aux = fgetc(file_in);
@@ -133,8 +155,12 @@ int LeRegistro(FILE *file_in, Registro *Register){
         Register->nomePais[i] = aux;
         i++;
     } 
-    if (i > 0) Register->nomePais[i] = '\0';
+    if (i > 0){
+        Register->nomePais[i] = '\0';
+        camposVazios[j] = 0;
+    }
 
+    j++;
     i = 0;
     while(1) {
         aux = fgetc(file_in);
@@ -142,8 +168,12 @@ int LeRegistro(FILE *file_in, Registro *Register){
         Register->siglaPais[i] = aux;
         i++;
     }
-    if (i > 0) Register->siglaPais[i] = '\0';
+    if (i > 0) {
+        Register->siglaPais[i] = '\0';
+        camposVazios[j] = 0;
+    }
 
+    j++;
     i = 0;
     while(1) {
         aux = fgetc(file_in);
@@ -154,8 +184,10 @@ int LeRegistro(FILE *file_in, Registro *Register){
     if(i > 0){
         aux2[i] = '\0';
         Register->idPoPsConectado = atoi(aux2);
+        camposVazios[j] = 0;
     }
 
+    j++;
     i = 0;
     while(1) {
         aux = fgetc(file_in);
@@ -165,8 +197,10 @@ int LeRegistro(FILE *file_in, Registro *Register){
     }
     if(i > 0){
         Register->unidadeMedida = aux2[0];
+        camposVazios[j] = 0;
     }
 
+    j++;
     i = 0;
     while(1) {
         aux = fgetc(file_in);
@@ -177,19 +211,23 @@ int LeRegistro(FILE *file_in, Registro *Register){
     if(i > 0) {
         aux2[i] = '\0';
         Register->velocidade = atoi(aux2);
+        camposVazios[j] = 0;
     }
 
+    for(int i = 0; i < 7; i++) if(camposVazios[i] == 1) Register->campoVazio = 1;
     //printf("%d\n%s\n%s\n%s\n%d\n%c\n%d\n\n\n", Register->idConecta, Register->nomePoPs, Register->nomePais, Register->siglaPais, Register->idPoPsConectado, Register->unidadeMedida, Register->velocidade);
     return 1;
 }   
  
 void ImprimeRegistro(Registro *Register){
-    printf("Identificador do ponto: %d\n", Register->idConecta);
-    printf("Nome do Ponto: %s\n", Register->nomePoPs);
-    printf("Pais de localizacao: %s\n", Register->nomePais);
-    printf("Sigla do Pais: %s\n", Register->siglaPais);
-    printf("Identificador do ponto conectado: %d\n", Register->idPoPsConectado);
-    printf("Velocidade de transmissao: %d %cbps\n\n", Register->velocidade, Register->unidadeMedida);
+    if(!Register->campoVazio){
+        printf("Identificador do ponto: %d\n", Register->idConecta);
+        printf("Nome do Ponto: %s\n", Register->nomePoPs);
+        printf("Pais de localizacao: %s\n", Register->nomePais);
+        printf("Sigla do Pais: %s\n", Register->siglaPais);
+        printf("Identificador do ponto conectado: %d\n", Register->idPoPsConectado);
+        printf("Velocidade de transmissao: %d %cbps\n\n", Register->velocidade, Register->unidadeMedida);
+    }
 }
 
 void TransfereDados(FILE *file_in, FILE *file_out){
@@ -198,6 +236,7 @@ void TransfereDados(FILE *file_in, FILE *file_out){
     Registro *Register = malloc(sizeof(Registro)); 
     while (LeRegistro(file_in, Register)){
         EscreveRegistro(file_out, Register);
+        ImprimeRegistro(Register);
     }    
     free(Register);
 }

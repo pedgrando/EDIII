@@ -23,6 +23,7 @@ typedef struct cabecalho{
 } Cabecalho;
 
 typedef struct registro{
+    int campoVazio;
     char removido;
     int encadeamento;
     unsigned int idConecta; //sem valores repetidos
@@ -35,6 +36,9 @@ typedef struct registro{
 } Registro;
 
 Cabecalho InicializaStructCabecalho();
+
+Cabecalho getHeader(FILE* file);
+
 
 //FUNCOES FORNECIDAS 
 
