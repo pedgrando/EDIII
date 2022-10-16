@@ -219,7 +219,7 @@ void EscreveRegistro(FILE *file, Registro *Register){
 // FUNCOES PARA EXIBIR REGISTROS
 
 void imprime_arq_tela(FILE *arq_entrada){
-	Registro *
+	//Registro *
 
 
 
