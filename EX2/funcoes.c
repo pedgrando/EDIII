@@ -17,14 +17,14 @@ Cabecalho InicializaStructCabecalho(){
     return aux;
 }
 
-Cabecalho getHeader(FILE *arq){
-    Cabecalho aux;
-    fread(arq, sizeof(char), 1, aux.status);
-    fread(arq, sizeof(int), 1, aux.topo);
-    fread(arq, sizeof(int), 1, aux.proxRRN);
-    fread(arq, sizeof(int), 1, aux.nroRegRem);
-    fread(arq, sizeof(int), 1, aux.nroPagDisco);
-    fread(arq, sizeof(int), 1, aux.qttCompacta);
+Cabecalho *getHeader(FILE *arq){
+    Cabecalho *aux;
+    fread(&aux->status, sizeof(char), 1, arq);
+    fread(&aux->topo, sizeof(int), 1, arq);
+    fread(&aux->proxRRN, sizeof(int), 1, arq);
+    fread(&aux->nroRegRem, sizeof(int), 1, arq);
+    fread(&aux->nroPagDisco, sizeof(int), 1, arq);
+    fread(&aux->qttCompacta, sizeof(int), 1, arq);
 	return aux;
 }
 
@@ -101,6 +101,8 @@ void PreencheLixo(FILE *file){
 
 void resetaRegistro(Registro *Register){
     Register->campoVazio = 0;
+    Register->removido = '0';
+    Register->encadeamento = -1;
     Register->nomePoPs[0] = DEL;
     Register->nomePais[0] = DEL;
     Register->nomePoPs[1] = '\0';
@@ -236,7 +238,7 @@ void TransfereDados(FILE *file_in, FILE *file_out){
     Registro *Register = malloc(sizeof(Registro)); 
     while (LeRegistro(file_in, Register)){
         EscreveRegistro(file_out, Register);
-        ImprimeRegistro(Register);
+        //ImprimeRegistro(Register);
     }    
     free(Register);
 }
@@ -272,7 +274,12 @@ void CompactaArquivo(FILE* origem){
 
     }
 
+    //binarioNaTela("aux.bin");
+
     origem = aux;
+    free(header);
+    fclose(aux);
+    
 }
 
 // FUNCOES PARA EXIBIR REGISTROS
