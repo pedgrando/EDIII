@@ -253,7 +253,27 @@ void EscreveRegistro(FILE *file, Registro *Register){
     fwrite(Register->nomePais, sizeof(Register->nomePais), 1, file);
 }
 
+void CompactaArquivo(FILE* origem){
+    FILE *aux = fopen("aux.bin", "wb");
+    Registro *Register;
+    long long B64 = 0;                                          //Variavel de 64 bits
+        
+    Cabecalho *header = malloc(sizeof(Cabecalho));
+    *header = InicializaStructCabecalho();
+    CriaHeader(aux, header);
 
+    fseek(origem, 21, SEEK_SET);
+    while(!feof(origem)) {
+
+        fread (&B64, sizeof(unsigned long long), 1, origem);
+        if(B64 % 64 == 0){                                      //NUM SEI SE FUNCIONA 
+            fwrite(&B64, sizeof(unsigned long long), 1, aux);
+        }
+
+    }
+
+    origem = aux;
+}
 
 // FUNCOES PARA EXIBIR REGISTROS
 

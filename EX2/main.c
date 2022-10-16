@@ -16,7 +16,6 @@ int main(int argv, char *argc[]){
 
     Cabecalho *header = malloc(sizeof(Cabecalho));
     *header = InicializaStructCabecalho();
-    printf("%d",header->nroPagDisco);
     
     switch (option)
     {
@@ -116,8 +115,7 @@ int main(int argv, char *argc[]){
             printf("Falha no processamento do arquivo\n");
             break;
         }
-        *header = getHeader(file_in);
-        
+        CompactaArquivo(file_in);
 
 	break;	
 
