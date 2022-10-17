@@ -19,12 +19,12 @@ Cabecalho InicializaStructCabecalho(){
 
 Cabecalho *getHeader(FILE *arq){
     Cabecalho *aux;
-    fread(&aux->status, sizeof(char), 1, arq);
-    fread(&aux->topo, sizeof(int), 1, arq);
-    fread(&aux->proxRRN, sizeof(int), 1, arq);
-    fread(&aux->nroRegRem, sizeof(int), 1, arq);
-    fread(&aux->nroPagDisco, sizeof(int), 1, arq);
-    fread(&aux->qttCompacta, sizeof(int), 1, arq);
+    fread(&(aux->status), sizeof(char), 1, arq);
+    fread((&aux->topo), sizeof(int), 1, arq);
+    fread((&aux->proxRRN), sizeof(int), 1, arq);
+    fread((&aux->nroRegRem), sizeof(int), 1, arq);
+    fread((&aux->nroPagDisco), sizeof(int), 1, arq);
+    fread((&aux->qttCompacta), sizeof(int), 1, arq);
 	return aux;
 }
 
@@ -107,7 +107,7 @@ void resetaRegistro(Registro *Register){
     Register->nomePais[0] = DEL;
     Register->nomePoPs[1] = '\0';
     Register->nomePais[1] = '\0';
-    strcpy(Register->siglaPais, "$$");
+    strcpy(Register->siglaPais, "$$\0");
     Register->idPoPsConectado = -1;
     Register->unidadeMedida = '$';
     Register->velocidade = -1;
@@ -229,7 +229,6 @@ void ImprimeRegistro(Registro *Register){
 }
 
 void TransfereDados(FILE *file_in, FILE *file_out){
-    char aux[64];
     while(fgetc(file_in) != '\n');
     Registro *Register = malloc(sizeof(Registro)); 
     while (LeRegistro(file_in, Register)){
@@ -253,7 +252,6 @@ void EscreveRegistro(FILE *file, Registro *Register){
 
 void CompactaArquivo(FILE* origem){
     FILE *aux = fopen("aux.bin", "wb");
-    Registro *Register;
     char linha[64];                                          
         
     Cabecalho *header = malloc(sizeof(Cabecalho));
@@ -278,26 +276,149 @@ void CompactaArquivo(FILE* origem){
     
 }
 
-// FUNCOES PARA EXIBIR REGISTROS
+// FUNCOES PARA EXTRAIR OS DADOS BINARIOS
 
-void imprime_arq_tela(FILE *arq_entrada){
-	//Registro *
+void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo){
+	Cabecalho *header = getHeader(arq_entrada);
+	Registro *Register = malloc(sizeof(Registro)*1);
+	char aux[2];
+	int i = 0; // contador de registros;
+	
+	if(header->status == '0'){
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	}
+	
+	fseek(arq_entrada, 939, SEEK_SET); // pula o registro de cabecalho
+
+	switch(campoBuscado){
+		case 0:
+			// imprime o arquivo inteiro
+			
+			while(fread(aux, sizeof(char), 1, arq_entrada) != 0){
+
+				if(aux[0] == '1'){
+					fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
+				}
+					
+				LeRegistroBin(Register, arq_entrada);
+				
+				ImprimeRegistro(Register);
+				
+				if(ftell(arq_entrada) != (960 + 64*(i+1))){
+					fseek(arq_entrada, 960+64*(i+1) - ftell(arq_entrada), SEEK_CUR);
+				}
 
 
+				i++;
+			}
 
+			imprime_pag_disco(header);
 
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+	}
 
+	free(Register);	
+}
 
-
+void imprime_pag_disco(Cabecalho *header){
+	printf("Numero de paginas de disco: %d", header->nroPagDisco);
 }
 
 
+void leRegistroBin(Registro *Register, FILE *arq_entrada){
+
+	// le encadeamento
+	readint(arq_entrada, &(Register->encadeamento));
+
+	readint(arq_entrada, &(Register->idConecta));
+	Register->campoVazio[0] = campovazio_int(Register->idConecta);
+	
+	readstring(arq_entrada, 2, Register->siglaPais);	
+	Register->campoVazio[1] = campovazio_string(Register->siglaPais);
+
+	readint(arq_entrada, &(Register->idPoPsConectado));
+	Register->campoVazio[2] = campovazio_int(Register->idPoPsConectado);
+
+	readstring(arq_entrada, 1, &(Register->unidadeMedida));
+	Register->campoVazio[3] = campovazio_string(&(Register->unidadeMedida));
+
+	readint(arq_entrada, &(Register->velocidade));
+	Register->campoVazio[4] = campovazio_int(Register->velocidade);
+
+	readstring_variavel(arq_entrada, Register->nomePoPs);
+	Register->campoVazio[5] = campovazio_string_var(Register->nomePoPs);
+
+	readstring_variavel(arq_entrada, Register->nomePais);
+	Register->campoVazio[6] = campovazio_string_var(Register->nomePais);
+
+	return;
+}
 
 
+// FUNCOES PARA LER DO ARQUIVO BINARIO ------------------------------------------------
+
+void readint(FILE *arq_entrada, int *integer){
+	fread(integer, sizeof(int), 1, arq_entrada);
+}
+
+void readstring(FILE *arq_entrada, int reading_size, char *string){
+	fread(string, sizeof(char), reading_size, arq_entrada);
+	if(reading_size != 1){
+		string[reading_size] = '\0';
+	}
+}
+
+void readstring_variavel(FILE *arq_entrada, char *string){
+	char aux = '\0';
+	int i = 0;
+	while(aux != '|'){
+		fread(&aux, sizeof(char), 1, arq_entrada);
+		string[i] = aux;	
+		i++;
+	}
+}
 
 
+// FUNCOES PARA CONFERIR SE O CAMPO ESTA VAZIO ------------------------------------------------------------
 
+int campovazio_int(int interger){
+	if(interger == -1){
+	        return 1;
+	} else {
+		return 0;
+	}		
+}
 
+int campovazio_string(char *string){
+	if(string[0] == '$'){
+		return 1;
+	} else {
+		return 0;
+	}	
+}
+
+int campovazio_string_var(char *string){
+	if(string[0] == '|'){
+		return 1;
+	} else {
+		return 0;
+	}	
+}
 
 
 

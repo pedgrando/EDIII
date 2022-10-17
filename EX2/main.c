@@ -44,7 +44,7 @@ int main(int argv, char *argc[]){
             break;
         }
 
-	//imprime_arq_tela(arq_entrada);
+	buscaRegistro(arq_entrada, 0, NULL);
 
 	break;
     case 3:
@@ -59,13 +59,21 @@ int main(int argv, char *argc[]){
         }
 	scanf("%d", &n);
 
-	// realiza as n consultas
+	// executa a funcionalidade 3 n vezes
 	for(int i = 0; i < n; i++){	
+		
+		char campoBuscado[30];
+		char valorCampo[30];
 
-		// executa a funcionalidade 3 n vezes
+		readline(campoBuscado);
+		readline(valorCampo);
+
+		int hash_campo = hashfunction(campoBuscado);
+
 		// dentro da funcao, recebe os parametros da busca 
+
+		buscaRegistro();
 		 
-		//imprime_registros(arq_entrada);
 	}
 
 	break;

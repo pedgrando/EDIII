@@ -26,8 +26,8 @@ typedef struct registro{
     int campoVazio[7];
     char removido;
     int encadeamento;
-    unsigned int idConecta; //sem valores repetidos
-    char siglaPais[2];
+    int idConecta; //sem valores repetidos
+    char siglaPais[3];
     int idPoPsConectado;
     char unidadeMedida;
     int velocidade;
@@ -60,5 +60,28 @@ void EscreveRegistro(FILE *file_out, Registro *Register);
 int ChecaStatus(FILE *file_in);
 
 void CompactaArquivo(FILE *file_in);
+
+void readstring(FILE *arq_entrada, int reading_size, char *string);
+
+void readstring_variavel(FILE *arq_entrada, char *string);
+
+void readint(FILE *arq_entrada, int *integer);
+
+int campovazio_int(int interger);
+
+int campovazio_string(char *string);
+
+int campovazio_string_var(char *string);
+
+void imprime_pag_disco(Cabecalho *header);
+
+
+
+
+
+
+
+
+
 
 #endif
