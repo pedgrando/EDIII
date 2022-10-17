@@ -44,7 +44,7 @@ int main(int argv, char *argc[]){
             break;
         }
 
-	buscaRegistro(arq_entrada, 0, NULL);
+	buscaRegistro(file_in, 0, NULL);
 
 	break;
     case 3:
@@ -72,7 +72,7 @@ int main(int argv, char *argc[]){
 
 		// dentro da funcao, recebe os parametros da busca 
 
-		buscaRegistro();
+		buscaRegistro(file_in, hash_campo, valorCampo);
 		 
 	}
 

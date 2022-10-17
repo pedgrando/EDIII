@@ -300,7 +300,7 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo){
 					fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
 				}
 					
-				LeRegistroBin(Register, arq_entrada);
+				leRegistroBin(Register, arq_entrada);
 				
 				ImprimeRegistro(Register);
 				
