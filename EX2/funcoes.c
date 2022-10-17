@@ -427,6 +427,7 @@ int hashfunction(char *str){
 	int result = 0;
 	while(str[i] != '\0'){
 		result += str[i];	
+		i++;
 	}
 	return result;
 }

@@ -11,6 +11,17 @@
 #define REM '*'
 
 
+// CODIGO HASH DOS CAMPOS
+
+#define IDCONECTA 906
+#define SIGLAPAIS 925
+#define IDPOPSCONECTADO 1503
+#define UNIDADEMEDIDA 1310
+#define VELOCIDADE 1040
+#define NOMEPOPS 817
+#define NOMEPAIS 828
+
+
 //STRUCTS DOS DADOS
 
 typedef struct cabecalho{
