@@ -75,6 +75,7 @@ int campovazio_string_var(char *string);
 
 void imprime_pag_disco(Cabecalho *header);
 
+void leRegistroBin(Registro *Register, FILE *arq_entrada);
 
 
 

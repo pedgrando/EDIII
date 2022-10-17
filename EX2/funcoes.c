@@ -18,7 +18,7 @@ Cabecalho InicializaStructCabecalho(){
 }
 
 Cabecalho *getHeader(FILE *arq){
-    Cabecalho *aux;
+    Cabecalho *aux = malloc(sizeof(Cabecalho)*1);
     fread(&(aux->status), sizeof(char), 1, arq);
     fread((&aux->topo), sizeof(int), 1, arq);
     fread((&aux->proxRRN), sizeof(int), 1, arq);
@@ -97,7 +97,6 @@ void PreencheLixo(FILE *file){
     fwrite(lixo, sizeof(char), PAG_DISCO, file);  
     fseek(file, 0, SEEK_SET);
 }
-
 
 void resetaRegistro(Registro *Register){
     for (int i = 0; i < 7; i++) Register->campoVazio[i] = 1;
@@ -421,6 +420,16 @@ int campovazio_string_var(char *string){
 }
 
 
+// HASH FUNCTION PARA DESCOBRIR O CAMPO
+
+int hashfunction(char *str){
+	int i = 0;
+	int result = 0;
+	while(str[i] != '\0'){
+		result += str[i];	
+	}
+	return result;
+}
 
 
 
