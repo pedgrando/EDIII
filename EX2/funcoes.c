@@ -4,6 +4,15 @@
 
 #include "funcoes.h"
 
+#define IDCONECTA 906
+#define SIGLAPAIS 925
+#define IDPOPSCONECTADO 1503
+#define UNIDADEMEDIDA 1310
+#define VELOCIDADE 1040
+#define NOMEPOPS 817
+#define NOMEPAIS 828
+
+
 //teste parte 2
 
 Cabecalho InicializaStructCabecalho(){
@@ -315,19 +324,19 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo){
 			imprime_pag_disco(header);
 
 			break;
-		case 1:
+		case IDCONECTA:
 			break;
-		case 2:
+		case SIGLAPAIS:
 			break;
-		case 3:
+		case IDPOPSCONECTADO:
 			break;
-		case 4:
+		case UNIDADEMEDIDA:
 			break;
-		case 5:
+		case VELOCIDADE:
 			break;
-		case 6:
+		case NOMEPOPS:
 			break;
-		case 7:
+		case NOMEPAIS:
 			break;
 	}
 
