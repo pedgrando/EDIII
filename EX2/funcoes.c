@@ -12,6 +12,12 @@
 #define NOMEPOPS 817
 #define NOMEPAIS 828
 
+#define IDCONECTA_BYTEOFFSET 5
+#define SIGLAPAIS_BYTEOFFSET 9
+#define IDPOPSCONECTADO_BYTEOFFSET 11
+#define UNIDADEMEDIDA_BYTEOFFSET 15
+#define VELOCIDADE_BYTEOFFSET 16
+#define CAMPOSVAR_BYTEOFFSET 20
 
 //teste parte 2
 
@@ -290,6 +296,7 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo){
 	Cabecalho *header = getHeader(arq_entrada);
 	Registro *Register = malloc(sizeof(Registro)*1);
 	char aux[2];
+	int aux_int;
 	int i = 0; // contador de registros;
 	
 	if(header->status == '0'){
@@ -298,48 +305,56 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo){
 	}
 	
 	fseek(arq_entrada, 939, SEEK_SET); // pula o registro de cabecalho
+	while(fread(&Register->removido, sizeof(char), 1, arq_entrada) != 0){
+		if(Register->removido == '1'){
+			fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
+		} else {
 
-	switch(campoBuscado){
-		case 0:
-			// imprime o arquivo inteiro
+			switch(campoBuscado){
+				case 0:
+					// imprime o arquivo inteiro
 			
-			while(fread(aux, sizeof(char), 1, arq_entrada) != 0){
-
-				if(aux[0] == '1'){
-					fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
-				}
+						if(Register->removido == '1'){
+							fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
+						}
 					
-				leRegistroBin(Register, arq_entrada);
+						leRegistroBin(Register, arq_entrada);
 				
-				ImprimeRegistro(Register);
-				
-				if(ftell(arq_entrada) != (960 + 64*(i+1))){
-					fseek(arq_entrada, 960+64*(i+1) - ftell(arq_entrada), SEEK_CUR);
-				}
+						ImprimeRegistro(Register);
+					
+						if(ftell(arq_entrada) != (960 + 64*(i+1))){
+							fseek(arq_entrada, 960+64*(i+1) - ftell(arq_entrada), SEEK_CUR);
+						}
 
 
-				i++;
+						i++;
+	
+					imprime_pag_disco(header);
+
+					break;
+				case IDCONECTA:
+			
+					if(!(aux_int = procura_valor(valorCampo, 0, -1, IDCONECTA_BYTEOFFSET, arq_entrada))){
+					}
+					leRegistroBin(Register, arq_entrada);
+				
+					ImprimeRegistro(Register);
+					break;
+				case SIGLAPAIS:
+					break;
+				case IDPOPSCONECTADO:
+					break;
+				case UNIDADEMEDIDA:
+					break;
+				case VELOCIDADE:
+					break;
+				case NOMEPOPS:
+					break;
+				case NOMEPAIS:
+					break;
 			}
-
-			imprime_pag_disco(header);
-
-			break;
-		case IDCONECTA:
-			break;
-		case SIGLAPAIS:
-			break;
-		case IDPOPSCONECTADO:
-			break;
-		case UNIDADEMEDIDA:
-			break;
-		case VELOCIDADE:
-			break;
-		case NOMEPOPS:
-			break;
-		case NOMEPAIS:
-			break;
+		}
 	}
-
 	free(Register);	
 }
 
@@ -443,8 +458,45 @@ int hashfunction(char *str){
 
 
 
+int procura_valor(char *valorCampo, int tipo, int tamanho_campo, int byteoffset, FILE *arq){
+	int aux = 0;
+	char aux_char[32];
+	
+	
+	switch(tipo){
+		case 0:
+			if(aux == atoi(valorCampo)){
+				return 1;
+			} else {
+				return 0;
+			}
+			break;
+		case 1:
+			if(!(aux = compara_str(valorCampo, aux_char))){
+				 		
+			}
+			
+			break;
+		case 2: 
+			readstring_variavel(arq, aux_char);
+			aux = compara_str(valorCampo, aux_char);
+			break;
+	}	
 
+	return -1;
+}
 
+int compara_str(char *str1, char *str2){
+	int i = 0;
+	if(str1[0] == str2[0] && strlen(str2) == 1) return 0; // pega o caso de um só caracter
+	while(str1[i] != '\0' && str2[i] != '\0'){
+		if(str1[i] != str2[i]){
+			return 1;
+		}
+		i++;
+	}
+	return 0;
+}
 
 
 

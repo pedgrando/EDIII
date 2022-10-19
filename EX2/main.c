@@ -91,6 +91,14 @@ int main(int argv, char *argc[]){
 
 	// realiza as n remocoes
 	for(int i = 0; i < n; i++){
+
+		char campoBuscado[30];
+		char valorCampo[30];
+
+		readline(campoBuscado);
+		readline(valorCampo);
+			
+		int hash_campo = hashfunction(campoBuscado);
 	
 	}
 
@@ -107,7 +115,7 @@ int main(int argv, char *argc[]){
         }
 	scanf("%d", &n);
 
-	// realiza as n execucoes da consulta
+	// realiza as n inserções
 	for(int i = 0; i < n; i++){
 	
 	}
