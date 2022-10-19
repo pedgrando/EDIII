@@ -22,6 +22,12 @@
 #define NOMEPAIS 828
 
 
+
+
+#define CONSULTA 1
+#define REMOCAO 0
+
+
 //STRUCTS DOS DADOS
 
 typedef struct cabecalho{
@@ -88,9 +94,24 @@ void imprime_pag_disco(Cabecalho *header);
 
 void leRegistroBin(Registro *Register, FILE *arq_entrada);
 
-void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo);
+void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int funcionalidade);
 
 int hashfunction(char *str);
+
+int compara_str(char *str1, char *str2);
+
+int procura_valor(char *valorCampo, int tipo, int tamanho_campo, int byteoffset, FILE *arq);
+
+void imprime_arq(FILE *arq_entrada);
+
+void remove_registro(FILE *arq, Cabecalho *header, int rrn);
+
+
+
+
+
+
+
 
 
 

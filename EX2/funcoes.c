@@ -12,12 +12,13 @@
 #define NOMEPOPS 817
 #define NOMEPAIS 828
 
-#define IDCONECTA_BYTEOFFSET 5
-#define SIGLAPAIS_BYTEOFFSET 9
-#define IDPOPSCONECTADO_BYTEOFFSET 11
-#define UNIDADEMEDIDA_BYTEOFFSET 15
-#define VELOCIDADE_BYTEOFFSET 16
-#define CAMPOSVAR_BYTEOFFSET 20
+#define BYTEOFFSET_IDCONECTA 5
+#define BYTEOFFSET_SIGLAPAIS 9
+#define BYTEOFFSET_IDPOPSCONECTADO 11
+#define BYTEOFFSET_UNIDADEMEDIDA 15
+#define BYTEOFFSET_VELOCIDADE 16
+#define BYTEOFFSET_VARIAVEIS 20
+
 
 //teste parte 2
 
@@ -292,12 +293,39 @@ void CompactaArquivo(FILE* origem){
 
 // FUNCOES PARA EXTRAIR OS DADOS BINARIOS
 
-void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo){
+void imprime_arq(FILE *arq_entrada){
+    	Cabecalho *header = getHeader(arq_entrada);
+	Registro *Register = malloc(sizeof(Registro)*1);
+
+	if(header->status == '0'){
+		printf("Falha no processamento do arquivo.\n");
+		return;
+	}
+	
+	fseek(arq_entrada, 939, SEEK_SET); // pula o registro de cabecalho
+
+	while(fread(&Register->removido, sizeof(char), 1, arq_entrada) != 0){
+
+		if(Register->removido == '1'){
+
+			fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
+
+		} else {
+
+			leRegistroBin(Register, arq_entrada);
+				
+			ImprimeRegistro(Register);
+					
+		}
+	}
+	imprime_pag_disco(header);
+}
+
+
+void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int funcionalidade){
 	Cabecalho *header = getHeader(arq_entrada);
 	Registro *Register = malloc(sizeof(Registro)*1);
-	char aux[2];
-	int aux_int;
-	int i = 0; // contador de registros;
+	int rrn = 0;
 	
 	if(header->status == '0'){
 		printf("Falha no processamento do arquivo.\n");
@@ -305,57 +333,95 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo){
 	}
 	
 	fseek(arq_entrada, 939, SEEK_SET); // pula o registro de cabecalho
+
 	while(fread(&Register->removido, sizeof(char), 1, arq_entrada) != 0){
+
 		if(Register->removido == '1'){
+
 			fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
+
 		} else {
 
+			leRegistroBin(Register, arq_entrada);
+
 			switch(campoBuscado){
-				case 0:
-					// imprime o arquivo inteiro
-			
-						if(Register->removido == '1'){
-							fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
-						}
-					
-						leRegistroBin(Register, arq_entrada);
-				
-						ImprimeRegistro(Register);
-					
-						if(ftell(arq_entrada) != (960 + 64*(i+1))){
-							fseek(arq_entrada, 960+64*(i+1) - ftell(arq_entrada), SEEK_CUR);
-						}
-
-
-						i++;
-	
-					imprime_pag_disco(header);
-
-					break;
 				case IDCONECTA:
-			
-					if(!(aux_int = procura_valor(valorCampo, 0, -1, IDCONECTA_BYTEOFFSET, arq_entrada))){
+					if(atoi(valorCampo) == Register->idConecta){
+						if(funcionalidade){
+							ImprimeRegistro(Register);
+						} else {
+							remove_registro(arq_entrada, header, rrn);
+						}
+					
 					}
-					leRegistroBin(Register, arq_entrada);
-				
-					ImprimeRegistro(Register);
 					break;
 				case SIGLAPAIS:
+					if(atoi(valorCampo) == Register->idConecta){
+						if(funcionalidade){
+							ImprimeRegistro(Register);
+						} else {
+							remove_registro(arq_entrada, header, rrn);
+						}
+					
+					}
 					break;
 				case IDPOPSCONECTADO:
+					if(atoi(valorCampo) == Register->idConecta){
+						if(funcionalidade){
+							ImprimeRegistro(Register);
+						} else {
+							remove_registro(arq_entrada, header, rrn);
+						}
+					
+					}
 					break;
 				case UNIDADEMEDIDA:
+					if(atoi(valorCampo) == Register->idConecta){
+						if(funcionalidade){
+							ImprimeRegistro(Register);
+						} else {
+							remove_registro(arq_entrada, header, rrn);
+						}
+					
+					}
 					break;
 				case VELOCIDADE:
+					if(atoi(valorCampo) == Register->idConecta){
+						if(funcionalidade){
+							ImprimeRegistro(Register);
+						} else {
+							remove_registro(arq_entrada, header, rrn);
+						}
+					
+					}
 					break;
 				case NOMEPOPS:
+					if(atoi(valorCampo) == Register->idConecta){
+						if(funcionalidade){
+							ImprimeRegistro(Register);
+						} else {
+							remove_registro(arq_entrada, header, rrn);
+						}
+					
+					}
 					break;
 				case NOMEPAIS:
+					if(atoi(valorCampo) == Register->idConecta){
+						if(funcionalidade){
+							ImprimeRegistro(Register);
+						} else {
+							remove_registro(arq_entrada, header, rrn);
+						}
+					
+					}
 					break;
 			}
+			
 		}
+		rrn++;
 	}
 	free(Register);	
+	free(header);
 }
 
 void imprime_pag_disco(Cabecalho *header){
@@ -364,6 +430,9 @@ void imprime_pag_disco(Cabecalho *header){
 
 
 void leRegistroBin(Registro *Register, FILE *arq_entrada){
+	char remove_lixo[48];
+	int bytes_lidos;
+
 
 	// le encadeamento
 	readint(arq_entrada, &(Register->encadeamento));
@@ -389,6 +458,10 @@ void leRegistroBin(Registro *Register, FILE *arq_entrada){
 	readstring_variavel(arq_entrada, Register->nomePais);
 	Register->campoVazio[6] = campovazio_string_var(Register->nomePais);
 
+	bytes_lidos = 20 + strlen(Register->nomePoPs) + strlen(Register->nomePais);
+
+	fread(remove_lixo, sizeof(char), 64 - bytes_lidos, arq_entrada); 
+	
 	return;
 }
 
@@ -457,35 +530,6 @@ int hashfunction(char *str){
 }
 
 
-
-int procura_valor(char *valorCampo, int tipo, int tamanho_campo, int byteoffset, FILE *arq){
-	int aux = 0;
-	char aux_char[32];
-	
-	
-	switch(tipo){
-		case 0:
-			if(aux == atoi(valorCampo)){
-				return 1;
-			} else {
-				return 0;
-			}
-			break;
-		case 1:
-			if(!(aux = compara_str(valorCampo, aux_char))){
-				 		
-			}
-			
-			break;
-		case 2: 
-			readstring_variavel(arq, aux_char);
-			aux = compara_str(valorCampo, aux_char);
-			break;
-	}	
-
-	return -1;
-}
-
 int compara_str(char *str1, char *str2){
 	int i = 0;
 	if(str1[0] == str2[0] && strlen(str2) == 1) return 0; // pega o caso de um só caracter
@@ -499,6 +543,22 @@ int compara_str(char *str1, char *str2){
 }
 
 
+void remove_registro(FILE *arq, Cabecalho *header, int rrn){
+
+	fseek(arq, -64, SEEK_CUR);
+
+	char lixo[59];
+
+	for(int i = 0; i < 59; i++) lixo[i] = LIXO;
+	
+	fwrite("1", sizeof(char), 1, arq);
+	fwrite(&(header->topo), sizeof(int), 1, arq);
+       	fwrite(lixo, sizeof(char), 59, arq);
+
+	header->topo = rrn;
+	header->nroRegRem++;
+
+}
 
 
 

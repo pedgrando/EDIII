@@ -3,6 +3,10 @@
 
 #include "funcoes.h"
 
+
+
+
+
 int main(int argv, char *argc[]){
     int option;
     int n;
@@ -44,7 +48,7 @@ int main(int argv, char *argc[]){
             break;
         }
 
-	buscaRegistro(file_in, 0, NULL);
+	imprime_arq(file_in);
 
 	break;
     case 3:
@@ -72,7 +76,7 @@ int main(int argv, char *argc[]){
 
 		// dentro da funcao, recebe os parametros da busca 
 
-		buscaRegistro(file_in, hash_campo, valorCampo);
+		buscaRegistro(file_in, hash_campo, valorCampo, CONSULTA);
 		 
 	}
 
@@ -100,13 +104,14 @@ int main(int argv, char *argc[]){
 			
 		int hash_campo = hashfunction(campoBuscado);
 	
+
+		buscaRegistro(file_in, hash_campo, valorCampo, REMOCAO);
 	}
 
 	break;
     case 5:
 
 	// FUNCIONALIDADE 5
-	//
 
 	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
