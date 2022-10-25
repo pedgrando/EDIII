@@ -99,6 +99,10 @@ void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o 
 
 void CriaHeader(FILE *file, Cabecalho *header){
     PreencheLixo(file);
+    escreveHeader(file, header);
+}
+
+void escreveHeader(FILE *file, Cabecalho *header){
     fwrite(&header->status, sizeof(char), 1, file);
     fwrite(&header->topo, sizeof(int), 1, file);
     fwrite(&header->proxRRN, sizeof(int), 1, file);
@@ -118,10 +122,8 @@ void resetaRegistro(Registro *Register){
     for (int i = 0; i < 7; i++) Register->campoVazio[i] = 1;
     Register->removido = '0';
     Register->encadeamento = -1;
-    Register->nomePoPs[0] = DEL;
-    Register->nomePais[0] = DEL;
-    Register->nomePoPs[1] = '\0';
-    Register->nomePais[1] = '\0';
+    Register->nomePoPs[0] = '\0';
+    Register->nomePais[0] = '\0';
     strcpy(Register->siglaPais, "$$\0");
     Register->idPoPsConectado = -1;
     Register->unidadeMedida = '$';
@@ -237,7 +239,7 @@ void ImprimeRegistro(Registro *Register){
     if(!Register->campoVazio[0]) printf("Identificador do ponto: %d\n", Register->idConecta);
     if(!Register->campoVazio[1]) printf("Nome do Ponto: %s\n", Register->nomePoPs);
     if(!Register->campoVazio[2]) printf("Pais de localizacao: %s\n", Register->nomePais);
-    if(!Register->campoVazio[3]) printf("Sigla do Pais: %s\n", Register->siglaPais);
+    if(!Register->campoVazio[3]) printf("Sigla do Pais: %c%c\n", Register->siglaPais[0], Register->siglaPais[1]);
     if(!Register->campoVazio[4]) printf("Identificador do ponto conectado: %d\n", Register->idPoPsConectado);
     if(!Register->campoVazio[5] && !Register->campoVazio[6]) printf("Velocidade de transmissao: %d %cbps\n", Register->velocidade, Register->unidadeMedida);
     printf("\n");
@@ -248,21 +250,30 @@ void TransfereDados(FILE *file_in, FILE *file_out){
     Registro *Register = malloc(sizeof(Registro)); 
     while (LeRegistro(file_in, Register)){
         EscreveRegistro(file_out, Register);
-        //ImprimeRegistro(Register);
+        ImprimeRegistro(Register);
     }    
     free(Register);
 }
 
 void EscreveRegistro(FILE *file, Registro *Register){
-    fwrite(&Register->removido, sizeof(char), 1, file);
-    fwrite(&Register->encadeamento, sizeof(int), 1, file);
-    fwrite(&Register->idConecta, sizeof(char), 1, file);
-    fwrite(Register->siglaPais, sizeof(char), 2, file);
-    fwrite(&Register->idPoPsConectado, sizeof(int), 1, file);
-    fwrite(&Register->unidadeMedida, sizeof(char), 1, file);
-    fwrite(&Register->velocidade, sizeof(int), 1, file);
-    fwrite(Register->nomePoPs, sizeof(Register->nomePoPs), 1, file);
-    fwrite(Register->nomePais, sizeof(Register->nomePais), 1, file);
+	int bytes_ocupados = 21 + strlen(Register->nomePoPs) + strlen(Register->nomePais);
+
+    	fwrite(&Register->removido, sizeof(char), 1, file);
+    	fwrite(&Register->encadeamento, sizeof(int), 1, file);
+    	fwrite(&Register->idConecta, sizeof(int), 1, file);
+    	fwrite(Register->siglaPais, sizeof(char), 2, file);
+    	fwrite(&Register->idPoPsConectado, sizeof(int), 1, file);
+    	fwrite(&Register->unidadeMedida, sizeof(char), 1, file);
+    	fwrite(&Register->velocidade, sizeof(int), 1, file);
+    	fwrite(Register->nomePoPs, sizeof(char), strlen(Register->nomePoPs), file);
+    	fwrite("|", sizeof(char), 1, file);
+    	fwrite(Register->nomePais, sizeof(char), strlen(Register->nomePais), file);
+    	fwrite("|", sizeof(char), 1, file);
+
+	for(int i = 0; i < (64 - bytes_ocupados); i++){
+		fwrite("$", sizeof(char), 1, file);
+	}
+    
 }
 
 void CompactaArquivo(FILE* origem){
@@ -294,15 +305,10 @@ void CompactaArquivo(FILE* origem){
 // FUNCOES PARA EXTRAIR OS DADOS BINARIOS
 
 void imprime_arq(FILE *arq_entrada){
-    	Cabecalho *header = getHeader(arq_entrada);
-	Registro *Register = malloc(sizeof(Registro)*1);
+	Registro *Register = malloc(sizeof(Registro));
+	Cabecalho *header = getHeader(arq_entrada);
 
-	if(header->status == '0'){
-		printf("Falha no processamento do arquivo.\n");
-		return;
-	}
-	
-	fseek(arq_entrada, 939, SEEK_SET); // pula o registro de cabecalho
+	fseek(arq_entrada, 960, SEEK_SET);
 
 	while(fread(&Register->removido, sizeof(char), 1, arq_entrada) != 0){
 
@@ -311,6 +317,8 @@ void imprime_arq(FILE *arq_entrada){
 			fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
 
 		} else {
+
+			resetaRegistro(Register);
 
 			leRegistroBin(Register, arq_entrada);
 				
@@ -430,63 +438,70 @@ void imprime_pag_disco(Cabecalho *header){
 
 
 void leRegistroBin(Registro *Register, FILE *arq_entrada){
-	char remove_lixo[48];
-	int bytes_lidos;
+	char aux[64];
+	int i = 0;
 
+	fread(aux, sizeof(char), 63, arq_entrada);
 
-	// le encadeamento
-	readint(arq_entrada, &(Register->encadeamento));
+	readint(aux, &(Register->encadeamento), &i);
 
-	readint(arq_entrada, &(Register->idConecta));
+	readint(aux, &(Register->idConecta), &i);
 	Register->campoVazio[0] = campovazio_int(Register->idConecta);
-	
-	readstring(arq_entrada, 2, Register->siglaPais);	
-	Register->campoVazio[1] = campovazio_string(Register->siglaPais);
 
-	readint(arq_entrada, &(Register->idPoPsConectado));
-	Register->campoVazio[2] = campovazio_int(Register->idPoPsConectado);
+	readstring(aux, 2, Register->siglaPais, &i);	
+	Register->campoVazio[3] = campovazio_string(Register->siglaPais);
 
-	readstring(arq_entrada, 1, &(Register->unidadeMedida));
-	Register->campoVazio[3] = campovazio_string(&(Register->unidadeMedida));
+	readint(aux, &(Register->idPoPsConectado), &i);
+	Register->campoVazio[4] = campovazio_int(Register->idPoPsConectado);
 
-	readint(arq_entrada, &(Register->velocidade));
-	Register->campoVazio[4] = campovazio_int(Register->velocidade);
+	readstring(aux, 1, &(Register->unidadeMedida), &i);
+	Register->campoVazio[6] = campovazio_string(&(Register->unidadeMedida));
 
-	readstring_variavel(arq_entrada, Register->nomePoPs);
-	Register->campoVazio[5] = campovazio_string_var(Register->nomePoPs);
+	readint(aux, &(Register->velocidade), &i);
+	Register->campoVazio[5] = campovazio_int(Register->velocidade);
 
-	readstring_variavel(arq_entrada, Register->nomePais);
-	Register->campoVazio[6] = campovazio_string_var(Register->nomePais);
+	readstring_variavel(aux, Register->nomePoPs, &i);
+	Register->campoVazio[1] = campovazio_string_var(Register->nomePoPs);
 
-	bytes_lidos = 20 + strlen(Register->nomePoPs) + strlen(Register->nomePais);
+	readstring_variavel(aux, Register->nomePais, &i);
+	Register->campoVazio[2] = campovazio_string_var(Register->nomePais);
 
-	fread(remove_lixo, sizeof(char), 64 - bytes_lidos, arq_entrada); 
-	
 	return;
 }
 
 
 // FUNCOES PARA LER DO ARQUIVO BINARIO ------------------------------------------------
 
-void readint(FILE *arq_entrada, int *integer){
-	fread(integer, sizeof(int), 1, arq_entrada);
-}
-
-void readstring(FILE *arq_entrada, int reading_size, char *string){
-	fread(string, sizeof(char), reading_size, arq_entrada);
-	if(reading_size != 1){
-		string[reading_size] = '\0';
+void readint(char *linha, int *integer, int *pos){
+	char aux[5];
+	int i;
+	for(i = 0; i < 4; i++){
+		aux[i] = linha[*pos];
+		(*pos)++;
 	}
+	aux[i] = '\0';
+	*integer = atoi(aux);
+
 }
 
-void readstring_variavel(FILE *arq_entrada, char *string){
-	char aux = '\0';
+void readstring(char *linha, int reading_size, char *string, int *pos){
+	int i;
+	for(i = 0; i < reading_size; i++){
+		string[i] = linha[*pos];	
+		(*pos)++;
+	}	
+}
+
+
+void readstring_variavel(char *linha, char *string, int *pos){
 	int i = 0;
-	while(aux != '|'){
-		fread(&aux, sizeof(char), 1, arq_entrada);
-		string[i] = aux;	
+	while(linha[*pos] != '|'){
+		string[i] = linha[*pos];	
+		(*pos)++;
 		i++;
-	}
+	}	
+	(*pos)++;
+	string[i] = '\0';
 }
 
 
@@ -509,7 +524,7 @@ int campovazio_string(char *string){
 }
 
 int campovazio_string_var(char *string){
-	if(string[0] == '|'){
+	if(string[0] == '\0'){
 		return 1;
 	} else {
 		return 0;
@@ -544,20 +559,23 @@ int compara_str(char *str1, char *str2){
 
 
 void remove_registro(FILE *arq, Cabecalho *header, int rrn){
+	int topo = header->topo;
 
-	fseek(arq, -64, SEEK_CUR);
+	header->topo = rrn;
+	header->nroRegRem++;
+
+	fseek(arq, 0, SEEK_SET);
+	escreveHeader(arq, header);
+
+	fseek(arq, 960+64*rrn, SEEK_SET);
 
 	char lixo[59];
 
 	for(int i = 0; i < 59; i++) lixo[i] = LIXO;
 	
 	fwrite("1", sizeof(char), 1, arq);
-	fwrite(&(header->topo), sizeof(int), 1, arq);
+	fwrite(&topo, sizeof(int), 1, arq);
        	fwrite(lixo, sizeof(char), 59, arq);
-
-	header->topo = rrn;
-	header->nroRegRem++;
-
 }
 
 

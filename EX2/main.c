@@ -3,10 +3,6 @@
 
 #include "funcoes.h"
 
-
-
-
-
 int main(int argv, char *argc[]){
     int option;
     int n;
@@ -36,13 +32,18 @@ int main(int argv, char *argc[]){
         }
         CriaHeader(file_out, header);
         TransfereDados(file_in, file_out);
+
+    	fclose(file_out);
+
+
         break;
     case 2:
 
 	// FUNCIONALIDADE 2
 	// lista todos os registros de um arquivo sequencialmente ---------------------------------------------------------------------------
-
+	
 	scanf("%s", arq_entrada);
+
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
@@ -87,7 +88,7 @@ int main(int argv, char *argc[]){
 	// remove logicamente n registros ---------------------------------------------------------------------------------------------------
 
 	scanf("%s", arq_entrada);
-        if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
+        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
         }
@@ -114,7 +115,7 @@ int main(int argv, char *argc[]){
 	// FUNCIONALIDADE 5
 
 	scanf("%s", arq_entrada);
-        if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
+        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
             printf("Falha no processamento do arquivo\n");
             break;
         }
@@ -146,5 +147,4 @@ int main(int argv, char *argc[]){
 
     free(header);
     fclose(file_in);
-    fclose(file_out);
 }

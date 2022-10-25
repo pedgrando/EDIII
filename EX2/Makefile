@@ -9,7 +9,7 @@ clear:
 	rm main.o prog funcoes.o a.out
 
 debug:
-	gcc -g3 main.c funcoes.c -Werror - pedantic -fsanitize=address,undefined
+	gcc -g3 main.c funcoes.c -Wall -Werror -pedantic 
 	gdb a.out
 
 memcheck:

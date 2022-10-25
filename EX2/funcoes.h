@@ -44,7 +44,7 @@ typedef struct registro{
     char removido;
     int encadeamento;
     int idConecta; //sem valores repetidos
-    char siglaPais[3];
+    char siglaPais[2];
     int idPoPsConectado;
     char unidadeMedida;
     int velocidade;
@@ -66,6 +66,8 @@ void binarioNaTela(char *nomeArquivoBinario);
 
 void CriaHeader(FILE *arq_out, Cabecalho *header);
 
+void escreveHeader(FILE *file, Cabecalho *header);
+
 void PreencheLixo(FILE *file);
 
 int LeRegistro(FILE *file_in, Registro *Register);
@@ -78,11 +80,11 @@ int ChecaStatus(FILE *file_in);
 
 void CompactaArquivo(FILE *file_in);
 
-void readstring(FILE *arq_entrada, int reading_size, char *string);
+void readint(char *linha, int *integer, int *pos);
 
-void readstring_variavel(FILE *arq_entrada, char *string);
+void readstring(char *linha, int reading_size, char *string, int *pos);
 
-void readint(FILE *arq_entrada, int *integer);
+void readstring_variavel(char *linha, char *string, int *pos);
 
 int campovazio_int(int interger);
 
