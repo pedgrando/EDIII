@@ -579,6 +579,14 @@ void remove_registro(FILE *arq, Cabecalho *header, int rrn){
 }
 
 
+void tira_aspas(char *str){
+	int i = 1;
+	while(str[i] != '"'){
+		str[i-1] = str[i];
+		i++;
+	}
+	str[i] = '\0';
+}
 
 
 

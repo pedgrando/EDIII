@@ -73,6 +73,8 @@ int main(int argv, char *argc[]){
 		readline(campoBuscado);
 		readline(valorCampo);
 
+		tira_aspas(valorCampo);
+
 		int hash_campo = hashfunction(campoBuscado);
 
 		// dentro da funcao, recebe os parametros da busca 
