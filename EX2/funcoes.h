@@ -80,11 +80,11 @@ int ChecaStatus(FILE *file_in);
 
 void CompactaArquivo(FILE *file_in);
 
-void readint(char *linha, int *integer, int *pos);
+void readint(FILE *arq, int *integer);
 
-void readstring(char *linha, int reading_size, char *string, int *pos);
+void readstring(FILE *arq, int reading_size, char *string);
 
-void readstring_variavel(char *linha, char *string, int *pos);
+int readstring_variavel(FILE *arq, char *string);
 
 int campovazio_int(int interger);
 

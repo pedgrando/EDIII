@@ -438,33 +438,33 @@ void imprime_pag_disco(Cabecalho *header){
 
 
 void leRegistroBin(Registro *Register, FILE *arq_entrada){
-	char aux[64];
-	int i = 0;
 
-	fread(aux, sizeof(char), 63, arq_entrada);
+	int byteoffset = 20;
 
-	readint(aux, &(Register->encadeamento), &i);
+	readint(arq_entrada, &(Register->encadeamento));
 
-	readint(aux, &(Register->idConecta), &i);
+	readint(arq_entrada, &(Register->idConecta));
 	Register->campoVazio[0] = campovazio_int(Register->idConecta);
 
-	readstring(aux, 2, Register->siglaPais, &i);	
+	readstring(arq_entrada, 2, Register->siglaPais);	
 	Register->campoVazio[3] = campovazio_string(Register->siglaPais);
 
-	readint(aux, &(Register->idPoPsConectado), &i);
+	readint(arq_entrada, &(Register->idPoPsConectado));
 	Register->campoVazio[4] = campovazio_int(Register->idPoPsConectado);
 
-	readstring(aux, 1, &(Register->unidadeMedida), &i);
+	readstring(arq_entrada, 1, &(Register->unidadeMedida));
 	Register->campoVazio[6] = campovazio_string(&(Register->unidadeMedida));
 
-	readint(aux, &(Register->velocidade), &i);
+	readint(arq_entrada, &(Register->velocidade));
 	Register->campoVazio[5] = campovazio_int(Register->velocidade);
 
-	readstring_variavel(aux, Register->nomePoPs, &i);
+	byteoffset += readstring_variavel(arq_entrada, Register->nomePoPs);
 	Register->campoVazio[1] = campovazio_string_var(Register->nomePoPs);
 
-	readstring_variavel(aux, Register->nomePais, &i);
+	byteoffset += readstring_variavel(arq_entrada, Register->nomePais);
 	Register->campoVazio[2] = campovazio_string_var(Register->nomePais);
+
+	fseek(arq_entrada, 64 - byteoffset, SEEK_CUR);
 
 	return;
 }
@@ -472,36 +472,27 @@ void leRegistroBin(Registro *Register, FILE *arq_entrada){
 
 // FUNCOES PARA LER DO ARQUIVO BINARIO ------------------------------------------------
 
-void readint(char *linha, int *integer, int *pos){
-	char aux[5];
-	int i;
-	for(i = 0; i < 4; i++){
-		aux[i] = linha[*pos];
-		(*pos)++;
-	}
-	aux[i] = '\0';
-	*integer = atoi(aux);
-
+void readint(FILE *arq, int *integer){
+	fread(integer, sizeof(int), 1, arq); 
 }
 
-void readstring(char *linha, int reading_size, char *string, int *pos){
-	int i;
-	for(i = 0; i < reading_size; i++){
-		string[i] = linha[*pos];	
-		(*pos)++;
-	}	
+void readstring(FILE *arq, int num_char, char *string){
+	fread(string, sizeof(char), num_char, arq); 
 }
 
 
-void readstring_variavel(char *linha, char *string, int *pos){
+int readstring_variavel(FILE *arq, char *string){
+	char aux = '\0';
 	int i = 0;
-	while(linha[*pos] != '|'){
-		string[i] = linha[*pos];	
-		(*pos)++;
+	while(fread(&aux, sizeof(char), 1, arq)){ 
+		if(aux == '|'){
+			break;
+		}
+		string[i] = aux;
 		i++;
-	}	
-	(*pos)++;
+	}
 	string[i] = '\0';
+	return i+1;
 }
 
 
