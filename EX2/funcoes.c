@@ -308,6 +308,8 @@ void imprime_arq(FILE *arq_entrada){
 	Registro *Register = malloc(sizeof(Registro));
 	Cabecalho *header = getHeader(arq_entrada);
 
+	int tem_registro = 0;
+
 	fseek(arq_entrada, 960, SEEK_SET);
 
 	while(fread(&Register->removido, sizeof(char), 1, arq_entrada) != 0){
@@ -318,6 +320,8 @@ void imprime_arq(FILE *arq_entrada){
 
 		} else {
 
+			tem_registro = 1;
+
 			resetaRegistro(Register);
 
 			leRegistroBin(Register, arq_entrada);
@@ -326,7 +330,12 @@ void imprime_arq(FILE *arq_entrada){
 					
 		}
 	}
-	imprime_pag_disco(header);
+
+	if(!tem_registro){
+		printf("Registro inexistente.\n");
+	} else{
+		imprime_pag_disco(header);
+	}
 }
 
 
