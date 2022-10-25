@@ -147,4 +147,7 @@ int main(int argv, char *argc[]){
 
     free(header);
     fclose(file_in);
+
+	binarioNaTela("topologiaRede.bin");
+
 }
