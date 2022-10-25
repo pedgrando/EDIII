@@ -108,6 +108,8 @@ void imprime_arq(FILE *arq_entrada);
 
 void remove_registro(FILE *arq, Cabecalho *header, int rrn);
 
+void tira_aspas(char *str);
+
 
 
 
