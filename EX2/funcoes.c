@@ -98,8 +98,9 @@ void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o 
 
 
 void CriaHeader(FILE *file, Cabecalho *header){
-    PreencheLixo(file);
+	fseek(file, 0, SEEK_SET);
     escreveHeader(file, header);
+	PreencheLixo(file);
 }
 
 void escreveHeader(FILE *file, Cabecalho *header){
@@ -112,10 +113,9 @@ void escreveHeader(FILE *file, Cabecalho *header){
 }
 
 void PreencheLixo(FILE *file){
-	char lixo[960];
-    for (int i = 0; i < PAG_DISCO; i++) lixo[i] = LIXO;
-    fwrite(lixo, sizeof(char), PAG_DISCO, file);  
-    fseek(file, 0, SEEK_SET);
+	char lixo[PAG_DISCO - 21];
+    for (int i = 0; i < PAG_DISCO - 21; i++) lixo[i] = LIXO;
+    fwrite(lixo, sizeof(lixo), 1, file);  
 }
 
 void resetaRegistro(Registro *Register){
@@ -161,7 +161,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     }
     if (i > 0) {
         Register->nomePoPs[i] = '\0';
-        Register->campoVazio[j] = 0;;
+        Register->campoVazio[j] = 0;
     }
 
     j++;
@@ -174,7 +174,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     } 
     if (i > 0){
         Register->nomePais[i] = '\0';
-        Register->campoVazio[j] = 0;;
+        Register->campoVazio[j] = 0;
     }
 
     j++;
@@ -187,7 +187,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     }
     if (i > 0) {
         Register->siglaPais[i] = '\0';
-        Register->campoVazio[j] = 0;;
+        Register->campoVazio[j] = 0;
     }
 
     j++;
@@ -201,7 +201,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     if(i > 0){
         aux2[i] = '\0';
         Register->idPoPsConectado = atoi(aux2);
-        Register->campoVazio[j] = 0;;
+        Register->campoVazio[j] = 0;
     }
 
     j++;
@@ -214,7 +214,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     }
     if(i > 0){
         Register->unidadeMedida = aux2[0];
-        Register->campoVazio[j] = 0;;
+        Register->campoVazio[j] = 0;
     }
 
     j++;
@@ -228,7 +228,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     if(i > 0) {
         aux2[i] = '\0';
         Register->velocidade = atoi(aux2);
-        Register->campoVazio[j] = 0;;
+        Register->campoVazio[j] = 0;
     }
 
     
@@ -245,18 +245,28 @@ void ImprimeRegistro(Registro *Register){
     printf("\n");
 }
 
-void TransfereDados(FILE *file_in, FILE *file_out){
+void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho *header){
     while(fgetc(file_in) != '\n');
     Registro *Register = malloc(sizeof(Registro)); 
     while (LeRegistro(file_in, Register)){
         EscreveRegistro(file_out, Register);
-        ImprimeRegistro(Register);
-    }    
+        //ImprimeRegistro(Register);
+    }
+	header->nroPagDisco = (int) get_num_pag(file_out) / PAG_DISCO;
+	header->status = 1;
     free(Register);
 }
 
+int get_num_pag(FILE *arq){
+    long counter = 0;
+    char temp[1]; 
+    while(fread(temp, 1, 1, arq)) counter++;  // conta um por um dos caracteres ate o final
+    return counter / PAG_DISCO;
+}
+
+
 void EscreveRegistro(FILE *file, Registro *Register){
-	int bytes_ocupados = 21 + strlen(Register->nomePoPs) + strlen(Register->nomePais);
+	int bytes_ocupados = 22 + strlen(Register->nomePoPs) + strlen(Register->nomePais);
 
     	fwrite(&Register->removido, sizeof(char), 1, file);
     	fwrite(&Register->encadeamento, sizeof(int), 1, file);

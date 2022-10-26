@@ -30,8 +30,9 @@ int main(int argv, char *argc[]){
             printf("Falha no processamento do arquivo\n");
             break;
         }
+		header->status = 0;
+        TransfereDados(file_in, file_out, header);
         CriaHeader(file_out, header);
-        TransfereDados(file_in, file_out);
 
     	fclose(file_out);
 
@@ -150,6 +151,7 @@ int main(int argv, char *argc[]){
     free(header);
     fclose(file_in);
 
-	binarioNaTela("topologiaRede.bin");
+	binarioNaTela(arq_saida);
+	//binarioNaTela("topologiaRede2.bin");
 
 }

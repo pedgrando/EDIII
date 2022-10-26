@@ -5,7 +5,7 @@
 #include<stdlib.h>
 
 #define PAG_DISCO 960
-#define CAB 20
+#define CAB 21
 #define DEL '|'
 #define LIXO '$'
 #define REM '*'
@@ -72,7 +72,9 @@ void PreencheLixo(FILE *file);
 
 int LeRegistro(FILE *file_in, Registro *Register);
 
-void TransfereDados(FILE *file_in, FILE *file_out);
+int get_num_pag(FILE *arq);
+
+void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho* cabecalho);
 
 void EscreveRegistro(FILE *file_out, Registro *Register);
 
