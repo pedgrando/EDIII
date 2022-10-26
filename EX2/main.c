@@ -36,7 +36,7 @@ int main(int argv, char *argc[]){
         CriaHeader(file_out, header);
 
     	fclose(file_out);
-
+		binarioNaTela(arq_saida);
 
         break;
     case 2:
@@ -152,7 +152,6 @@ int main(int argv, char *argc[]){
     free(header);
     fclose(file_in);
 
-	binarioNaTela(arq_saida);
 	//binarioNaTela("topologiaRede2.bin");
 
 }

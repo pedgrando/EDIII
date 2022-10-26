@@ -238,9 +238,9 @@ int LeRegistro(FILE *file_in, Registro *Register){
  
 void ImprimeRegistro(Registro *Register){
     if(!Register->campoVazio[0]) printf("Identificador do ponto: %d\n", Register->idConecta);
-    if(!Register->campoVazio[1]) printf("Nome do Ponto: %s\n", Register->nomePoPs);
+    if(!Register->campoVazio[1]) printf("Nome do ponto: %s\n", Register->nomePoPs);
     if(!Register->campoVazio[2]) printf("Pais de localizacao: %s\n", Register->nomePais);
-    if(!Register->campoVazio[3]) printf("Sigla do Pais: %c%c\n", Register->siglaPais[0], Register->siglaPais[1]);
+    if(!Register->campoVazio[3]) printf("Sigla do pais: %c%c\n", Register->siglaPais[0], Register->siglaPais[1]);
     if(!Register->campoVazio[4]) printf("Identificador do ponto conectado: %d\n", Register->idPoPsConectado);
     if(!Register->campoVazio[5] && !Register->campoVazio[6]) printf("Velocidade de transmissao: %d %cbps\n", Register->velocidade, Register->unidadeMedida);
     printf("\n");
@@ -252,6 +252,7 @@ void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho *header){
     while (LeRegistro(file_in, Register)){
         EscreveRegistro(file_out, Register);
         //ImprimeRegistro(Register);
+		header->proxRRN++;
     }
 	header->nroPagDisco = (int) get_num_pag(file_out) / PAG_DISCO;
 	header->status = '1';
@@ -319,6 +320,12 @@ void imprime_arq(FILE *arq_entrada){
 	Registro *Register = malloc(sizeof(Registro));
 	Cabecalho *header = getHeader(arq_entrada);
 
+	if(header->status == '0'){
+		printf("Falha no processamento do arquivo.\n");
+		free(Register);
+		return;
+	}
+
 	int tem_registro = 0;
 
 	fseek(arq_entrada, 960, SEEK_SET);
@@ -343,10 +350,9 @@ void imprime_arq(FILE *arq_entrada){
 	}
 
 	if(!tem_registro){
-		printf("Registro inexistente.\n");
-	} else{
-		imprime_pag_disco(header);
+		printf("Registro inexistente.\n\n");
 	}
+	imprime_pag_disco(header);
 }
 
 
@@ -453,7 +459,7 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fu
 }
 
 void imprime_pag_disco(Cabecalho *header){
-	printf("Numero de paginas de disco: %d", header->nroPagDisco);
+	printf("Numero de paginas de disco: %d\n\n", header->nroPagDisco);
 }
 
 
