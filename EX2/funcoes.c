@@ -161,7 +161,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
         i++;
     }
     if (i > 0) {
-        Register->nomePoPs[i] = '\0';
+		while(Register->nomePoPs[i] == ' ' ) Register->nomePoPs[i--] = '\0';
         Register->campoVazio[j] = 0;
     }
 
@@ -174,8 +174,8 @@ int LeRegistro(FILE *file_in, Registro *Register){
         i++;
     } 
     if (i > 0){
-        Register->nomePais[i] = '\0';
-        Register->campoVazio[j] = 0;
+		while(Register->nomePais[i] == ' ' ) Register->nomePais[i--] = '\0';
+		Register->campoVazio[j] = 0;
     }
 
     j++;
