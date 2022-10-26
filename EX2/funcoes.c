@@ -24,7 +24,7 @@
 
 Cabecalho InicializaStructCabecalho(){
     Cabecalho aux;
-    aux.status = 0;
+    aux.status = '0';
     aux.topo = -1;
     aux.proxRRN = 0;
     aux.nroRegRem = 0;
@@ -101,6 +101,7 @@ void CriaHeader(FILE *file, Cabecalho *header){
 	fseek(file, 0, SEEK_SET);
     escreveHeader(file, header);
 	PreencheLixo(file);
+	fseek(file, 0, SEEK_END);
 }
 
 void escreveHeader(FILE *file, Cabecalho *header){
@@ -253,7 +254,7 @@ void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho *header){
         //ImprimeRegistro(Register);
     }
 	header->nroPagDisco = (int) get_num_pag(file_out) / PAG_DISCO;
-	header->status = 1;
+	header->status = '1';
     free(Register);
 }
 
