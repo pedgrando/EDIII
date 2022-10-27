@@ -185,7 +185,6 @@ int LeRegistro(FILE *file_in, Registro *Register){
         if (aux == ',') break;
         Register->siglaPais[i] = aux;
         i++;
-		/teste em
     }
     if (i > 0) {
         Register->siglaPais[i] = '\0';
