@@ -27,7 +27,7 @@ int main(int argv, char *argc[]){
     	scanf("%s %s", arq_entrada, arq_saida);
 
         if(!(file_out = fopen(arq_saida, "wb")) || !(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            printf("Falha no processamento do arquivo.\n");
             break;
         }
 		header->status = 0;
@@ -36,6 +36,8 @@ int main(int argv, char *argc[]){
         CriaHeader(file_out, header);
 
     	fclose(file_out);
+	    fclose(file_in);
+
 		binarioNaTela(arq_saida);
 
         break;
@@ -47,11 +49,12 @@ int main(int argv, char *argc[]){
 	scanf("%s", arq_entrada);
 
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            printf("Falha no processamento do arquivo.\n");
             break;
         }
 
-	imprime_arq(file_in);
+		imprime_arq(file_in);
+	    fclose(file_in);
 
 	break;
     case 3:
@@ -61,7 +64,7 @@ int main(int argv, char *argc[]){
 
 	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            printf("Falha no processamento do arquivo.\n");
             break;
         }
 	scanf("%d", &n);
@@ -84,6 +87,8 @@ int main(int argv, char *argc[]){
 		buscaRegistro(file_in, hash_campo, valorCampo, CONSULTA);
 		 
 	}
+	fclose(file_in);
+	
 
 	break;
     case 4:
@@ -91,12 +96,12 @@ int main(int argv, char *argc[]){
 	// FUNCIONALIDADE 4
 	// remove logicamente n registros ---------------------------------------------------------------------------------------------------
 
-	scanf("%s", arq_entrada);
+		scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            printf("Falha no processamento do arquivo.\n");
             break;
         }
-	scanf("%d", &n);
+		scanf("%d", &n);
 
 	// realiza as n remocoes
 	for(int i = 0; i < n; i++){
@@ -112,6 +117,7 @@ int main(int argv, char *argc[]){
 
 		buscaRegistro(file_in, hash_campo, valorCampo, REMOCAO);
 	}
+	fclose(file_in);
 
 	break;
     case 5:
@@ -120,7 +126,7 @@ int main(int argv, char *argc[]){
 
 	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            printf("Falha no processamento do arquivo.\n");
             break;
         }
 	scanf("%d", &n);
@@ -129,6 +135,7 @@ int main(int argv, char *argc[]){
 	for(int i = 0; i < n; i++){
 	
 	}
+	fclose(file_in);
 
 	break;
     case 6:
@@ -138,10 +145,17 @@ int main(int argv, char *argc[]){
 
 	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            printf("Falha no processamento do arquivo.\n");
             break;
         }
-        CompactaArquivo(file_in);
+		
+		binarioNaTela(arq_entrada);
+
+        CompactaArquivo(file_in, header);
+		fclose(file_in);
+
+		binarioNaTela(arq_entrada);
+		
 
 	break;	
 
@@ -150,7 +164,6 @@ int main(int argv, char *argc[]){
     }
 
     free(header);
-    fclose(file_in);
 
 	//binarioNaTela("topologiaRede2.bin");
 

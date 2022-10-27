@@ -2,7 +2,7 @@
 #define __FUNCOES_H__
 
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 
 #define PAG_DISCO 960
 #define CAB 21
@@ -10,6 +10,20 @@
 #define LIXO '$'
 #define REM '*'
 
+#define IDCONECTA 906
+#define SIGLAPAIS 925
+#define IDPOPSCONECTADO 1503
+#define UNIDADEMEDIDA 1310
+#define VELOCIDADE 1040
+#define NOMEPOPS 817
+#define NOMEPAIS 828
+
+#define BYTEOFFSET_IDCONECTA 5
+#define BYTEOFFSET_SIGLAPAIS 9
+#define BYTEOFFSET_IDPOPSCONECTADO 11
+#define BYTEOFFSET_UNIDADEMEDIDA 15
+#define BYTEOFFSET_VELOCIDADE 16
+#define BYTEOFFSET_VARIAVEIS 20
 
 // CODIGO HASH DOS CAMPOS
 
@@ -54,7 +68,7 @@ typedef struct registro{
 
 Cabecalho InicializaStructCabecalho();
 
-Cabecalho *getHeader(FILE* file);
+Cabecalho *LeHeaderBin(FILE* file);
 
 
 //FUNCOES FORNECIDAS 
@@ -66,21 +80,21 @@ void binarioNaTela(char *nomeArquivoBinario);
 
 void CriaHeader(FILE *arq_out, Cabecalho *header);
 
-void escreveHeader(FILE *file, Cabecalho *header);
+void EscreveHeaderBin(FILE *file, Cabecalho *header);
 
-void PreencheLixo(FILE *file);
+void PreencheLixoHeader(FILE *file);
 
 int LeRegistro(FILE *file_in, Registro *Register);
 
-int get_num_pag(FILE *arq);
+int GetNumPag(FILE *arq);
 
 void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho* cabecalho);
 
-void EscreveRegistro(FILE *file_out, Registro *Register);
+void EscreveRegistroBin(FILE *file_out, Registro *Register);
 
 int ChecaStatus(FILE *file_in);
 
-void CompactaArquivo(FILE *file_in);
+void CompactaArquivo(FILE *file_in, Cabecalho *header);
 
 void readint(FILE *arq, int *integer);
 
@@ -96,7 +110,7 @@ int campovazio_string_var(char *string);
 
 void imprime_pag_disco(Cabecalho *header);
 
-void leRegistroBin(Registro *Register, FILE *arq_entrada);
+void LeRegistroBin(Registro *Register, FILE *arq_entrada);
 
 void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int funcionalidade);
 
