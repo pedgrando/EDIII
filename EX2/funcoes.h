@@ -97,7 +97,7 @@ void imprime_pag_disco(Cabecalho *header);
 
 void leRegistroBin(Registro *Register, FILE *arq_entrada);
 
-int buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int funcionalidade, int n);
+int buscaRegistro(FILE *arq_entrada, Cabecalho *header, int campoBuscado, char *valorCampo, int funcionalidade, int n);
 
 int hashfunction(char *str);
 

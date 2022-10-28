@@ -398,11 +398,10 @@ void imprime_arq(FILE *arq_entrada){
 }
 
 
-int buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int funcionalidade, int n){
+int buscaRegistro(FILE *arq_entrada, Cabecalho *header, int campoBuscado, char *valorCampo, int funcionalidade, int n){
 
 	fseek(arq_entrada, 0 , SEEK_SET);
 
-	Cabecalho *header = getHeader(arq_entrada);
 	Registro *Register = malloc(sizeof(Registro)*1);
 
 	int rrn = 0;
@@ -519,7 +518,6 @@ int buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fun
 	}
 
 	free(Register);	
-	free(header);
 
 	return 0;
 }
@@ -647,10 +645,7 @@ void remove_registro(FILE *arq, Cabecalho *header, int rrn){
 	header->topo = rrn;
 	header->nroRegRem++;
 
-	fseek(arq, 0, SEEK_SET);
-	escreveHeader(arq, header);
-
-	fseek(arq, 960+64*rrn, SEEK_SET);
+	fseek(arq, -64, SEEK_CUR);
 
 	char lixo[59];
 
@@ -663,22 +658,22 @@ void remove_registro(FILE *arq, Cabecalho *header, int rrn){
 
 
 void separa_entrada(char *input, char *nomeCampo, char *valorCampo){
-	int i = 0, j = 0;
+	int i = 0;
+	char aux;
 
-	while(input[i] != ' '){
-		nomeCampo[i] = input[i];
+	while((aux = getchar()) != ' '){
+		nomeCampo[i] = aux;
 		i++;
 	}
 	nomeCampo[i] = '\0';
 
-	i++;  // pula a primeira aspas 
+	i = 0;  
 
-	while(input[i] != '\0'){
-		valorCampo[j] = input[i];
+	while((aux = getchar()) != EOF && isspace(aux)){
+		valorCampo[i] = aux; 
 		i++;
-		j++;	
 	}
-	valorCampo[j] = '\0';
+	valorCampo[i] = '\0';
 
 	if(valorCampo[0] == '"') 
 		remove_aspas(valorCampo);
@@ -704,6 +699,8 @@ void funcionalidade3(FILE *arq){
 	char (*valorCampo)[32] = malloc(sizeof(*valorCampo)*n);
 	int *hash_campo = malloc(sizeof(int)*n);
 
+	Cabecalho *header = NULL;
+	header = getHeader(arq);
 
 
 	for(int i = 0; i < n; i++){	
@@ -724,12 +721,13 @@ void funcionalidade3(FILE *arq){
 	int falha_de_processamento;
 
 	for(int i = 1; i < n+1; i++){
-		falha_de_processamento = buscaRegistro(arq, hash_campo[i], valorCampo[i], CONSULTA, i);
+		falha_de_processamento = buscaRegistro(arq, header, hash_campo[i], valorCampo[i], CONSULTA, i);
 
 		if(falha_de_processamento)
 			break;
 	}
 		
+	free(header);
 	free(valorCampo);
 	free(hash_campo);
 }
@@ -743,11 +741,13 @@ void funcionalidade4(FILE *arq){
 
 	char valorCampo[32];
 	int hash_campo;
+	char aux[32];
 
+	Cabecalho *header = NULL;
+	header = getHeader(arq);
 
 
 	for(int i = 0; i < n; i++){	
-		char aux[32];
 
 		scanf("%s", aux);
 
@@ -757,12 +757,15 @@ void funcionalidade4(FILE *arq){
 
 		// dentro da funcao, recebe os parametros da busca 
 		//
-		falha_de_processamento = buscaRegistro(arq, hash_campo, valorCampo, REMOCAO, 0);
+		falha_de_processamento = buscaRegistro(arq, header, hash_campo, valorCampo, REMOCAO, 0);
 
 		if(falha_de_processamento)
 			break;
 	}
+	fseek(arq, 0, SEEK_SET);
+	escreveHeader(arq, header);
 	
+	free(header);
 }
 
 void funcionalidade5(FILE *arq){
