@@ -109,7 +109,7 @@ void imprime_arq(FILE *arq_entrada);
 
 void remove_registro(FILE *arq, Cabecalho *header, int rrn);
 
-void separa_entrada(char *input, char *nomeCampo, char *valorCampo);
+void separa_entrada(char *nomeCampo, char *valorCampo);
 
 void remove_aspas(char *valorCampo);
 

@@ -125,12 +125,13 @@ void scan_quote_string(char *str) {
 	} else if(R != EOF){ // vc tá tentando ler uma string que não tá entre aspas! Fazer leitura normal %s então, pois deve ser algum inteiro ou algo assim...
 		str[0] = R;
 		int i = 1;
-		while((R = getchar()) != EOF && isspace(R)){
+		while((R = getchar()) != EOF && !isspace(R)){
 			str[i] = R;
 			i++;
 		}
-		str[i] = '\0';
-			
+		str[i] = '\n';
+		//scanf("%s", &str[1]);
+
 	} else { // EOF
 		strcpy(str, "");
 	}
@@ -657,7 +658,7 @@ void remove_registro(FILE *arq, Cabecalho *header, int rrn){
 }
 
 
-void separa_entrada(char *input, char *nomeCampo, char *valorCampo){
+void separa_entrada(char *nomeCampo, char *valorCampo){
 	int i = 0;
 	char aux;
 
@@ -720,8 +721,8 @@ void funcionalidade3(FILE *arq){
 	
 	int falha_de_processamento;
 
-	for(int i = 1; i < n+1; i++){
-		falha_de_processamento = buscaRegistro(arq, header, hash_campo[i], valorCampo[i], CONSULTA, i);
+	for(int i = 0; i < n; i++){
+		falha_de_processamento = buscaRegistro(arq, header, hash_campo[i], valorCampo[i], CONSULTA, i+1);
 
 		if(falha_de_processamento)
 			break;
@@ -769,6 +770,21 @@ void funcionalidade4(FILE *arq){
 }
 
 void funcionalidade5(FILE *arq){
+	int n;
+	
+	scanf("%d", &n);
+
+	Registro Register[n];
+
+	for(int i = 0; i < n; i++){
+		
+		leEntradaRegistro(&Register[i]);
+			
+	
+	}		
+
+
+
 }
 
 void funcionalidade6(FILE *arq){

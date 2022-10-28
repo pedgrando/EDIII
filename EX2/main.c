@@ -101,6 +101,7 @@ int main(int argv, char *argc[]){
 	funcionalidade5(file_in);
 
     	fclose(file_in);
+	binarioNaTela(arq_entrada);
 	break;
     case 6:
 
