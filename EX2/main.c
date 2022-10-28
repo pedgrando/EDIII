@@ -5,7 +5,6 @@
 
 int main(int argv, char *argc[]){
     int option;
-    int n;
     char arq_entrada[32];
     char arq_saida[32];
 
@@ -13,6 +12,8 @@ int main(int argv, char *argc[]){
 
     FILE *file_in = NULL;
     FILE *file_out = NULL;
+
+
 
     Cabecalho *header = malloc(sizeof(Cabecalho));
     *header = InicializaStructCabecalho();
@@ -36,7 +37,8 @@ int main(int argv, char *argc[]){
         CriaHeader(file_out, header);
 
     	fclose(file_out);
-		binarioNaTela(arq_saida);
+    	fclose(file_in);
+	binarioNaTela(arq_saida);
 
         break;
     case 2:
@@ -52,6 +54,7 @@ int main(int argv, char *argc[]){
         }
 
 	imprime_arq(file_in);
+    	fclose(file_in);
 
 	break;
     case 3:
@@ -64,27 +67,10 @@ int main(int argv, char *argc[]){
             printf("Falha no processamento do arquivo\n");
             break;
         }
-	scanf("%d", &n);
 
-	// executa a funcionalidade 3 n vezes
-	for(int i = 0; i < n; i++){	
+	funcionalidade3(file_in);
+    	fclose(file_in);
 		
-		char campoBuscado[30];
-		char valorCampo[30];
-
-		readline(campoBuscado);
-		readline(valorCampo);
-
-		tira_aspas(valorCampo);
-
-		int hash_campo = hashfunction(campoBuscado);
-
-		// dentro da funcao, recebe os parametros da busca 
-
-		buscaRegistro(file_in, hash_campo, valorCampo, CONSULTA);
-		 
-	}
-
 	break;
     case 4:
 
@@ -96,22 +82,10 @@ int main(int argv, char *argc[]){
             printf("Falha no processamento do arquivo\n");
             break;
         }
-	scanf("%d", &n);
-
-	// realiza as n remocoes
-	for(int i = 0; i < n; i++){
-
-		char campoBuscado[30];
-		char valorCampo[30];
-
-		readline(campoBuscado);
-		readline(valorCampo);
-			
-		int hash_campo = hashfunction(campoBuscado);
-	
-
-		buscaRegistro(file_in, hash_campo, valorCampo, REMOCAO);
-	}
+		
+	funcionalidade4(file_in);
+    	fclose(file_in);
+	binarioNaTela(arq_entrada);
 
 	break;
     case 5:
@@ -123,13 +97,10 @@ int main(int argv, char *argc[]){
             printf("Falha no processamento do arquivo\n");
             break;
         }
-	scanf("%d", &n);
 
-	// realiza as n inserções
-	for(int i = 0; i < n; i++){
-	
-	}
+	funcionalidade5(file_in);
 
+    	fclose(file_in);
 	break;
     case 6:
 
@@ -141,8 +112,10 @@ int main(int argv, char *argc[]){
             printf("Falha no processamento do arquivo\n");
             break;
         }
-        CompactaArquivo(file_in);
 
+	funcionalidade6(file_in);
+
+    	fclose(file_in);
 	break;	
 
     default:
@@ -150,8 +123,5 @@ int main(int argv, char *argc[]){
     }
 
     free(header);
-    fclose(file_in);
-
-	//binarioNaTela("topologiaRede2.bin");
 
 }

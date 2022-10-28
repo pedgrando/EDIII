@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "funcoes.h"
 
@@ -94,6 +95,47 @@ void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o 
 	fclose(fs);
 }
 
+void scan_quote_string(char *str) {
+
+	/*
+	*	Use essa função para ler um campo string delimitado entre aspas (").
+	*	Chame ela na hora que for ler tal campo. Por exemplo:
+	*
+	*	A entrada está da seguinte forma:
+	*		nomeDoCampo "MARIA DA SILVA"
+	*
+	*	Para ler isso para as strings já alocadas str1 e str2 do seu programa, você faz:
+	*		scanf("%s", str1); // Vai salvar nomeDoCampo em str1
+	*		scan_quote_string(str2); // Vai salvar MARIA DA SILVA em str2 (sem as aspas)
+	*
+	*/
+
+	char R;
+
+	while((R = getchar()) != EOF && isspace(R)); // ignorar espaços, \r, \n...
+
+	if(R == 'N' || R == 'n') { // campo NULO
+		getchar(); getchar(); getchar(); // ignorar o "ULO" de NULO.
+		strcpy(str, ""); // copia string vazia
+	} else if(R == '\"') {
+		if(scanf("%[^\"]", str) != 1) { // ler até o fechamento das aspas
+			strcpy(str, "");
+		}
+		getchar(); // ignorar aspas fechando
+	} else if(R != EOF){ // vc tá tentando ler uma string que não tá entre aspas! Fazer leitura normal %s então, pois deve ser algum inteiro ou algo assim...
+		str[0] = R;
+		int i = 1;
+		while((R = getchar()) != EOF && isspace(R)){
+			str[i] = R;
+			i++;
+		}
+		str[i] = '\0';
+			
+	} else { // EOF
+		strcpy(str, "");
+	}
+}
+
 //FUNCOES DE MANIPULAÇÃO DE ARQUIVOS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -185,7 +227,6 @@ int LeRegistro(FILE *file_in, Registro *Register){
         if (aux == ',') break;
         Register->siglaPais[i] = aux;
         i++;
-		/teste em
     }
     if (i > 0) {
         Register->siglaPais[i] = '\0';
@@ -357,17 +398,24 @@ void imprime_arq(FILE *arq_entrada){
 }
 
 
-void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int funcionalidade){
+int buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int funcionalidade, int n){
+
+	fseek(arq_entrada, 0 , SEEK_SET);
+
 	Cabecalho *header = getHeader(arq_entrada);
 	Registro *Register = malloc(sizeof(Registro)*1);
+
 	int rrn = 0;
+	int encontrou_reg = 0;
 	
 	if(header->status == '0'){
 		printf("Falha no processamento do arquivo.\n");
-		return;
+		return 1;
 	}
+
+	if( n != 0) printf("Busca %d\n", n);
 	
-	fseek(arq_entrada, 939, SEEK_SET); // pula o registro de cabecalho
+	fseek(arq_entrada, 960, SEEK_SET); // pula o registro de cabecalho
 
 	while(fread(&Register->removido, sizeof(char), 1, arq_entrada) != 0){
 
@@ -382,6 +430,7 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fu
 			switch(campoBuscado){
 				case IDCONECTA:
 					if(atoi(valorCampo) == Register->idConecta){
+						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
 						} else {
@@ -391,7 +440,8 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fu
 					}
 					break;
 				case SIGLAPAIS:
-					if(atoi(valorCampo) == Register->idConecta){
+					if(valorCampo[0] == Register->siglaPais[0] && valorCampo[1] == Register->siglaPais[1]){
+						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
 						} else {
@@ -401,7 +451,8 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fu
 					}
 					break;
 				case IDPOPSCONECTADO:
-					if(atoi(valorCampo) == Register->idConecta){
+					if(atoi(valorCampo) == Register->idPoPsConectado){
+						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
 						} else {
@@ -411,7 +462,8 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fu
 					}
 					break;
 				case UNIDADEMEDIDA:
-					if(atoi(valorCampo) == Register->idConecta){
+					if(valorCampo[0] == Register->unidadeMedida){
+						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
 						} else {
@@ -421,7 +473,8 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fu
 					}
 					break;
 				case VELOCIDADE:
-					if(atoi(valorCampo) == Register->idConecta){
+					if(atoi(valorCampo) == Register->velocidade){
+						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
 						} else {
@@ -431,7 +484,8 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fu
 					}
 					break;
 				case NOMEPOPS:
-					if(atoi(valorCampo) == Register->idConecta){
+					if(!strcmp(valorCampo, Register->nomePoPs)){
+						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
 						} else {
@@ -441,7 +495,8 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fu
 					}
 					break;
 				case NOMEPAIS:
-					if(atoi(valorCampo) == Register->idConecta){
+					if(!strcmp(valorCampo, Register->nomePais)){
+						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
 						} else {
@@ -455,8 +510,18 @@ void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int fu
 		}
 		rrn++;
 	}
+
+	if(!encontrou_reg && funcionalidade)
+		printf("Registro inexistente.\n\n");
+
+	if(funcionalidade){
+		imprime_pag_disco(header);
+	}
+
 	free(Register);	
 	free(header);
+
+	return 0;
 }
 
 void imprime_pag_disco(Cabecalho *header){
@@ -597,14 +662,130 @@ void remove_registro(FILE *arq, Cabecalho *header, int rrn){
 }
 
 
-void tira_aspas(char *str){
-	int i = 1;
-	while(str[i] != '"'){
-		str[i-1] = str[i];
+void separa_entrada(char *input, char *nomeCampo, char *valorCampo){
+	int i = 0, j = 0;
+
+	while(input[i] != ' '){
+		nomeCampo[i] = input[i];
 		i++;
 	}
-	str[i] = '\0';
+	nomeCampo[i] = '\0';
+
+	i++;  // pula a primeira aspas 
+
+	while(input[i] != '\0'){
+		valorCampo[j] = input[i];
+		i++;
+		j++;	
+	}
+	valorCampo[j] = '\0';
+
+	if(valorCampo[0] == '"') 
+		remove_aspas(valorCampo);
+
 }
+
+void remove_aspas(char *valorCampo){
+	int i = 1;
+	while(valorCampo[i] != '"'){
+		valorCampo[i-1] = valorCampo[i];
+		i++;
+	}
+	valorCampo[i-1] = '\0';
+
+}
+
+
+void funcionalidade3(FILE *arq){
+	int n;
+
+	scanf("%d", &n);
+
+	char (*valorCampo)[32] = malloc(sizeof(*valorCampo)*n);
+	int *hash_campo = malloc(sizeof(int)*n);
+
+
+
+	for(int i = 0; i < n; i++){	
+		char aux[32];
+
+		scanf("%s", aux);
+
+		scan_quote_string(valorCampo[i]);
+
+
+		hash_campo[i] = hashfunction(aux);
+
+		// dentro da funcao, recebe os parametros da busca 
+
+
+	}
+	
+	int falha_de_processamento;
+
+	for(int i = 1; i < n+1; i++){
+		falha_de_processamento = buscaRegistro(arq, hash_campo[i], valorCampo[i], CONSULTA, i);
+
+		if(falha_de_processamento)
+			break;
+	}
+		
+	free(valorCampo);
+	free(hash_campo);
+}
+
+
+void funcionalidade4(FILE *arq){
+	int n;
+	int falha_de_processamento;
+
+	scanf("%d", &n);
+
+	char valorCampo[32];
+	int hash_campo;
+
+
+
+	for(int i = 0; i < n; i++){	
+		char aux[32];
+
+		scanf("%s", aux);
+
+		scan_quote_string(valorCampo);
+
+		hash_campo = hashfunction(aux);
+
+		// dentro da funcao, recebe os parametros da busca 
+		//
+		falha_de_processamento = buscaRegistro(arq, hash_campo, valorCampo, REMOCAO, 0);
+
+		if(falha_de_processamento)
+			break;
+	}
+	
+}
+
+void funcionalidade5(FILE *arq){
+}
+
+void funcionalidade6(FILE *arq){
+        CompactaArquivo(arq);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

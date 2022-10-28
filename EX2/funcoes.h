@@ -54,8 +54,7 @@ typedef struct registro{
 
 Cabecalho InicializaStructCabecalho();
 
-Cabecalho *getHeader(FILE* file);
-
+Cabecalho *getHeader(FILE *arq);
 
 //FUNCOES FORNECIDAS 
 
@@ -98,7 +97,7 @@ void imprime_pag_disco(Cabecalho *header);
 
 void leRegistroBin(Registro *Register, FILE *arq_entrada);
 
-void buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int funcionalidade);
+int buscaRegistro(FILE *arq_entrada, int campoBuscado, char *valorCampo, int funcionalidade, int n);
 
 int hashfunction(char *str);
 
@@ -110,12 +109,17 @@ void imprime_arq(FILE *arq_entrada);
 
 void remove_registro(FILE *arq, Cabecalho *header, int rrn);
 
-void tira_aspas(char *str);
+void separa_entrada(char *input, char *nomeCampo, char *valorCampo);
 
+void remove_aspas(char *valorCampo);
 
+void funcionalidade3(FILE *arq);
 
+void funcionalidade4(FILE *arq);
 
+void funcionalidade5(FILE *arq);
 
+void funcionalidade6(FILE *arq);
 
 
 
