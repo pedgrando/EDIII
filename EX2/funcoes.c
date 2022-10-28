@@ -627,19 +627,6 @@ int hashfunction(char *str){
 }
 
 
-int compara_str(char *str1, char *str2){
-	int i = 0;
-	if(str1[0] == str2[0] && strlen(str2) == 1) return 0; // pega o caso de um só caracter
-	while(str1[i] != '\0' && str2[i] != '\0'){
-		if(str1[i] != str2[i]){
-			return 1;
-		}
-		i++;
-	}
-	return 0;
-}
-
-
 void remove_registro(FILE *arq, Cabecalho *header, int rrn){
 	int topo = header->topo;
 
@@ -658,38 +645,6 @@ void remove_registro(FILE *arq, Cabecalho *header, int rrn){
 }
 
 
-void separa_entrada(char *nomeCampo, char *valorCampo){
-	int i = 0;
-	char aux;
-
-	while((aux = getchar()) != ' '){
-		nomeCampo[i] = aux;
-		i++;
-	}
-	nomeCampo[i] = '\0';
-
-	i = 0;  
-
-	while((aux = getchar()) != EOF && isspace(aux)){
-		valorCampo[i] = aux; 
-		i++;
-	}
-	valorCampo[i] = '\0';
-
-	if(valorCampo[0] == '"') 
-		remove_aspas(valorCampo);
-
-}
-
-void remove_aspas(char *valorCampo){
-	int i = 1;
-	while(valorCampo[i] != '"'){
-		valorCampo[i-1] = valorCampo[i];
-		i++;
-	}
-	valorCampo[i-1] = '\0';
-
-}
 
 
 void funcionalidade3(FILE *arq){
@@ -771,19 +726,31 @@ void funcionalidade4(FILE *arq){
 
 void funcionalidade5(FILE *arq){
 	int n;
+
+	Cabecalho *header = getHeader(arq);
 	
 	scanf("%d", &n);
+
+	if(header->status == '0'){
+		printf("Falha no processamento do arquivo.\n");
+	}
 
 	Registro Register[n];
 
 	for(int i = 0; i < n; i++){
 		
 		leEntradaRegistro(&Register[i]);
-			
+
+				
+		insereRegistro(arq, &Register[i], header);
 	
 	}		
 
+	fseek(arq, 0, SEEK_SET);
 
+	escreveHeader(arq, header);
+
+	free(header);
 
 }
 
@@ -792,13 +759,67 @@ void funcionalidade6(FILE *arq){
 }
 
 
+void leEntradaRegistro(Registro *Register){
+	resetaRegistro(Register);
+
+	char aux[64];
+	
+	scanf("%d", &Register->idConecta);
+	
+	scan_quote_string(aux);
+	if(strcmp(aux, "")){
+		strcpy(Register->nomePoPs, aux);
+	}
+
+	scan_quote_string(aux);
+	if(strcmp(aux, "")){
+		strcpy(Register->nomePais, aux);
+	}
+
+	scan_quote_string(aux);
+	if(strcmp(aux, "")){
+		strcpy(Register->siglaPais, aux);
+	}
+
+	scan_quote_string(aux);
+	if(strcmp(aux, "")){
+		Register->idPoPsConectado = atoi(aux);
+	}
+
+	scan_quote_string(aux);
+	if(strcmp(aux, "")){
+		Register->unidadeMedida = aux[0];
+	}
+
+	scan_quote_string(aux);
+	if(strcmp(aux, "")){
+		Register->velocidade = atoi(aux);
+	}
+
+}
 
 
+void insereRegistro(FILE *arq, Registro *Register, Cabecalho *header){
 
 
+	if(header->topo == -1){
+		fseek(arq, 960+64*(header->proxRRN), SEEK_SET);
+		(header->proxRRN)++;
 
+	} else {
+		int novo_topo;
+		fseek(arq, 961+64*(header->topo), SEEK_SET);
+		
+		fread(&novo_topo, sizeof(int), 1, arq);
+		header->topo = novo_topo;	
 
+		fseek(arq, -5, SEEK_CUR);
+		(header->nroRegRem)--;
+	}
 
+	EscreveRegistro(arq, Register);
+
+}
 
 
 

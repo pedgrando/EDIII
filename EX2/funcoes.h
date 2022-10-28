@@ -101,17 +101,11 @@ int buscaRegistro(FILE *arq_entrada, Cabecalho *header, int campoBuscado, char *
 
 int hashfunction(char *str);
 
-int compara_str(char *str1, char *str2);
-
 int procura_valor(char *valorCampo, int tipo, int tamanho_campo, int byteoffset, FILE *arq);
 
 void imprime_arq(FILE *arq_entrada);
 
 void remove_registro(FILE *arq, Cabecalho *header, int rrn);
-
-void separa_entrada(char *nomeCampo, char *valorCampo);
-
-void remove_aspas(char *valorCampo);
 
 void funcionalidade3(FILE *arq);
 
@@ -121,7 +115,9 @@ void funcionalidade5(FILE *arq);
 
 void funcionalidade6(FILE *arq);
 
+void leEntradaRegistro(Registro *Register);
 
+void insereRegistro(FILE *arq, Registro *Register, Cabecalho *header);
 
 
 

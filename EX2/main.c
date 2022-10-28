@@ -117,6 +117,7 @@ int main(int argv, char *argc[]){
 	funcionalidade6(file_in);
 
     	fclose(file_in);
+	binarioNaTela(arq_entrada);
 	break;	
 
     default:
