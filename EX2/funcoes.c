@@ -343,22 +343,21 @@ void CompactaArquivo(FILE* arq_entrada){
 	int i = 0;
 
     fseek(arq_entrada, 960, SEEK_SET);
-    while(!feof(arq_entrada)) {                  //MUDAR SEEK END
-		while(fread(&Register[i]->removido, sizeof(char), 1, arq_entrada) != 0){
-			if(Register[i]->removido == '1'){
+	while(fread(&Register[i]->removido, sizeof(char), 1, arq_entrada) != 0){
+		if(Register[i]->removido == '1'){
 
-				fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
+			fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
 
-			} else {
+		} else {
 
-				Register[i]->removido = 0;
-				leRegistroBin(Register[i], arq_entrada);
-				i++;
-				header->nroRegRem--;
-				header->proxRRN--;
-			}
+			Register[i]->removido = 0;
+			leRegistroBin(Register[i], arq_entrada);
+			i++;
+			header->nroRegRem--;
+			header->proxRRN--;
+			
 		}
-    }
+	}
 
 	fclose(arq_entrada);
 	fopen(arq_entrada, "w+b");
