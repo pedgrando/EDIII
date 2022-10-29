@@ -331,32 +331,51 @@ void EscreveRegistro(FILE *file, Registro *Register){
     
 }
     
-      
-void CompactaArquivo(FILE* origem){
-    FILE *aux = fopen("aux.bin", "wb");
-    char linha[64];                                          
+void CompactaArquivo(FILE* arq_entrada){                  
         
-    Cabecalho *header = malloc(sizeof(Cabecalho));
-    *header = InicializaStructCabecalho();
-    CriaHeader(aux, header);
+    Cabecalho *header = getHeader(arq_entrada);
 
-    fseek(origem, 960, SEEK_SET);
-    while(!feof(origem)) {                  //MUDAR SEEK END
+	//Registro Register[header->proxRRN - header->nroRegRem];
 
-        fread (linha, sizeof(char), 64, origem);
-        if(linha[0] == '0'){                                      //NUM SEI SE FUNCIONA 
-            fwrite(linha, sizeof(char), 64, aux);
-        }
+	Registro **Register = malloc(sizeof(Registro));
+	for (int i = 0; i < header->proxRRN - header->nroRegRem - 1; i++) Register = realloc(Register, sizeof(Registro));
 
+	int i = 0;
+
+    fseek(arq_entrada, 960, SEEK_SET);
+    while(!feof(arq_entrada)) {                  //MUDAR SEEK END
+		while(fread(&Register[i]->removido, sizeof(char), 1, arq_entrada) != 0){
+			if(Register[i]->removido == '1'){
+
+				fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
+
+			} else {
+
+				Register[i]->removido = 0;
+				leRegistroBin(Register[i], arq_entrada);
+				i++;
+				header->nroRegRem--;
+				header->proxRRN--;
+			}
+		}
     }
 
-    //binarioNaTela("aux.bin");
+	fclose(arq_entrada);
+	fopen(arq_entrada, "w+b");
+	fseek(arq_entrada, 960, SEEK_SET);
+	for (int i = 0; i < header->proxRRN - header->nroRegRem; i++){
+		EscreveRegistro(arq_entrada, Register[i]);
+	}
 
-    origem = aux;
+	header->topo = -1;
+	header->qttCompacta++;
+	header->nroPagDisco = get_num_pag(arq_entrada);
+	fseek(arq_entrada, 0, SEEK_SET);
+	CriaHeader(arq_entrada, header);
+
     free(header);
-    fclose(aux);
-    
 }
+
 
 
 // FUNCOES PARA EXTRAIR OS DADOS BINARIOS
