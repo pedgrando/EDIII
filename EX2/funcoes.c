@@ -330,7 +330,7 @@ void EscreveRegistro(FILE *file, Registro *Register){
 	}
     
 }
-
+    
 void CompactaArquivo(FILE* origem){
     FILE *aux = fopen("aux.bin", "wb");
     char linha[64];                                          
@@ -356,6 +356,7 @@ void CompactaArquivo(FILE* origem){
     fclose(aux);
     
 }
+
 
 // FUNCOES PARA EXTRAIR OS DADOS BINARIOS
 
