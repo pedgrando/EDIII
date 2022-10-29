@@ -331,6 +331,7 @@ void EscreveRegistro(FILE *file, Registro *Register){
     
 }
     
+      
 void CompactaArquivo(FILE* origem){
     FILE *aux = fopen("aux.bin", "wb");
     char linha[64];                                          
