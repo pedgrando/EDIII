@@ -364,7 +364,7 @@ void imprime_arq(FILE *arq_entrada){
 	Cabecalho *header = getHeader(arq_entrada);
 
 	if(header->status == '0'){
-		printf("Falha no processamento do arquivo.\n");
+		PrintarErro();
 		free(Register);
 		return;
 	}
@@ -409,7 +409,7 @@ int buscaRegistro(FILE *arq_entrada, Cabecalho *header, int campoBuscado, char *
 	int encontrou_reg = 0;
 	
 	if(header->status == '0'){
-		printf("Falha no processamento do arquivo.\n");
+		PrintarErro();
 		return 1;
 	}
 
@@ -731,11 +731,15 @@ void funcionalidade5(FILE *arq){
 	
 	scanf("%d", &n);
 
-	if(header->status == '0'){
-		printf("Falha no processamento do arquivo.\n");
+	if(header->status == '0'){		
+		PrintarErro();
 	}
 
-	Registro Register[n];
+
+	//Registro Register[n];
+
+	Registro *Register = malloc(sizeof(Registro));
+	for(int i = 0; i < n - 1; i++) Register = realloc(Register, sizeof(Registro));
 
 	for(int i = 0; i < n; i++){
 		
@@ -755,7 +759,7 @@ void funcionalidade5(FILE *arq){
 }
 
 void funcionalidade6(FILE *arq){
-        CompactaArquivo(arq);
+	CompactaArquivo(arq);
 }
 
 
@@ -821,6 +825,9 @@ void insereRegistro(FILE *arq, Registro *Register, Cabecalho *header){
 
 }
 
+void PrintarErro(){
+	printf("Falha no processamento do arquivo.\n");
+}
 
 
 

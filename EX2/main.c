@@ -28,7 +28,7 @@ int main(int argv, char *argc[]){
     	scanf("%s %s", arq_entrada, arq_saida);
 
         if(!(file_out = fopen(arq_saida, "wb")) || !(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            PrintarErro();
             break;
         }
 		header->status = 0;
@@ -49,7 +49,7 @@ int main(int argv, char *argc[]){
 	scanf("%s", arq_entrada);
 
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            PrintarErro();
             break;
         }
 
@@ -64,7 +64,7 @@ int main(int argv, char *argc[]){
 
 	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            PrintarErro();
             break;
         }
 
@@ -79,7 +79,7 @@ int main(int argv, char *argc[]){
 
 	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            PrintarErro();
             break;
         }
 		
@@ -94,7 +94,7 @@ int main(int argv, char *argc[]){
 
 	scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+            PrintarErro();
             break;
         }
 
@@ -109,8 +109,8 @@ int main(int argv, char *argc[]){
 	//
 
 	scanf("%s", arq_entrada);
-        if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            printf("Falha no processamento do arquivo\n");
+        if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe            
+            PrintarErro();
             break;
         }
 

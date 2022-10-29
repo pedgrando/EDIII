@@ -119,6 +119,7 @@ void leEntradaRegistro(Registro *Register);
 
 void insereRegistro(FILE *arq, Registro *Register, Cabecalho *header);
 
+void PrintarErro();
 
 
 
