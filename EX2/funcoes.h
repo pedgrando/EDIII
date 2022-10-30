@@ -107,6 +107,10 @@ void imprime_arq(FILE *arq_entrada);
 
 void remove_registro(FILE *arq, Cabecalho *header, int rrn);
 
+void funcionalidade1(FILE *file_in, FILE *file_out, Cabecalho *header);
+
+void funcionalidade2();
+
 void funcionalidade3(FILE *arq);
 
 void funcionalidade4(FILE *arq);

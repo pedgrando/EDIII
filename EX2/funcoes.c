@@ -214,7 +214,8 @@ int LeRegistro(FILE *file_in, Registro *Register){
         i++;
     }
     if (i > 0) {
-		while(Register->nomePoPs[i] == ' ' ) Register->nomePoPs[i--] = '\0';
+	    Register->nomePoPs[i] = '\0'; 
+		while(Register->nomePoPs[i-1] == ' ' ) Register->nomePoPs[--i] = '\0'; // tira espaço caso tenha no final
         Register->campoVazio[j] = 0;
     }
 
@@ -227,7 +228,8 @@ int LeRegistro(FILE *file_in, Registro *Register){
         i++;
     } 
     if (i > 0){
-		while(Register->nomePais[i] == ' ' ) Register->nomePais[i--] = '\0';
+	        Register->nomePais[i] = '\0';
+		while(Register->nomePais[i-1] == ' ' ) Register->nomePais[--i] = '\0';
 		Register->campoVazio[j] = 0;
     }
 
@@ -310,11 +312,17 @@ void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho *header){
 
     while (LeRegistro(file_in, Register)){ 				// le um registro e ja escreve ele no arquivo binario
         EscreveRegistro(file_out, Register);
+	ImprimeRegistro(Register);
 
 	header->proxRRN++; 						// incrementa o prox RRN disponivel
     }
-	header->nroPagDisco = (int) get_num_pag(file_out) / PAG_DISCO;  // atualiza o numero de paginas de disco
+	header->nroPagDisco = get_num_pag(file_out);  // atualiza o numero de paginas de disco
+	printf("%d\n", header->nroPagDisco);
 	header->status = '1'; 						// define o status do arquivo como valido
+	
+	fseek(file_out, 0, SEEK_SET);
+	escreveHeader(file_out, header);
+
     free(Register);
 }
 
@@ -324,9 +332,15 @@ int get_num_pag(FILE *arq){
     long counter = 0;
     char temp[1]; 
 
+    fseek(arq, 0, SEEK_SET);
+
     while(fread(temp, 1, 1, arq)) counter++;  // conta um por um dos caracteres ate o final
 
-    return ceil(counter / PAG_DISCO);               // numero de paginas de disco eh 
+	if(counter % PAG_DISCO == 0){
+		return(counter / PAG_DISCO);
+	} else {
+		return ((counter / PAG_DISCO) + 1);
+	}
 }
 
 // escreve o registro da memoria primaria no arquivo binario, incluindo o lixo
@@ -504,7 +518,7 @@ void imprime_arq(FILE *arq_entrada){
 		}
 	}
 
-	if(!tem_registro){
+	if(!tem_registro){ 				// se nao tem registros
 		printf("Registro inexistente.\n\n");
 	}
 	imprime_pag_disco(header); // mostra o numero de paginas de disco
@@ -785,7 +799,10 @@ void remove_registro(FILE *arq, Cabecalho *header, int rrn){
        	fwrite(lixo, sizeof(char), 59, arq);
 }
 
-
+void funcionalidade1(FILE *file_in, FILE *file_out, Cabecalho *header){
+        CriaHeader(file_out, header);
+        TransfereDados(file_in, file_out, header);
+}
 
 
 void funcionalidade3(FILE *arq){
