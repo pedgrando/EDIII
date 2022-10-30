@@ -79,7 +79,7 @@ void EscreveRegistro(FILE *file_out, Registro *Register);
 
 int ChecaStatus(FILE *file_in);
 
-void CompactaArquivo(FILE *file_in);
+void CompactaArquivo(char *file_in);
 
 void readint(FILE *arq, int *integer);
 
@@ -113,7 +113,7 @@ void funcionalidade4(FILE *arq);
 
 void funcionalidade5(FILE *arq);
 
-void funcionalidade6(FILE *arq);
+void funcionalidade6(char *arq);
 
 void leEntradaRegistro(Registro *Register);
 

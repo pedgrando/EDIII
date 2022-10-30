@@ -109,15 +109,13 @@ int main(int argv, char *argc[]){
 	//
 
 	scanf("%s", arq_entrada);
-        if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe            
-            PrintarErro();
-            break;
-        }
 
-	funcionalidade6(file_in);
+	funcionalidade6(arq_entrada);
 
-    	fclose(file_in);
 	binarioNaTela(arq_entrada);
+
+    printf("GABARITO:");
+    binarioNaTela("binario17certo.bin");
 	break;	
 
     default:

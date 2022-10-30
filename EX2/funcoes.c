@@ -331,47 +331,57 @@ void EscreveRegistro(FILE *file, Registro *Register){
     
 }
     
-void CompactaArquivo(FILE* arq_entrada){                  
-        
-    Cabecalho *header = getHeader(arq_entrada);
+void CompactaArquivo(char* arq_entrada){    
+	FILE *file_in;              
+	if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe            
+		PrintarErro();
+		return;
+	}
+    fseek(file_in, 0, SEEK_SET);
 
-	//Registro Register[header->proxRRN - header->nroRegRem];
+    Cabecalho *header = getHeader(file_in);
 
-	Registro **Register = malloc(sizeof(Registro));
-	for (int i = 0; i < header->proxRRN - header->nroRegRem - 1; i++) Register = realloc(Register, sizeof(Registro));
+	Registro *Register[header->proxRRN - header->nroRegRem];
+
+	//Registro **Register = malloc(sizeof(Registro) * header->proxRRN - header->nroRegRem);
 
 	int i = 0;
+    fseek(file_in, 960, SEEK_SET);
+	while(fread(&Register[i]->removido, sizeof(char), 1, file_in) != 0){
 
-    fseek(arq_entrada, 960, SEEK_SET);
-	while(fread(&Register[i]->removido, sizeof(char), 1, arq_entrada) != 0){
 		if(Register[i]->removido == '1'){
 
-			fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
+			fseek(file_in, 63, SEEK_CUR); // pula registro logicamente removido
 
 		} else {
 
-			Register[i]->removido = 0;
-			leRegistroBin(Register[i], arq_entrada);
+			resetaRegistro(Register[i]);
+
+			leRegistroBin(Register[i], file_in);
+				
+			ImprimeRegistro(Register[i]);
+			
 			i++;
 			header->nroRegRem--;
 			header->proxRRN--;
-			
+					
 		}
 	}
 
-	fclose(arq_entrada);
-	fopen(arq_entrada, "w+b");
-	fseek(arq_entrada, 960, SEEK_SET);
-	for (int i = 0; i < header->proxRRN - header->nroRegRem; i++){
-		EscreveRegistro(arq_entrada, Register[i]);
+	fclose(file_in);
+	file_in = fopen(arq_entrada, "w+b");
+	fseek(file_in, 960, SEEK_SET);
+	for (int i = 0; i < header->proxRRN; i++){
+		EscreveRegistro(file_in, Register[i]);
 	}
 
 	header->topo = -1;
 	header->qttCompacta++;
-	header->nroPagDisco = get_num_pag(arq_entrada);
-	fseek(arq_entrada, 0, SEEK_SET);
-	CriaHeader(arq_entrada, header);
+	header->nroPagDisco = get_num_pag(file_in);
+	fseek(file_in, 0, SEEK_SET);
+	CriaHeader(file_in, header);
 
+	fclose(file_in);
     free(header);
 }
 
@@ -778,8 +788,9 @@ void funcionalidade5(FILE *arq){
 
 }
 
-void funcionalidade6(FILE *arq){
-	CompactaArquivo(arq);
+void funcionalidade6(char* arq_nome){
+	
+	CompactaArquivo(arq_nome);
 }
 
 
