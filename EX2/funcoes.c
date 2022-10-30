@@ -354,57 +354,112 @@ void EscreveRegistro(FILE *file, Registro *Register){
     
 // compacta o arquivo, removendo todos os registros removidos e reescrendo os registros validos sequencialmente
 
+// void CompactaArquivo(char* arq_entrada){    
+// 	FILE *file_in;              
+// 	if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe            
+// 		PrintarErro();
+// 		return;
+// 	}
+//     fseek(file_in, 0, SEEK_SET);
+
+//     Cabecalho *header = getHeader(file_in);
+
+// 	Registro *Register[header->proxRRN - header->nroRegRem];
+
+// 	//Registro **Register = malloc(sizeof(Registro) * header->proxRRN - header->nroRegRem);
+
+// 	int i = 0;
+//     fseek(file_in, 960, SEEK_SET);
+// 	while(fread(&Register[i]->removido, sizeof(char), 1, file_in) != 0){
+
+// 		if(Register[i]->removido == '1'){
+
+// 			fseek(file_in, 63, SEEK_CUR); // pula registro logicamente removido
+
+// 		} else {
+
+// 			resetaRegistro(Register[i]);
+
+// 			leRegistroBin(Register[i], file_in);
+				
+// 			ImprimeRegistro(Register[i]);
+			
+// 			i++;
+// 			header->nroRegRem--;
+// 			header->proxRRN--;
+					
+// 		}
+// 	}
+
+// 	fclose(file_in);
+// 	file_in = fopen(arq_entrada, "w+b");
+// 	fseek(file_in, 960, SEEK_SET);
+// 	for (int i = 0; i < header->proxRRN; i++){
+// 		EscreveRegistro(file_in, Register[i]);
+// 	}
+
+// 	header->topo = -1;
+// 	header->qttCompacta++;
+// 	header->nroPagDisco = get_num_pag(file_in);
+// 	fseek(file_in, 0, SEEK_SET);
+// 	CriaHeader(file_in, header);
+
+// 	fclose(file_in);
+//     free(header);
+//}
+
 void CompactaArquivo(char* arq_entrada){    
 	FILE *file_in;              
 	if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe            
 		PrintarErro();
 		return;
 	}
+
     fseek(file_in, 0, SEEK_SET);
-
     Cabecalho *header = getHeader(file_in);
+	if(header->status == 0) {    // testa se o arquivo é consistente            
+		PrintarErro();
+		return;
+	}
+	Registro *Register = malloc(sizeof(Registro));
 
-	Registro *Register[header->proxRRN - header->nroRegRem];
+	FILE *aux = fopen("aux.bin", "w+b");
+	CriaHeader(aux, header);
+    fseek(aux, 960, SEEK_SET);
 
-	//Registro **Register = malloc(sizeof(Registro) * header->proxRRN - header->nroRegRem);
-
-	int i = 0;
+	char removido;
     fseek(file_in, 960, SEEK_SET);
-	while(fread(&Register[i]->removido, sizeof(char), 1, file_in) != 0){
+	while(fread(&removido, sizeof(char), 1, file_in) != 0){
 
-		if(Register[i]->removido == '1'){
+		if(removido == '0'){
 
-			fseek(file_in, 63, SEEK_CUR); // pula registro logicamente removido
+			resetaRegistro(Register);
+
+			leRegistroBin(Register, file_in);
+				
+			ImprimeRegistro(Register);
+			
+			EscreveRegistro(aux, Register);
 
 		} else {
 
-			resetaRegistro(Register[i]);
-
-			leRegistroBin(Register[i], file_in);
-				
-			ImprimeRegistro(Register[i]);
-			
-			i++;
 			header->nroRegRem--;
 			header->proxRRN--;
-					
+			fseek(file_in, 63, SEEK_CUR); // pula registro logicamente removido
+
 		}
 	}
 
-	fclose(file_in);
-	file_in = fopen(arq_entrada, "w+b");
-	fseek(file_in, 960, SEEK_SET);
-	for (int i = 0; i < header->proxRRN; i++){
-		EscreveRegistro(file_in, Register[i]);
-	}
-
+	header->status = '1';
 	header->topo = -1;
 	header->qttCompacta++;
-	header->nroPagDisco = get_num_pag(file_in);
-	fseek(file_in, 0, SEEK_SET);
-	CriaHeader(file_in, header);
+	header->nroPagDisco = get_num_pag(aux);
+	fseek(aux, 0, SEEK_SET);
+	escreveHeader(aux, header);
 
+	fclose(aux);
 	fclose(file_in);
+	binarioNaTela("aux.bin");
     free(header);
 }
 
