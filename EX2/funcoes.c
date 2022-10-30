@@ -129,8 +129,7 @@ void scan_quote_string(char *str) {
 			str[i] = R;
 			i++;
 		}
-		str[i] = '\n';
-		//scanf("%s", &str[1]);
+		str[i] = '\0';
 
 	} else { // EOF
 		strcpy(str, "");
@@ -766,10 +765,10 @@ void funcionalidade5(FILE *arq){
 	}
 
 
-	//Registro Register[n];
+	Registro Register[n];
 
-	Registro *Register = malloc(sizeof(Registro));
-	for(int i = 0; i < n - 1; i++) Register = realloc(Register, sizeof(Registro));
+	//Registro *Register = malloc(sizeof(Registro));
+	//for(int i = 0; i < n - 1; i++) Register = realloc(Register, sizeof(Registro));
 
 	for(int i = 0; i < n; i++){
 		
