@@ -10,19 +10,6 @@
 #include "data_structures.h"
 #include "funcionalidades.h"
 
-//teste parte 2
-
-Cabecalho InicializaStructCabecalho(){
-    Cabecalho aux;
-    aux.status = '0';
-    aux.topo = -1;
-    aux.proxRRN = 0;
-    aux.nroRegRem = 0;
-    aux.nroPagDisco = 0;
-    aux.qttCompacta = 0;
-    return aux;
-}
-
 Cabecalho *getHeader(FILE *arq){
     Cabecalho *aux = malloc(sizeof(Cabecalho)*1);
     fread(&(aux->status), sizeof(char), 1, arq);
@@ -33,7 +20,6 @@ Cabecalho *getHeader(FILE *arq){
     fread((&aux->qttCompacta), sizeof(int), 1, arq);
 	return aux;
 }
-
 
 //FUNCOES FORNECIDAS
 
@@ -125,20 +111,6 @@ void scan_quote_string(char *str) {
 	}
 }
 
-//FUNCOES DE MANIPULAÇÃO DE ARQUIVOS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-// cria um header em memoria secundaria no arquvio
-//
-// escreve o header da memoria primaria no arquivo, colocando o lixo e mantendo o ponteiro do arquivo no inicio
-//
-
-void CriaHeader(FILE *file, Cabecalho *header){
-	fseek(file, 0, SEEK_SET);
-    escreveHeader(file, header);
-	PreencheLixo(file);
-	fseek(file, 0, SEEK_END);
-}
-
 // escreve os campos do header no arquivo
 
 void escreveHeader(FILE *file, Cabecalho *header){
@@ -148,28 +120,6 @@ void escreveHeader(FILE *file, Cabecalho *header){
     fwrite(&header->nroRegRem, sizeof(int), 1, file);
     fwrite(&header->nroPagDisco, sizeof(int), 1, file);
     fwrite(&header->qttCompacta, sizeof(int), 1, file);
-}
-
-// preenche o espaço restante de um header com lixo ate completar 960 bytes ( 1 pag de disco )
-
-void PreencheLixo(FILE *file){
-	char lixo[PAG_DISCO - 21];
-    for (int i = 0; i < PAG_DISCO - 21; i++) lixo[i] = LIXO;
-    fwrite(lixo, sizeof(lixo), 1, file);  
-}
-
-// volta uma variavel Registro em memoria primaria a situacao em que todos os campos sao vazios
-
-void resetaRegistro(Registro *Register){
-    for (int i = 0; i < 7; i++) Register->campoVazio[i] = 1;
-    Register->removido = '0';
-    Register->encadeamento = -1;
-    Register->nomePoPs[0] = '\0';
-    Register->nomePais[0] = '\0';
-    strcpy(Register->siglaPais, "$$\0");
-    Register->idPoPsConectado = -1;
-    Register->unidadeMedida = '$';
-    Register->velocidade = -1;
 }
 
 // le um registro de um arquivo .csv e passa para memoria primaria
@@ -297,37 +247,6 @@ void ImprimeRegistro(Registro *Register){
     printf("\n");
 }
 
-// le dados de um arquivo csv e passa para um arquivo binario
-
-void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho *header){
-    while(fgetc(file_in) != '\n'); 					// pula a primeira linha do .csv
-
-    Registro *Register = malloc(sizeof(Registro));
-
-    while (LeRegistro(file_in, Register)){ 				// le um registro e ja escreve ele no arquivo binario
-        EscreveRegistro(file_out, Register);
-
-	header->proxRRN++; 						// incrementa o prox RRN disponivel
-    }
-	header->nroPagDisco = get_num_pag(header);  // atualiza o numero de paginas de disco
-	header->status = '1'; 						// define o status do arquivo como valido
-	
-	fseek(file_out, 0, SEEK_SET);
-	escreveHeader(file_out, header);
-
-    free(Register);
-}
-
-// descobre o numero de paginas de disco do arquivo
-
-int get_num_pag(Cabecalho *header){
-	if(header->proxRRN % 15 == 0){
-		return ((header->proxRRN / 15) + 1);
-	} else {
-		return ((header->proxRRN / 15) + 2);
-	}
-}
-
 // escreve o registro da memoria primaria no arquivo binario, incluindo o lixo
 
 void EscreveRegistro(FILE *file, Registro *Register){
@@ -350,63 +269,6 @@ void EscreveRegistro(FILE *file, Registro *Register){
 	}
     
 }
-    
-// compacta o arquivo, removendo todos os registros removidos e reescrendo os registros validos sequencialmente
-
-void CompactaArquivo(FILE *file_in, char *arq_entrada){    
-
-    fseek(file_in, 0, SEEK_SET);
-    Cabecalho *header = getHeader(file_in);
-	if(header->status == '0') {    // testa se o arquivo é consistente            
-		printf("Falha no processamento do arquivo.\n");
-		return;
-	}
-	Registro *Register = malloc(sizeof(Registro));
-
-	FILE *aux = fopen("aux.bin", "w+b");
-	CriaHeader(aux, header);
-    fseek(aux, 960, SEEK_SET);
-
-	char removido;
-	fseek(file_in, 960, SEEK_SET);
-	while(fread(&removido, sizeof(char), 1, file_in) != 0){
-
-		if(removido == '0'){
-
-			resetaRegistro(Register);
-
-			leRegistroBin(Register, file_in);
-				
-			EscreveRegistro(aux, Register);
-
-		} else {
-
-			header->nroRegRem--;
-			header->proxRRN--;
-			fseek(file_in, 63, SEEK_CUR); // pula registro logicamente removido
-
-		}
-	}
-
-	header->status = '1';
-	header->topo = -1;
-	header->qttCompacta++;
-	header->nroPagDisco = get_num_pag(header);
-	fseek(aux, 0, SEEK_SET);
-	escreveHeader(aux, header);
-
-	fclose(aux);
-   	 free(header);
-
-    	fclose(file_in);
-
-	remove(arq_entrada);
-	rename("aux.bin", arq_entrada); 
-
-	binarioNaTela(arq_entrada);
-}
-
-
 
 // FUNCOES PARA EXTRAIR OS DADOS BINARIOS
 

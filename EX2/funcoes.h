@@ -60,6 +60,7 @@ Cabecalho *getHeader(FILE *arq);
 
 void readline(char* string);
 void binarioNaTela(char *nomeArquivoBinario);
+void scan_quote_string(char *string);
 
 //FUNCOES DE MANIPULAÇÃO DE ARQUIVOS
 
@@ -71,7 +72,7 @@ void PreencheLixo(FILE *file);
 
 int LeRegistro(FILE *file_in, Registro *Register);
 
-int get_num_pag(FILE *arq);
+int get_num_pag(Cabecalho *header);
 
 void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho* cabecalho);
 
@@ -79,7 +80,7 @@ void EscreveRegistro(FILE *file_out, Registro *Register);
 
 int ChecaStatus(FILE *file_in);
 
-void CompactaArquivo(char *file_in);
+void CompactaArquivo(FILE *file_in, char *arq_entrada);
 
 void readint(FILE *arq, int *integer);
 
@@ -107,17 +108,17 @@ void imprime_arq(FILE *arq_entrada);
 
 void remove_registro(FILE *arq, Cabecalho *header, int rrn);
 
-void funcionalidade1(FILE *file_in, FILE *file_out, Cabecalho *header);
+void funcionalidade1(FILE *file_in, FILE *file_out, Cabecalho *header, char *arq_entrada);
 
 void funcionalidade2();
 
-void funcionalidade3(FILE *arq);
+void funcionalidade3(FILE *arq, char *arq_entrada);
 
-void funcionalidade4(FILE *arq);
+void funcionalidade4(FILE *arq, char *arq_entrada);
 
-void funcionalidade5(FILE *arq);
+void funcionalidade5(FILE *arq, char *arq_entrada);
 
-void funcionalidade6(char *arq);
+void funcionalidade6(FILE *arq, char *arq_entrada);
 
 void leEntradaRegistro(Registro *Register);
 

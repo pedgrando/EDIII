@@ -33,11 +33,7 @@ int main(int argv, char *argc[]){
         }
 		header->status = 0;
 
-	funcionalidade1(file_in, file_out, header);
-
-    	fclose(file_out);
-    	fclose(file_in);
-	binarioNaTela(arq_saida);
+	funcionalidade1(file_in, file_out, header, arq_saida);
 
         break;
     case 2:
@@ -67,8 +63,7 @@ int main(int argv, char *argc[]){
             break;
         }
 
-	funcionalidade3(file_in);
-    	fclose(file_in);
+	funcionalidade3(file_in, arq_entrada);
 		
 	break;
     case 4:
@@ -82,9 +77,7 @@ int main(int argv, char *argc[]){
             break;
         }
 		
-	funcionalidade4(file_in);
-    	fclose(file_in);
-	binarioNaTela(arq_entrada);
+	funcionalidade4(file_in, arq_entrada);
 
 	break;
     case 5:
@@ -97,24 +90,21 @@ int main(int argv, char *argc[]){
             break;
         }
 
-	funcionalidade5(file_in);
+	funcionalidade5(file_in, arq_entrada);
 
-    	fclose(file_in);
-	binarioNaTela(arq_entrada);
 	break;
     case 6:
 
 	// FUNCIONALIDADE 6
-	//
 
 	scanf("%s", arq_entrada);
+	if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
+		PrintarErro();
+		break;
+	}
 
-	funcionalidade6(arq_entrada);
+	funcionalidade6(file_in, arq_entrada);
 
-	binarioNaTela(arq_entrada);
-
-    printf("GABARITO:");
-    binarioNaTela("binario17certo.bin");
 	break;	
 
     default:

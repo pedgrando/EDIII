@@ -5,16 +5,10 @@
 #include <math.h>
 
 #include "funcoes.h"
-
-#define IDCONECTA 906
-#define SIGLAPAIS 925
-#define IDPOPSCONECTADO 1503
-#define UNIDADEMEDIDA 1310
-#define VELOCIDADE 1040
-#define NOMEPOPS 817
-#define NOMEPAIS 828
-
-
+#include "miscelaneous.h"
+#include "funcoes_io.h"
+#include "data_structures.h"
+#include "funcionalidades.h"
 
 //teste parte 2
 
@@ -312,12 +306,10 @@ void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho *header){
 
     while (LeRegistro(file_in, Register)){ 				// le um registro e ja escreve ele no arquivo binario
         EscreveRegistro(file_out, Register);
-	ImprimeRegistro(Register);
 
 	header->proxRRN++; 						// incrementa o prox RRN disponivel
     }
-	header->nroPagDisco = get_num_pag(file_out);  // atualiza o numero de paginas de disco
-	printf("%d\n", header->nroPagDisco);
+	header->nroPagDisco = get_num_pag(header);  // atualiza o numero de paginas de disco
 	header->status = '1'; 						// define o status do arquivo como valido
 	
 	fseek(file_out, 0, SEEK_SET);
@@ -328,18 +320,11 @@ void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho *header){
 
 // descobre o numero de paginas de disco do arquivo
 
-int get_num_pag(FILE *arq){
-    long counter = 0;
-    char temp[1]; 
-
-    fseek(arq, 0, SEEK_SET);
-
-    while(fread(temp, 1, 1, arq)) counter++;  // conta um por um dos caracteres ate o final
-
-	if(counter % PAG_DISCO == 0){
-		return(counter / PAG_DISCO);
+int get_num_pag(Cabecalho *header){
+	if(header->proxRRN % 15 == 0){
+		return ((header->proxRRN / 15) + 1);
 	} else {
-		return ((counter / PAG_DISCO) + 1);
+		return ((header->proxRRN / 15) + 2);
 	}
 }
 
@@ -368,71 +353,12 @@ void EscreveRegistro(FILE *file, Registro *Register){
     
 // compacta o arquivo, removendo todos os registros removidos e reescrendo os registros validos sequencialmente
 
-// void CompactaArquivo(char* arq_entrada){    
-// 	FILE *file_in;              
-// 	if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe            
-// 		PrintarErro();
-// 		return;
-// 	}
-//     fseek(file_in, 0, SEEK_SET);
-
-//     Cabecalho *header = getHeader(file_in);
-
-// 	Registro *Register[header->proxRRN - header->nroRegRem];
-
-// 	//Registro **Register = malloc(sizeof(Registro) * header->proxRRN - header->nroRegRem);
-
-// 	int i = 0;
-//     fseek(file_in, 960, SEEK_SET);
-// 	while(fread(&Register[i]->removido, sizeof(char), 1, file_in) != 0){
-
-// 		if(Register[i]->removido == '1'){
-
-// 			fseek(file_in, 63, SEEK_CUR); // pula registro logicamente removido
-
-// 		} else {
-
-// 			resetaRegistro(Register[i]);
-
-// 			leRegistroBin(Register[i], file_in);
-				
-// 			ImprimeRegistro(Register[i]);
-			
-// 			i++;
-// 			header->nroRegRem--;
-// 			header->proxRRN--;
-					
-// 		}
-// 	}
-
-// 	fclose(file_in);
-// 	file_in = fopen(arq_entrada, "w+b");
-// 	fseek(file_in, 960, SEEK_SET);
-// 	for (int i = 0; i < header->proxRRN; i++){
-// 		EscreveRegistro(file_in, Register[i]);
-// 	}
-
-// 	header->topo = -1;
-// 	header->qttCompacta++;
-// 	header->nroPagDisco = get_num_pag(file_in);
-// 	fseek(file_in, 0, SEEK_SET);
-// 	CriaHeader(file_in, header);
-
-// 	fclose(file_in);
-//     free(header);
-//}
-
-void CompactaArquivo(char* arq_entrada){    
-	FILE *file_in;              
-	if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe            
-		PrintarErro();
-		return;
-	}
+void CompactaArquivo(FILE *file_in, char *arq_entrada){    
 
     fseek(file_in, 0, SEEK_SET);
     Cabecalho *header = getHeader(file_in);
-	if(header->status == 0) {    // testa se o arquivo é consistente            
-		PrintarErro();
+	if(header->status == '0') {    // testa se o arquivo é consistente            
+		printf("Falha no processamento do arquivo.\n");
 		return;
 	}
 	Registro *Register = malloc(sizeof(Registro));
@@ -442,7 +368,7 @@ void CompactaArquivo(char* arq_entrada){
     fseek(aux, 960, SEEK_SET);
 
 	char removido;
-    fseek(file_in, 960, SEEK_SET);
+	fseek(file_in, 960, SEEK_SET);
 	while(fread(&removido, sizeof(char), 1, file_in) != 0){
 
 		if(removido == '0'){
@@ -451,8 +377,6 @@ void CompactaArquivo(char* arq_entrada){
 
 			leRegistroBin(Register, file_in);
 				
-			ImprimeRegistro(Register);
-			
 			EscreveRegistro(aux, Register);
 
 		} else {
@@ -467,14 +391,19 @@ void CompactaArquivo(char* arq_entrada){
 	header->status = '1';
 	header->topo = -1;
 	header->qttCompacta++;
-	header->nroPagDisco = get_num_pag(aux);
+	header->nroPagDisco = get_num_pag(header);
 	fseek(aux, 0, SEEK_SET);
 	escreveHeader(aux, header);
 
 	fclose(aux);
-	fclose(file_in);
-	binarioNaTela("aux.bin");
-    free(header);
+   	 free(header);
+
+    	fclose(file_in);
+
+	remove(arq_entrada);
+	rename("aux.bin", arq_entrada); 
+
+	binarioNaTela(arq_entrada);
 }
 
 
@@ -798,131 +727,6 @@ void remove_registro(FILE *arq, Cabecalho *header, int rrn){
 	fwrite(&topo, sizeof(int), 1, arq);
        	fwrite(lixo, sizeof(char), 59, arq);
 }
-
-void funcionalidade1(FILE *file_in, FILE *file_out, Cabecalho *header){
-        CriaHeader(file_out, header);
-        TransfereDados(file_in, file_out, header);
-}
-
-
-void funcionalidade3(FILE *arq){
-	int n;
-
-	scanf("%d", &n);
-
-	char (*valorCampo)[32] = malloc(sizeof(*valorCampo)*n);
-	int *hash_campo = malloc(sizeof(int)*n);
-
-	Cabecalho *header = NULL;
-	header = getHeader(arq);
-
-
-	for(int i = 0; i < n; i++){	
-		char aux[32];
-
-		scanf("%s", aux);
-
-		scan_quote_string(valorCampo[i]);
-
-
-		hash_campo[i] = hashfunction(aux);
-
-		// dentro da funcao, recebe os parametros da busca 
-
-
-	}
-	
-	int falha_de_processamento;
-
-	for(int i = 0; i < n; i++){
-		falha_de_processamento = buscaRegistro(arq, header, hash_campo[i], valorCampo[i], CONSULTA, i+1);
-
-		if(falha_de_processamento)
-			break;
-	}
-		
-	free(header);
-	free(valorCampo);
-	free(hash_campo);
-}
-
-
-void funcionalidade4(FILE *arq){
-	int n;
-	int falha_de_processamento;
-
-	scanf("%d", &n);
-
-	char valorCampo[32];
-	int hash_campo;
-	char aux[32];
-
-	Cabecalho *header = NULL;
-	header = getHeader(arq);
-
-
-	for(int i = 0; i < n; i++){	
-
-		scanf("%s", aux);
-
-		scan_quote_string(valorCampo);
-
-		hash_campo = hashfunction(aux);
-
-		// dentro da funcao, recebe os parametros da busca 
-		//
-		falha_de_processamento = buscaRegistro(arq, header, hash_campo, valorCampo, REMOCAO, 0);
-
-		if(falha_de_processamento)
-			break;
-	}
-	fseek(arq, 0, SEEK_SET);
-	escreveHeader(arq, header);
-	
-	free(header);
-}
-
-void funcionalidade5(FILE *arq){
-	int n;
-
-	Cabecalho *header = getHeader(arq);
-	
-	scanf("%d", &n);
-
-	if(header->status == '0'){		
-		PrintarErro();
-	}
-
-
-	Registro Register[n];
-
-	//Registro *Register = malloc(sizeof(Registro));
-	//for(int i = 0; i < n - 1; i++) Register = realloc(Register, sizeof(Registro));
-
-	for(int i = 0; i < n; i++){
-		
-		leEntradaRegistro(&Register[i]);
-
-				
-		insereRegistro(arq, &Register[i], header);
-	
-	}		
-
-	fseek(arq, 0, SEEK_SET);
-
-	escreveHeader(arq, header);
-
-	free(header);
-
-}
-
-// funcionalidade 6 -> compacta um arquivo
-
-void funcionalidade6(char* arq_nome){
-	
-	CompactaArquivo(arq_nome);
-}
-
 
 void leEntradaRegistro(Registro *Register){
 	resetaRegistro(Register);
