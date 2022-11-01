@@ -18,13 +18,9 @@ Cabecalho InicializaStructCabecalho();
 
 void CriaHeader(FILE *arq_out, Cabecalho *header);
 
-void PreencheLixo(FILE *file);
-
 void resetaRegistro(Registro *Register);
 
 int get_num_pag(Cabecalho *header);
-
-int ChecaStatus(FILE *file_in);
 
 int campovazio_int(int interger);
 

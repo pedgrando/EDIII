@@ -19,6 +19,8 @@ void scan_quote_string(char *string);
 
 Cabecalho *getHeader(FILE *arq);
 
+void PreencheLixo(FILE *file);
+
 void escreveHeader(FILE *file, Cabecalho *header);
 
 int LeRegistro(FILE *file_in, Registro *Register);
@@ -33,9 +35,9 @@ int readstring_variavel(FILE *arq, char *string);
 
 void imprime_pag_disco(Cabecalho *header);
 
-void leRegistroBin(Registro *Register, FILE *arq_entrada);
+void ImprimeRegistro(Registro *Register);
 
-void imprime_arq(FILE *arq_entrada);
+void leRegistroBin(Registro *Register, FILE *arq_entrada);
 
 void leEntradaRegistro(Registro *Register);
 

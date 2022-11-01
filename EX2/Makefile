@@ -1,24 +1,24 @@
 all:
-	gcc -c main.c funcoes.c
-	gcc -march=native -o prog main.o funcoes.o
+	gcc -c *.c
+	gcc -march=native -o prog *.o
 
 run:   all
 	./prog
 
 clear: 
-	rm main.o prog funcoes.o a.out
+	rm *.o a.out prog
 
 debug:
-	gcc -g3 main.c funcoes.c -Wall -Werror -pedantic 
+	gcc -g3 *.c -Wall -Werror -pedantic 
 	gdb a.out
 
 memcheck:
-	gcc -g main.c funcoes.c
+	gcc -g *.c
 	valgrind a.out
 
 zip:
 	rm -f atv2.zip
-	zip atv2.zip Makefile funcoes.h funcoes.c main.c
+	zip atv2.zip Makefile *.h *.c
 
 commit:
 	git pull origin main

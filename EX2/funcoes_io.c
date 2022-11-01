@@ -4,11 +4,12 @@
 #include <ctype.h>
 #include <math.h>
 
-#include "funcoes.h"
 #include "miscelaneous.h"
 #include "funcoes_io.h"
 #include "data_structures.h"
 #include "funcionalidades.h"
+
+// le o cabecalho de um arquivo binario e retorna ele
 
 Cabecalho *getHeader(FILE *arq){
     Cabecalho *aux = malloc(sizeof(Cabecalho)*1);
@@ -111,6 +112,8 @@ void scan_quote_string(char *str) {
 	}
 }
 
+//FUNCOES DE MANIPULAÇÃO DE ARQUIVOS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 // escreve os campos do header no arquivo
 
 void escreveHeader(FILE *file, Cabecalho *header){
@@ -120,6 +123,14 @@ void escreveHeader(FILE *file, Cabecalho *header){
     fwrite(&header->nroRegRem, sizeof(int), 1, file);
     fwrite(&header->nroPagDisco, sizeof(int), 1, file);
     fwrite(&header->qttCompacta, sizeof(int), 1, file);
+}
+
+// preenche o espaço restante de um header com lixo ate completar 960 bytes ( 1 pag de disco )
+
+void PreencheLixo(FILE *file){
+	char lixo[PAG_DISCO - 21];
+    for (int i = 0; i < PAG_DISCO - 21; i++) lixo[i] = LIXO;
+    fwrite(lixo, sizeof(lixo), 1, file);  
 }
 
 // le um registro de um arquivo .csv e passa para memoria primaria
@@ -247,6 +258,7 @@ void ImprimeRegistro(Registro *Register){
     printf("\n");
 }
 
+
 // escreve o registro da memoria primaria no arquivo binario, incluindo o lixo
 
 void EscreveRegistro(FILE *file, Registro *Register){
@@ -270,188 +282,6 @@ void EscreveRegistro(FILE *file, Registro *Register){
     
 }
 
-// FUNCOES PARA EXTRAIR OS DADOS BINARIOS
-
-// imprime todos os registros validos de um arquivo
-
-void imprime_arq(FILE *arq_entrada){
-	Registro *Register = malloc(sizeof(Registro));
-	Cabecalho *header = getHeader(arq_entrada);
-
-	if(header->status == '0'){  // confere se o arquivo eh valido
-		PrintarErro();
-		free(Register);
-		return;
-	}
-
-	int tem_registro = 0; // flag para descobrir se algum registro foi encontrado
-
-	fseek(arq_entrada, 960, SEEK_SET); // pula o header
-
-	while(fread(&Register->removido, sizeof(char), 1, arq_entrada) != 0){
-
-		if(Register->removido == '1'){
-
-			fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
-
-		} else {
-
-			tem_registro = 1;  // foi encontrado ao menos um registro
-
-			resetaRegistro(Register);
-
-			// le um registro e imprime seu conteudo
-
-			leRegistroBin(Register, arq_entrada); 
-				
-			ImprimeRegistro(Register);
-					
-		}
-	}
-
-	if(!tem_registro){ 				// se nao tem registros
-		printf("Registro inexistente.\n\n");
-	}
-	imprime_pag_disco(header); // mostra o numero de paginas de disco
-}
-
-// busca um registro em especifico para executar uma funcionalidade
-/*
- * Essa funcao eh comum as funcionalidades 3 e 4; nela sao passados um arquivo com suas informacoes de header, um campo de busca e um valor buscado, qual das funcionalidades
- * sera executada (CONSULTA = 1, referente a funcionalidade 3, e REMOCAO = 0, referente a funcionalidade 4), alem de um inteiro indentificando o numero da operacao, e.g., 3
- * referente a terceira busca.
- *
- * ela se utiliza de um esquema de hash para identificar qual o campo buscado, os valores tabelados podem ser encontrados nos arquivos de header, e mais informacoes estao na
- * funcao de hash
- */
-
-int buscaRegistro(FILE *arq_entrada, Cabecalho *header, int campoBuscado, char *valorCampo, int funcionalidade, int n){
-
-	fseek(arq_entrada, 0 , SEEK_SET);
-
-	Registro *Register = malloc(sizeof(Registro)*1);
-
-	int rrn = 0; 			// contagem de rrn
-	int encontrou_reg = 0; 		// flag para indicar se ao menos um registro foi encontrado
-	
-	if(header->status == '0'){
-		PrintarErro();
-		return 1;
-	}
-
-	if( n != 0) printf("Busca %d\n", n);  // especificacao do trabalho -> a cada pesquisa, imprime o id dela
-	
-	fseek(arq_entrada, 960, SEEK_SET); // pula o registro de cabecalho
-
-	while(fread(&Register->removido, sizeof(char), 1, arq_entrada) != 0){
-
-		if(Register->removido == '1'){
-
-			fseek(arq_entrada, 63, SEEK_CUR); // pula registro logicamente removido
-
-		} else {
-
-			leRegistroBin(Register, arq_entrada);
-			
-			// O switch descobre qual campo deve ser comparado
-			// se o valor do campo coincindir com o da busca, marca-se que foi encontrado algum registro, e 
-			// executa a funcionalidade desejada (remocao ou consulta)
-
-			switch(campoBuscado){
-				case IDCONECTA:
-					if(atoi(valorCampo) == Register->idConecta){
-						encontrou_reg = 1;
-						if(funcionalidade){
-							ImprimeRegistro(Register);
-						} else {
-							remove_registro(arq_entrada, header, rrn);
-						}
-					
-					}
-					break;
-				case SIGLAPAIS:
-					if(valorCampo[0] == Register->siglaPais[0] && valorCampo[1] == Register->siglaPais[1]){
-						encontrou_reg = 1;
-						if(funcionalidade){
-							ImprimeRegistro(Register);
-						} else {
-							remove_registro(arq_entrada, header, rrn);
-						}
-					
-					}
-					break;
-				case IDPOPSCONECTADO:
-					if(atoi(valorCampo) == Register->idPoPsConectado){
-						encontrou_reg = 1;
-						if(funcionalidade){
-							ImprimeRegistro(Register);
-						} else {
-							remove_registro(arq_entrada, header, rrn);
-						}
-					
-					}
-					break;
-				case UNIDADEMEDIDA:
-					if(valorCampo[0] == Register->unidadeMedida){
-						encontrou_reg = 1;
-						if(funcionalidade){
-							ImprimeRegistro(Register);
-						} else {
-							remove_registro(arq_entrada, header, rrn);
-						}
-					
-					}
-					break;
-				case VELOCIDADE:
-					if(atoi(valorCampo) == Register->velocidade){
-						encontrou_reg = 1;
-						if(funcionalidade){
-							ImprimeRegistro(Register);
-						} else {
-							remove_registro(arq_entrada, header, rrn);
-						}
-					
-					}
-					break;
-				case NOMEPOPS:
-					if(!strcmp(valorCampo, Register->nomePoPs)){
-						encontrou_reg = 1;
-						if(funcionalidade){
-							ImprimeRegistro(Register);
-						} else {
-							remove_registro(arq_entrada, header, rrn);
-						}
-					
-					}
-					break;
-				case NOMEPAIS:
-					if(!strcmp(valorCampo, Register->nomePais)){
-						encontrou_reg = 1;
-						if(funcionalidade){
-							ImprimeRegistro(Register);
-						} else {
-							remove_registro(arq_entrada, header, rrn);
-						}
-					
-					}
-					break;
-			}
-			
-		}
-		rrn++;
-	}
-
-	if(!encontrou_reg && funcionalidade)              // se for consulta -> diz se encontrou ou nao algum registro
-		printf("Registro inexistente.\n\n");
-
-	if(funcionalidade){                               // se for consulta -> imprime o numero de paginas de disco
-		imprime_pag_disco(header);
-	}
-
-	free(Register);	
-
-	return 0;
-}
 
 // imprime o numero de paginas de disco do arquivo
 
@@ -495,9 +325,6 @@ void leRegistroBin(Registro *Register, FILE *arq_entrada){
 	return;
 }
 
-
-// FUNCOES PARA LER DO ARQUIVO BINARIO ------------------------------------------------
-
 // le um inteiro e atribui a uma variavel passada por referencia
 
 void readint(FILE *arq, int *integer){
@@ -528,67 +355,8 @@ int readstring_variavel(FILE *arq, char *string){
 }
 
 
-// FUNCOES PARA CONFERIR SE O CAMPO ESTA VAZIO ------------------------------------------------------------
-
-int campovazio_int(int interger){
-	if(interger == -1){
-	        return 1;
-	} else {
-		return 0;
-	}		
-}
-
-int campovazio_string(char *string){
-	if(string[0] == '$'){
-		return 1;
-	} else {
-		return 0;
-	}	
-}
-
-int campovazio_string_var(char *string){
-	if(string[0] == '\0'){
-		return 1;
-	} else {
-		return 0;
-	}	
-}
-
-
-// HASH FUNCTION PARA DESCOBRIR O CAMPO
-// uma funcao hash simples: ela soma os valores dos caracteres de uma string ate o '\0' e retorna o resultado
-
-int hashfunction(char *str){
-	int i = 0;
-	int result = 0;
-	while(str[i] != '\0'){
-		result += str[i];	
-		i++;
-	}
-	return result;
-}
-
-// remove um registro de um arquivo binario
-//
-// atribui o rrn do registro ao topo e guarda o topo antigo como encadeamento
-// o status do registro fica como removido ("1") e o resto eh preenchido com lixo
-
-void remove_registro(FILE *arq, Cabecalho *header, int rrn){
-	int topo = header->topo;
-
-	header->topo = rrn;
-	header->nroRegRem++;
-
-	fseek(arq, -64, SEEK_CUR);
-
-	char lixo[59];
-
-	for(int i = 0; i < 59; i++) lixo[i] = LIXO;
-	
-	fwrite("1", sizeof(char), 1, arq);
-	fwrite(&topo, sizeof(int), 1, arq);
-       	fwrite(lixo, sizeof(char), 59, arq);
-}
+// le cada campo de um registro pela entrada padrao e atribui esses valores a um registro
+// os valores de entrada podem estar entre " ", serem inteiros ou serem nulos (NULO)
 
 void leEntradaRegistro(Registro *Register){
 	resetaRegistro(Register);
@@ -629,41 +397,6 @@ void leEntradaRegistro(Registro *Register){
 
 }
 
-
-void insereRegistro(FILE *arq, Registro *Register, Cabecalho *header){
-
-
-	if(header->topo == -1){
-		fseek(arq, 960+64*(header->proxRRN), SEEK_SET);
-		(header->proxRRN)++;
-
-	} else {
-		int novo_topo;
-		fseek(arq, 961+64*(header->topo), SEEK_SET);
-		
-		fread(&novo_topo, sizeof(int), 1, arq);
-		header->topo = novo_topo;	
-
-		fseek(arq, -5, SEEK_CUR);
-		(header->nroRegRem)--;
-	}
-
-	EscreveRegistro(arq, Register);
-
-}
-
 void PrintarErro(){
 	printf("Falha no processamento do arquivo.\n");
 }
-
-
-
-
-
-
-
-
-
-
-
-

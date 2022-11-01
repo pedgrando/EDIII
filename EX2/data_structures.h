@@ -1,5 +1,5 @@
-#ifndef __FUNCOES_H__
-#define __FUNCOES_H__
+#ifndef __DATA_STRUCTURES_H__
+#define __DATA_STRUCTURES_H__
 
 #include <stdio.h>
 #include<stdlib.h>
