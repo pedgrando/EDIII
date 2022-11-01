@@ -11,16 +11,17 @@
 #include "funcoes_principais.h"
 
 
-void funcionalidade1(FILE *file_in, FILE *file_out, Cabecalho *header, char *arq_entrada){
-        CriaHeader(file_out, header);
-        TransfereDados(file_in, file_out, header);
-    	fclose(file_in);
+void funcionalidade1(FILE *file_in, FILE *file_out, Cabecalho *header, char *arq){
+	CriaHeader(file_out, header);
+	TransfereDados(file_in, file_out, header);
+
+	fclose(file_in);
 	fclose(file_out);
-	binarioNaTela(arq_entrada);
+	binarioNaTela(arq);
 }
 
 
-void funcionalidade3(FILE *arq, char *arq_entrada){
+void funcionalidade3(FILE *file, char *arq){
 	int n;
 
 	scanf("%d", &n);
@@ -29,7 +30,7 @@ void funcionalidade3(FILE *arq, char *arq_entrada){
 	int *hash_campo = malloc(sizeof(int)*n);
 
 	Cabecalho *header = NULL;
-	header = getHeader(arq);
+	header = getHeader(file);
 
 
 	for(int i = 0; i < n; i++){	
@@ -39,32 +40,29 @@ void funcionalidade3(FILE *arq, char *arq_entrada){
 
 		scan_quote_string(valorCampo[i]);
 
-
 		hash_campo[i] = hashfunction(aux);
 
 		// dentro da funcao, recebe os parametros da busca 
-
 
 	}
 	
 	int falha_de_processamento;
 
 	for(int i = 0; i < n; i++){
-		falha_de_processamento = buscaRegistro(arq, header, hash_campo[i], valorCampo[i], CONSULTA, i+1);
+		falha_de_processamento = BuscaRegistro(file, header, hash_campo[i], valorCampo[i], CONSULTA, i+1);
 
-		if(falha_de_processamento)
-			break;
+		if(falha_de_processamento) break;
 	}
 		
 	free(header);
 	free(valorCampo);
 	free(hash_campo);
 
-    	fclose(arq);
+	fclose(file);
 }
 
 
-void funcionalidade4(FILE *arq, char *arq_entrada){
+void funcionalidade4(FILE *file, char *arq){
 	int n;
 	int falha_de_processamento;
 
@@ -75,7 +73,7 @@ void funcionalidade4(FILE *arq, char *arq_entrada){
 	char aux[32];
 
 	Cabecalho *header = NULL;
-	header = getHeader(arq);
+	header = getHeader(file);
 
 
 	for(int i = 0; i < n; i++){	
@@ -87,29 +85,28 @@ void funcionalidade4(FILE *arq, char *arq_entrada){
 		hash_campo = hashfunction(aux);
 
 		// dentro da funcao, recebe os parametros da busca 
-		//
-		falha_de_processamento = buscaRegistro(arq, header, hash_campo, valorCampo, REMOCAO, 0);
+		falha_de_processamento = BuscaRegistro(file, header, hash_campo, valorCampo, REMOCAO, 0);
 
 		if(falha_de_processamento)
 			break;
 	}
-	fseek(arq, 0, SEEK_SET);
-	escreveHeader(arq, header);
+	fseek(file, 0, SEEK_SET);
+	EscreveHeader(file, header);
 	
 	free(header);
-    	fclose(arq);
-	binarioNaTela(arq_entrada);
+	fclose(file);
+	binarioNaTela(arq);
 }
 
-void funcionalidade5(FILE *arq, char *arq_entrada){
+void funcionalidade5(FILE *file, char *arq){
 	int n;
 
-	Cabecalho *header = getHeader(arq);
+	Cabecalho *header = getHeader(file);
 	
 	scanf("%d", &n);
 
 	if(header->status == '0'){		
-		PrintarErro();
+		PrintErro();
 		return;
 	}
 
@@ -121,29 +118,27 @@ void funcionalidade5(FILE *arq, char *arq_entrada){
 
 	for(int i = 0; i < n; i++){
 		
-		leEntradaRegistro(&Register[i]);
-
+		LeEntradaRegistro(&Register[i]);
 				
-		insereRegistro(arq, &Register[i], header);
+		InsereRegistro(file, &Register[i], header);
 	
 	}		
 
-	fseek(arq, 0, SEEK_SET);
+	fseek(file, 0, SEEK_SET);
 
-	escreveHeader(arq, header);
+	EscreveHeader(file, header);
 
 	free(header);
-
-    	fclose(arq);
-	binarioNaTela(arq_entrada);
+	fclose(file);
+	binarioNaTela(arq);
 
 }
 
 // funcionalidade 6 -> compacta um arquivo
 
-void funcionalidade6(FILE *file_in, char *arq_entrada){
+void funcionalidade6(FILE *file, char *arq){
 	
-	CompactaArquivo(file_in, arq_entrada);
+	CompactaArquivo(file, arq);
 }
 
 

@@ -17,10 +17,8 @@ int main(int argv, char *argc[]){
     FILE *file_in = NULL;
     FILE *file_out = NULL;
 
-
-
     Cabecalho *header = malloc(sizeof(Cabecalho));
-    *header = InicializaStructCabecalho();
+    *header = ResetaCabecalho();
     
     switch (option)
     {
@@ -30,29 +28,27 @@ int main(int argv, char *argc[]){
 	// cria a tabela (arquivo binario de dados) ---------------------------------------------------------------------------------------
 
     	scanf("%s %s", arq_entrada, arq_saida);
-
         if(!(file_out = fopen(arq_saida, "wb")) || !(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            PrintarErro();
+            PrintErro();
             break;
         }
 		header->status = 0;
 
-	funcionalidade1(file_in, file_out, header, arq_saida);
+	    funcionalidade1(file_in, file_out, header, arq_saida);
 
-        break;
+    break;
     case 2:
 
 	// FUNCIONALIDADE 2
 	// lista todos os registros de um arquivo sequencialmente ---------------------------------------------------------------------------
 	
-	scanf("%s", arq_entrada);
-
+	    scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            PrintarErro();
+            PrintErro();
             break;
         }
 
-	imprime_arq(file_in);
+    	PrintArquivo(file_in);
     	fclose(file_in);
 
 	break;
@@ -61,13 +57,13 @@ int main(int argv, char *argc[]){
 	// FUNCIONALIDADE 3
 	// faz n consultas dados que atendam a uma exigencia especifica ----------------------------------------------------------------------
 
-	scanf("%s", arq_entrada);
+	    scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            PrintarErro();
+            PrintErro();
             break;
         }
 
-	funcionalidade3(file_in, arq_entrada);
+	    funcionalidade3(file_in, arq_entrada);
 		
 	break;
     case 4:
@@ -75,44 +71,43 @@ int main(int argv, char *argc[]){
 	// FUNCIONALIDADE 4
 	// remove logicamente n registros ---------------------------------------------------------------------------------------------------
 
-	scanf("%s", arq_entrada);
+	    scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
-            PrintarErro();
+            PrintErro();
             break;
         }
 		
-	funcionalidade4(file_in, arq_entrada);
+	    funcionalidade4(file_in, arq_entrada);
 
 	break;
     case 5:
 
 	// FUNCIONALIDADE 5
 
-	scanf("%s", arq_entrada);
+	    scanf("%s", arq_entrada);
         if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
-            PrintarErro();
+            PrintErro();
             break;
         }
 
-	funcionalidade5(file_in, arq_entrada);
+	    funcionalidade5(file_in, arq_entrada);
 
 	break;
     case 6:
 
 	// FUNCIONALIDADE 6
 
-	scanf("%s", arq_entrada);
-	if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
-		PrintarErro();
-		break;
-	}
+        scanf("%s", arq_entrada);
+        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
+            PrintErro();
+            break;
+        }
 
-	funcionalidade6(file_in, arq_entrada);
+        funcionalidade6(file_in, arq_entrada);
 
 	break;	
-
     default:
-        break;
+    break;
     }
 
     free(header);

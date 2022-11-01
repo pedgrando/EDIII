@@ -11,7 +11,7 @@
 
 //teste parte 2
 
-Cabecalho InicializaStructCabecalho(){
+Cabecalho ResetaCabecalho(){
     Cabecalho aux;
     aux.status = '0';
     aux.topo = -1;
@@ -29,14 +29,14 @@ Cabecalho InicializaStructCabecalho(){
 
 void CriaHeader(FILE *file, Cabecalho *header){
 	fseek(file, 0, SEEK_SET);
-    escreveHeader(file, header);
+    EscreveHeader(file, header);
 	PreencheLixo(file);
 	fseek(file, 0, SEEK_END);
 }
 
 // volta uma variavel Registro em memoria primaria a situacao em que todos os campos sao vazios
 
-void resetaRegistro(Registro *Register){
+void ResetaRegistro(Registro *Register){
     for (int i = 0; i < 7; i++) Register->campoVazio[i] = 1;
     Register->removido = '0';
     Register->encadeamento = -1;
@@ -50,7 +50,7 @@ void resetaRegistro(Registro *Register){
 
 // descobre o numero de paginas de disco do arquivo
 
-int get_num_pag(Cabecalho *header){
+int getNumPag(Cabecalho *header){
 	if(header->proxRRN % 15 == 0){
 		return ((header->proxRRN / 15) + 1);
 	} else {

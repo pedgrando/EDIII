@@ -14,13 +14,13 @@
 #define NOMEPOPS 817
 #define NOMEPAIS 828
 
-Cabecalho InicializaStructCabecalho();
+void CriaHeader(FILE *file, Cabecalho *header);
 
-void CriaHeader(FILE *arq_out, Cabecalho *header);
+Cabecalho ResetaCabecalho();
 
-void resetaRegistro(Registro *Register);
+void ResetaRegistro(Registro *Register);
 
-int get_num_pag(Cabecalho *header);
+int getNumPag(Cabecalho *header);
 
 int campovazio_int(int interger);
 

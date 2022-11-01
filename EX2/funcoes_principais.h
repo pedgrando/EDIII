@@ -8,14 +8,14 @@
 
 void TransfereDados(FILE *file_in, FILE *file_out, Cabecalho* cabecalho);
 
-void CompactaArquivo(FILE *file_in, char *arq_entrada);
+void CompactaArquivo(FILE *file, char *arq);
 
-int buscaRegistro(FILE *arq_entrada, Cabecalho *header, int campoBuscado, char *valorCampo, int funcionalidade, int n);
+int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCampo, int funcionalidade, int n);
 
-void remove_registro(FILE *arq, Cabecalho *header, int rrn);
+void RemoveRegistro(FILE *file, Cabecalho *header, int rrn);
 
-void insereRegistro(FILE *arq, Registro *Register, Cabecalho *header);
+void InsereRegistro(FILE *file, Registro *Register, Cabecalho *header);
 
-void imprime_arq(FILE *arq_entrada);
+void PrintArquivo(FILE *file);
 
 #endif

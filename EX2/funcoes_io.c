@@ -9,19 +9,6 @@
 #include "data_structures.h"
 #include "funcionalidades.h"
 
-// le o cabecalho de um arquivo binario e retorna ele
-
-Cabecalho *getHeader(FILE *arq){
-    Cabecalho *aux = malloc(sizeof(Cabecalho)*1);
-    fread(&(aux->status), sizeof(char), 1, arq);
-    fread((&aux->topo), sizeof(int), 1, arq);
-    fread((&aux->proxRRN), sizeof(int), 1, arq);
-    fread((&aux->nroRegRem), sizeof(int), 1, arq);
-    fread((&aux->nroPagDisco), sizeof(int), 1, arq);
-    fread((&aux->qttCompacta), sizeof(int), 1, arq);
-	return aux;
-}
-
 //FUNCOES FORNECIDAS
 
 void readline(char* string){
@@ -112,11 +99,24 @@ void scan_quote_string(char *str) {
 	}
 }
 
+// le o cabecalho de um arquivo binario e retorna ele
+
+Cabecalho *getHeader(FILE *file){
+    Cabecalho *aux = malloc(sizeof(Cabecalho)*1);
+    fread(&(aux->status), sizeof(char), 1, file);
+    fread((&aux->topo), sizeof(int), 1, file);
+    fread((&aux->proxRRN), sizeof(int), 1, file);
+    fread((&aux->nroRegRem), sizeof(int), 1, file);
+    fread((&aux->nroPagDisco), sizeof(int), 1, file);
+    fread((&aux->qttCompacta), sizeof(int), 1, file);
+	return aux;
+}
+
 //FUNCOES DE MANIPULAÇÃO DE ARQUIVOS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // escreve os campos do header no arquivo
 
-void escreveHeader(FILE *file, Cabecalho *header){
+void EscreveHeader(FILE *file, Cabecalho *header){
     fwrite(&header->status, sizeof(char), 1, file);
     fwrite(&header->topo, sizeof(int), 1, file);
     fwrite(&header->proxRRN, sizeof(int), 1, file);
@@ -135,10 +135,10 @@ void PreencheLixo(FILE *file){
 
 // le um registro de um arquivo .csv e passa para memoria primaria
 
-int LeRegistro(FILE *file_in, Registro *Register){
+int getRegistroCsv(FILE *file_csv, Registro *Register){
     char aux;
     char aux2[5];
-    resetaRegistro(Register); 		// reseta a variavel registro
+    ResetaRegistro(Register); 		// reseta a variavel registro
     
     int j = 0;
 
@@ -148,7 +148,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
 
     int i = 0;
     while(1) {
-        aux = fgetc(file_in);
+        aux = fgetc(file_csv);
         if (aux == ',') break;
         if (aux == EOF) return 0;
         aux2[i] = aux;
@@ -163,7 +163,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     j++;
     i = 0;
     while(1) {
-        aux = fgetc(file_in);
+        aux = fgetc(file_csv);
         if (aux == ',') break;
         Register->nomePoPs[i] = aux;
         i++;
@@ -177,13 +177,13 @@ int LeRegistro(FILE *file_in, Registro *Register){
     j++;
     i = 0;
     while(1) {
-        aux = fgetc(file_in);
+        aux = fgetc(file_csv);
         if (aux == ',') break;
         Register->nomePais[i] = aux;
         i++;
     } 
     if (i > 0){
-	        Register->nomePais[i] = '\0';
+		Register->nomePais[i] = '\0';
 		while(Register->nomePais[i-1] == ' ' ) Register->nomePais[--i] = '\0';
 		Register->campoVazio[j] = 0;
     }
@@ -191,7 +191,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     j++;
     i = 0;
     while(1) {
-        aux = fgetc(file_in);
+        aux = fgetc(file_csv);
         if (aux == ',') break;
         Register->siglaPais[i] = aux;
         i++;
@@ -204,7 +204,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     j++;
     i = 0;
     while(1) {
-        aux = fgetc(file_in);
+        aux = fgetc(file_csv);
         if (aux == ',') break;
         aux2[i] = aux;
         i++;
@@ -218,7 +218,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     j++;
     i = 0;
     while(1) {
-        aux = fgetc(file_in);
+        aux = fgetc(file_csv);
         if (aux == ',') break;
         aux2[i] = aux;
         i++;
@@ -231,7 +231,7 @@ int LeRegistro(FILE *file_in, Registro *Register){
     j++;
     i = 0;
     while(1) {
-        aux = fgetc(file_in);
+        aux = fgetc(file_csv);
         if (aux == '\n' || aux == '\r' || aux == '\0') break;
         aux2[i] = aux;
         i++;
@@ -242,7 +242,6 @@ int LeRegistro(FILE *file_in, Registro *Register){
         Register->campoVazio[j] = 0;
     }
 
-    
     return 1;
 }   
  
@@ -264,17 +263,17 @@ void ImprimeRegistro(Registro *Register){
 void EscreveRegistro(FILE *file, Registro *Register){
 	int bytes_ocupados = 22 + strlen(Register->nomePoPs) + strlen(Register->nomePais); 	// descobre o numero de bytes ocupados pelo registro (apesar do strlen retornar 1 a mais por conta do '\0', ele eh compensado pelo '|')
 
-    	fwrite(&Register->removido, sizeof(char), 1, file);
-    	fwrite(&Register->encadeamento, sizeof(int), 1, file);
-    	fwrite(&Register->idConecta, sizeof(int), 1, file);
-    	fwrite(Register->siglaPais, sizeof(char), 2, file);
-    	fwrite(&Register->idPoPsConectado, sizeof(int), 1, file);
-    	fwrite(&Register->unidadeMedida, sizeof(char), 1, file);
-    	fwrite(&Register->velocidade, sizeof(int), 1, file);
-    	fwrite(Register->nomePoPs, sizeof(char), strlen(Register->nomePoPs), file);
-    	fwrite("|", sizeof(char), 1, file);
-    	fwrite(Register->nomePais, sizeof(char), strlen(Register->nomePais), file);
-    	fwrite("|", sizeof(char), 1, file);
+	fwrite(&Register->removido, sizeof(char), 1, file);
+	fwrite(&Register->encadeamento, sizeof(int), 1, file);
+	fwrite(&Register->idConecta, sizeof(int), 1, file);
+	fwrite(Register->siglaPais, sizeof(char), 2, file);
+	fwrite(&Register->idPoPsConectado, sizeof(int), 1, file);
+	fwrite(&Register->unidadeMedida, sizeof(char), 1, file);
+	fwrite(&Register->velocidade, sizeof(int), 1, file);
+	fwrite(Register->nomePoPs, sizeof(char), strlen(Register->nomePoPs), file);
+	fwrite("|", sizeof(char), 1, file);
+	fwrite(Register->nomePais, sizeof(char), strlen(Register->nomePais), file);
+	fwrite("|", sizeof(char), 1, file);
 
 	for(int i = 0; i < (64 - bytes_ocupados); i++){  	// preenche o que nao foi ocupado pelos dados com lixo
 		fwrite("$", sizeof(char), 1, file);
@@ -282,68 +281,66 @@ void EscreveRegistro(FILE *file, Registro *Register){
     
 }
 
-
 // imprime o numero de paginas de disco do arquivo
 
-void imprime_pag_disco(Cabecalho *header){
+void PrintPagDisco(Cabecalho *header){
 	printf("Numero de paginas de disco: %d\n\n", header->nroPagDisco);
 }
-
 
 // le um registro de um arquivo binario e passa ele para memoria primaria
 //  o vetor campo vazio dessa funcao pode ser melhor compreendido com a explicacao presente no arquivos .h
 
-void leRegistroBin(Registro *Register, FILE *arq_entrada){
+void LeRegistroBin(Registro *Register, FILE *file){
 
 	int byteoffset = 20; // byteoffset comeca em 20 porque ja se considera os campos de tamanho fixo, mas o status do registro ja foi lido, entao o ponteiro de arquivo ja esta no primeiro byte
 
-	readint(arq_entrada, &(Register->encadeamento)); 				// le o encadeamento do registro
+	readint(file, &(Register->encadeamento)); 				// le o encadeamento do registro
 
-	readint(arq_entrada, &(Register->idConecta)); 					// le o idConecta e confere se ele eh vazio 
+	readint(file, &(Register->idConecta)); 					// le o idConecta e confere se ele eh vazio 
 	Register->campoVazio[0] = campovazio_int(Register->idConecta);
 
-	readstring(arq_entrada, 2, Register->siglaPais);				// le a siglaPais e confere se ela eh vazia
+	readstring(file, 2, Register->siglaPais);				// le a siglaPais e confere se ela eh vazia
 	Register->campoVazio[3] = campovazio_string(Register->siglaPais);
 
-	readint(arq_entrada, &(Register->idPoPsConectado)); 				// le o idPoPsConectado e confere se ele eh vazio
+	readint(file, &(Register->idPoPsConectado)); 				// le o idPoPsConectado e confere se ele eh vazio
 	Register->campoVazio[4] = campovazio_int(Register->idPoPsConectado);
 
-	readstring(arq_entrada, 1, &(Register->unidadeMedida));                         // le a unidadeMedida e confere se ela eh vazia
+	readstring(file, 1, &(Register->unidadeMedida));                         // le a unidadeMedida e confere se ela eh vazia
 	Register->campoVazio[6] = campovazio_string(&(Register->unidadeMedida));
 
-	readint(arq_entrada, &(Register->velocidade)); 					// le a velocidade e confere se ela eh vazia
+	readint(file, &(Register->velocidade)); 					// le a velocidade e confere se ela eh vazia
 	Register->campoVazio[5] = campovazio_int(Register->velocidade);
 
-	byteoffset += readstring_variavel(arq_entrada, Register->nomePoPs);  		// le o nomePoPs, incrementa o byteoffset e testa se ele eh vazio
+	byteoffset += readstring_variavel(file, Register->nomePoPs);  		// le o nomePoPs, incrementa o byteoffset e testa se ele eh vazio
 	Register->campoVazio[1] = campovazio_string_var(Register->nomePoPs);
 
-	byteoffset += readstring_variavel(arq_entrada, Register->nomePais); 		// le o nomePais, incrementa o byteoffset e testa se ele eh vazio
+	byteoffset += readstring_variavel(file, Register->nomePais); 		// le o nomePais, incrementa o byteoffset e testa se ele eh vazio
 	Register->campoVazio[2] = campovazio_string_var(Register->nomePais);
 
-	fseek(arq_entrada, 64 - byteoffset, SEEK_CUR); 					// pula o restante de lixo no registro
+	fseek(file, 64 - byteoffset, SEEK_CUR); 					// pula o restante de lixo no registro
 
 	return;
 }
 
 // le um inteiro e atribui a uma variavel passada por referencia
 
-void readint(FILE *arq, int *integer){
-	fread(integer, sizeof(int), 1, arq); 
+void readint(FILE *file, int *integer){
+	fread(integer, sizeof(int), 1, file); 
 }
 
 // le uma string de tamanho fixo "num_char" e atribui a uma variavel passada por referencia
 
-void readstring(FILE *arq, int num_char, char *string){
-	fread(string, sizeof(char), num_char, arq); 
+void readstring(FILE *file, int num_char, char *string){
+	fread(string, sizeof(char), num_char, file); 
 }
 
 // le uma string de tamanho variavel e atribui a uma variavel passada por referencia, retornando o numero de caracteres que foram lidos do arquivo
 // o retorno eh util para a atualizacao do byteoffset
 
-int readstring_variavel(FILE *arq, char *string){
+int readstring_variavel(FILE *file, char *string){
 	char aux = '\0';
 	int i = 0;
-	while(fread(&aux, sizeof(char), 1, arq)){ 
+	while(fread(&aux, sizeof(char), 1, file)){ 
 		if(aux == '|'){
 			break;
 		}
@@ -354,12 +351,11 @@ int readstring_variavel(FILE *arq, char *string){
 	return i+1;
 }
 
-
 // le cada campo de um registro pela entrada padrao e atribui esses valores a um registro
 // os valores de entrada podem estar entre " ", serem inteiros ou serem nulos (NULO)
 
-void leEntradaRegistro(Registro *Register){
-	resetaRegistro(Register);
+void LeEntradaRegistro(Registro *Register){
+	ResetaRegistro(Register);
 
 	char aux[64];
 	
@@ -397,6 +393,6 @@ void leEntradaRegistro(Registro *Register){
 
 }
 
-void PrintarErro(){
+void PrintErro(){
 	printf("Falha no processamento do arquivo.\n");
 }

@@ -17,30 +17,30 @@ void scan_quote_string(char *string);
 
 //FUNCOES DE MANIPULAÇÃO DE ARQUIVOS
 
-Cabecalho *getHeader(FILE *arq);
+Cabecalho *getHeader(FILE *file);
 
 void PreencheLixo(FILE *file);
 
-void escreveHeader(FILE *file, Cabecalho *header);
+void EscreveHeader(FILE *file, Cabecalho *header);
 
-int LeRegistro(FILE *file_in, Registro *Register);
+int getRegistroCsv(FILE *file_csv, Registro *Register);
 
-void EscreveRegistro(FILE *file_out, Registro *Register);
+void EscreveRegistro(FILE *file, Registro *Register);
 
-void readint(FILE *arq, int *integer);
-
-void readstring(FILE *arq, int reading_size, char *string);
-
-int readstring_variavel(FILE *arq, char *string);
-
-void imprime_pag_disco(Cabecalho *header);
+void PrintPagDisco(Cabecalho *header);
 
 void ImprimeRegistro(Registro *Register);
 
-void leRegistroBin(Registro *Register, FILE *arq_entrada);
+void LeRegistroBin(Registro *Register, FILE *file);
 
-void leEntradaRegistro(Registro *Register);
+void LeEntradaRegistro(Registro *Register);
 
-void PrintarErro();
+void PrintErro();
+
+void readint(FILE *file, int *integer);
+
+void readstring(FILE *file, int reading_size, char *string);
+
+int readstring_variavel(FILE *file, char *string);
 
 #endif
