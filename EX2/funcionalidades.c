@@ -20,6 +20,10 @@ void funcionalidade1(FILE *file_in, FILE *file_out, Cabecalho *header, char *arq
 	binarioNaTela(arq);
 }
 
+void funcionalidade2(FILE *file){
+	PrintArquivo(file);
+}
+
 
 void funcionalidade3(FILE *file, char *arq){
 	int n;
@@ -75,7 +79,6 @@ void funcionalidade4(FILE *file, char *arq){
 	Cabecalho *header = NULL;
 	header = getHeader(file);
 
-
 	for(int i = 0; i < n; i++){	
 
 		scanf("%s", aux);
@@ -110,11 +113,7 @@ void funcionalidade5(FILE *file, char *arq){
 		return;
 	}
 
-
 	Registro Register[n];
-
-	//Registro *Register = malloc(sizeof(Registro));
-	//for(int i = 0; i < n - 1; i++) Register = realloc(Register, sizeof(Registro));
 
 	for(int i = 0; i < n; i++){
 		

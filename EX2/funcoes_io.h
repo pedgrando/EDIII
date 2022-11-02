@@ -19,21 +19,21 @@ void scan_quote_string(char *string);
 
 Cabecalho *getHeader(FILE *file);
 
+int getRegistroCsv(FILE *file_csv, Registro *Register);
+
 void PreencheLixo(FILE *file);
 
 void EscreveHeader(FILE *file, Cabecalho *header);
 
-int getRegistroCsv(FILE *file_csv, Registro *Register);
-
 void EscreveRegistro(FILE *file, Registro *Register);
-
-void PrintPagDisco(Cabecalho *header);
-
-void ImprimeRegistro(Registro *Register);
 
 void LeRegistroBin(Registro *Register, FILE *file);
 
 void LeEntradaRegistro(Registro *Register);
+
+void PrintRegistro(Registro *Register);
+
+void PrintPagDisco(Cabecalho *header);
 
 void PrintErro();
 

@@ -1,3 +1,7 @@
+// PEDRO ANTONIO BRUNO GRANDO - 12547166 - 100% de contribuição
+// PEDRO ARTHUR DO PRADO FRANÇOSO - 12547301 - 100% de contribuição
+
+
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -6,6 +10,7 @@
 #include "data_structures.h"
 #include "funcionalidades.h"
 #include "funcoes_principais.h"
+
 
 int main(int argv, char *argc[]){
     int option;
@@ -48,7 +53,7 @@ int main(int argv, char *argc[]){
             break;
         }
 
-    	PrintArquivo(file_in);
+    	funcionalidade2(file_in);
     	fclose(file_in);
 
 	break;

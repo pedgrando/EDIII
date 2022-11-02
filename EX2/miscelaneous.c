@@ -9,19 +9,6 @@
 #include "data_structures.h"
 #include "funcionalidades.h"
 
-//teste parte 2
-
-Cabecalho ResetaCabecalho(){
-    Cabecalho aux;
-    aux.status = '0';
-    aux.topo = -1;
-    aux.proxRRN = 0;
-    aux.nroRegRem = 0;
-    aux.nroPagDisco = 0;
-    aux.qttCompacta = 0;
-    return aux;
-}
-
 // cria um header em memoria secundaria no arquvio
 //
 // escreve o header da memoria primaria no arquivo, colocando o lixo e mantendo o ponteiro do arquivo no inicio
@@ -46,6 +33,19 @@ void ResetaRegistro(Registro *Register){
     Register->idPoPsConectado = -1;
     Register->unidadeMedida = '$';
     Register->velocidade = -1;
+}
+
+// volta uma variavel Cabecalho em que todos os campos sao vazios
+
+Cabecalho ResetaCabecalho(){
+    Cabecalho aux;
+    aux.status = '0';
+    aux.topo = -1;
+    aux.proxRRN = 0;
+    aux.nroRegRem = 0;
+    aux.nroPagDisco = 0;
+    aux.qttCompacta = 0;
+    return aux;
 }
 
 // descobre o numero de paginas de disco do arquivo

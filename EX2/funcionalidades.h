@@ -10,7 +10,7 @@
 
 void funcionalidade1(FILE *file_in, FILE *file_out, Cabecalho *header, char *arq);
 
-void funcionalidade2();
+void funcionalidade2(FILE *file);
 
 void funcionalidade3(FILE *file, char *arq);
 

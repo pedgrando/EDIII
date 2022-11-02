@@ -116,7 +116,7 @@ void PrintArquivo(FILE *file){
 
 			LeRegistroBin(Register, file); 
 				
-			ImprimeRegistro(Register);
+			PrintRegistro(Register);
 					
 		}
 	}
@@ -175,7 +175,7 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(atoi(valorCampo) == Register->idConecta){
 						encontrou_reg = 1;
 						if(funcionalidade){
-							ImprimeRegistro(Register);
+							PrintRegistro(Register);
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -186,7 +186,7 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(valorCampo[0] == Register->siglaPais[0] && valorCampo[1] == Register->siglaPais[1]){
 						encontrou_reg = 1;
 						if(funcionalidade){
-							ImprimeRegistro(Register);
+							PrintRegistro(Register);
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -197,7 +197,7 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(atoi(valorCampo) == Register->idPoPsConectado){
 						encontrou_reg = 1;
 						if(funcionalidade){
-							ImprimeRegistro(Register);
+							PrintRegistro(Register);
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -208,7 +208,7 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(valorCampo[0] == Register->unidadeMedida){
 						encontrou_reg = 1;
 						if(funcionalidade){
-							ImprimeRegistro(Register);
+							PrintRegistro(Register);
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -219,7 +219,7 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(atoi(valorCampo) == Register->velocidade){
 						encontrou_reg = 1;
 						if(funcionalidade){
-							ImprimeRegistro(Register);
+							PrintRegistro(Register);
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -230,7 +230,7 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(!strcmp(valorCampo, Register->nomePoPs)){
 						encontrou_reg = 1;
 						if(funcionalidade){
-							ImprimeRegistro(Register);
+							PrintRegistro(Register);
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -241,7 +241,7 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(!strcmp(valorCampo, Register->nomePais)){
 						encontrou_reg = 1;
 						if(funcionalidade){
-							ImprimeRegistro(Register);
+							PrintRegistro(Register);
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
