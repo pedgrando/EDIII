@@ -247,7 +247,11 @@ int getRegistroCsv(FILE *file_csv, Registro *Register){
  
 // imprime todos os campos nao vazios de um registro, segundo a proposta do trabalho
 
+<<<<<<< HEAD
 void PrintRegistro(Registro *Register){
+=======
+void ImprimeRegistro(Registro *Register){
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
     if(!Register->campoVazio[0]) printf("Identificador do ponto: %d\n", Register->idConecta);
     if(!Register->campoVazio[1]) printf("Nome do ponto: %s\n", Register->nomePoPs);
     if(!Register->campoVazio[2]) printf("Pais de localizacao: %s\n", Register->nomePais);

@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 // PEDRO ANTONIO BRUNO GRANDO - 12547166 - 100% de contribuição
 // PEDRO ARTHUR DO PRADO FRANÇOSO - 12547301 - 100% de contribuição
 
 
+=======
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -11,7 +14,10 @@
 #include "funcionalidades.h"
 #include "funcoes_principais.h"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 int main(int argv, char *argc[]){
     int option;
     char arq_entrada[32];
@@ -22,6 +28,12 @@ int main(int argv, char *argc[]){
     FILE *file_in = NULL;
     FILE *file_out = NULL;
 
+<<<<<<< HEAD
+=======
+    Cabecalho *header = malloc(sizeof(Cabecalho));
+    *header = ResetaCabecalho();
+    
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
     switch (option)
     {
     case 1:    
@@ -34,8 +46,14 @@ int main(int argv, char *argc[]){
             PrintErro();
             break;
         }
+<<<<<<< HEAD
 
 	    funcionalidade1(file_in, file_out, arq_saida);
+=======
+		header->status = 0;
+
+	    funcionalidade1(file_in, file_out, header, arq_saida);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 
     break;
     case 2:
@@ -49,7 +67,11 @@ int main(int argv, char *argc[]){
             break;
         }
 
+<<<<<<< HEAD
     	funcionalidade2(file_in);
+=======
+    	PrintArquivo(file_in);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
     	fclose(file_in);
 
 	break;
@@ -107,6 +129,7 @@ int main(int argv, char *argc[]){
         funcionalidade6(file_in, arq_entrada);
 
 	break;	
+<<<<<<< HEAD
     case 7:
 
 	// FUNCIONALIDADE 7
@@ -156,8 +179,15 @@ int main(int argv, char *argc[]){
 
 
 	break;	
+=======
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
     default:
     break;
     }
 
+<<<<<<< HEAD
+=======
+    free(header);
+
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 }

@@ -17,7 +17,12 @@ void TransfereDados(FILE *file, FILE *file_out, Cabecalho *header){
 
     while (getRegistroCsv(file, Register)){ 				// le um registro e ja escreve ele no arquivo binario
         EscreveRegistro(file_out, Register);
+<<<<<<< HEAD
 		header->proxRRN++; 						// incrementa o prox RRN disponivel
+=======
+
+	header->proxRRN++; 						// incrementa o prox RRN disponivel
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
     }
 	header->nroPagDisco = getNumPag(header);  // atualiza o numero de paginas de disco
 	header->status = '1'; 						// define o status do arquivo como valido
@@ -32,15 +37,27 @@ void TransfereDados(FILE *file, FILE *file_out, Cabecalho *header){
 // compacta o arquivo, removendo todos os registros removidos e reescrendo os registros validos sequencialmente
 
 void CompactaArquivo(FILE *file, char *arq){    
+<<<<<<< HEAD
     fseek(file, 0, SEEK_SET);
     Cabecalho *header = getHeader(file);
 	if(header->status == '0') {    // testa se o arquivo é consistente            
 		PrintErro();
+=======
+
+    fseek(file, 0, SEEK_SET);
+    Cabecalho *header = getHeader(file);
+	if(header->status == '0') {    // testa se o arquivo é consistente            
+		printf("Falha no processamento do arquivo.\n");
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 		return;
 	}
 	Registro *Register = malloc(sizeof(Registro));
 
+<<<<<<< HEAD
 	FILE *aux = fopen("aux.bin", "w+b");			//cria um arquivo auxiliar que receberá os registros não removidos
+=======
+	FILE *aux = fopen("aux.bin", "w+b");
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 	CriaHeader(aux, header);
     fseek(aux, 960, SEEK_SET);
 
@@ -52,9 +69,15 @@ void CompactaArquivo(FILE *file, char *arq){
 
 			ResetaRegistro(Register);
 
+<<<<<<< HEAD
 			LeRegistroBin(Register, file);				//le o registro nao removido
 				
 			EscreveRegistro(aux, Register);				//escreve o registro lido no arquivo auxiliar
+=======
+			LeRegistroBin(Register, file);
+				
+			EscreveRegistro(aux, Register);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 
 		} else {
 
@@ -75,7 +98,10 @@ void CompactaArquivo(FILE *file, char *arq){
 	fclose(aux);
     fclose(file);
    	free(header);
+<<<<<<< HEAD
 	free(Register);
+=======
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 
 	remove(arq);
 	rename("aux.bin", arq); 
@@ -85,8 +111,20 @@ void CompactaArquivo(FILE *file, char *arq){
 
 // imprime todos os registros validos de um arquivo
 
+<<<<<<< HEAD
 void PrintArquivo(FILE *file, Cabecalho *header){
 	Registro *Register = malloc(sizeof(Registro));
+=======
+void PrintArquivo(FILE *file){
+	Registro *Register = malloc(sizeof(Registro));
+	Cabecalho *header = getHeader(file);
+
+	if(header->status == '0'){  // confere se o arquivo eh valido
+		PrintErro();
+		free(Register);
+		return;
+	}
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 
 	int tem_registro = 0; // flag para descobrir se algum registro foi encontrado
 
@@ -108,7 +146,11 @@ void PrintArquivo(FILE *file, Cabecalho *header){
 
 			LeRegistroBin(Register, file); 
 				
+<<<<<<< HEAD
 			PrintRegistro(Register);
+=======
+			ImprimeRegistro(Register);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 					
 		}
 	}
@@ -117,8 +159,11 @@ void PrintArquivo(FILE *file, Cabecalho *header){
 		printf("Registro inexistente.\n\n");
 	}
 	PrintPagDisco(header); // mostra o numero de paginas de disco
+<<<<<<< HEAD
 	free(Register);
 
+=======
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 }
 
 
@@ -169,7 +214,11 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(atoi(valorCampo) == Register->idConecta){
 						encontrou_reg = 1;
 						if(funcionalidade){
+<<<<<<< HEAD
 							PrintRegistro(Register);
+=======
+							ImprimeRegistro(Register);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -180,7 +229,11 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(valorCampo[0] == Register->siglaPais[0] && valorCampo[1] == Register->siglaPais[1]){
 						encontrou_reg = 1;
 						if(funcionalidade){
+<<<<<<< HEAD
 							PrintRegistro(Register);
+=======
+							ImprimeRegistro(Register);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -191,7 +244,11 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(atoi(valorCampo) == Register->idPoPsConectado){
 						encontrou_reg = 1;
 						if(funcionalidade){
+<<<<<<< HEAD
 							PrintRegistro(Register);
+=======
+							ImprimeRegistro(Register);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -202,7 +259,11 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(valorCampo[0] == Register->unidadeMedida){
 						encontrou_reg = 1;
 						if(funcionalidade){
+<<<<<<< HEAD
 							PrintRegistro(Register);
+=======
+							ImprimeRegistro(Register);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -213,7 +274,11 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(atoi(valorCampo) == Register->velocidade){
 						encontrou_reg = 1;
 						if(funcionalidade){
+<<<<<<< HEAD
 							PrintRegistro(Register);
+=======
+							ImprimeRegistro(Register);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -224,7 +289,11 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(!strcmp(valorCampo, Register->nomePoPs)){
 						encontrou_reg = 1;
 						if(funcionalidade){
+<<<<<<< HEAD
 							PrintRegistro(Register);
+=======
+							ImprimeRegistro(Register);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -235,7 +304,11 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 					if(!strcmp(valorCampo, Register->nomePais)){
 						encontrou_reg = 1;
 						if(funcionalidade){
+<<<<<<< HEAD
 							PrintRegistro(Register);
+=======
+							ImprimeRegistro(Register);
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 						} else {
 							RemoveRegistro(file, header, rrn);
 						}
@@ -287,6 +360,10 @@ void RemoveRegistro(FILE *file, Cabecalho *header, int rrn){
 
 void InsereRegistro(FILE *file, Registro *Register, Cabecalho *header){
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 	if(header->topo == -1){
 		fseek(file, 960+64*(header->proxRRN), SEEK_SET);
 		(header->proxRRN)++;
