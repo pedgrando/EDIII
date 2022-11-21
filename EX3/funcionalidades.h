@@ -20,6 +20,7 @@ void funcionalidade5(FILE *file, char *arq);
 
 void funcionalidade6(FILE *file, char *arq);
 
+void funcionalidade7(FILE *file);
 
 
 #endif

@@ -159,4 +159,9 @@ void funcionalidade6(FILE *file, char *arq){
 }
 
 
-
+void funcionalidade7(FILE *file){
+	char arq_indice[32];
+	scanf("%s", arq_indice);
+	FILE *file_index = fopen(arq_indice, "w+b");			//cria o arquivo de indice
+	
+}

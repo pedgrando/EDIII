@@ -107,6 +107,55 @@ int main(int argv, char *argc[]){
         funcionalidade6(file_in, arq_entrada);
 
 	break;	
+    case 7:
+
+	// FUNCIONALIDADE 7
+
+        scanf("%s", arq_entrada);
+        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
+            PrintErro();
+            break;
+        }
+
+        funcionalidade7(file_in);
+
+	break;	
+    case 8:
+
+	// FUNCIONALIDADE 8
+
+        scanf("%s", arq_entrada);
+        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
+            PrintErro();
+            break;
+        }
+
+
+	break;	
+    case 9:
+
+	// FUNCIONALIDADE 9
+
+        scanf("%s", arq_entrada);
+        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
+            PrintErro();
+            break;
+        }
+
+
+	break;	
+    case 10:
+
+	// FUNCIONALIDADE 10
+
+        scanf("%s", arq_entrada);
+        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
+            PrintErro();
+            break;
+        }
+
+
+	break;	
     default:
     break;
     }
