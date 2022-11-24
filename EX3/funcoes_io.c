@@ -400,3 +400,37 @@ void LeEntradaRegistro(Registro *Register){
 void PrintErro(){
 	printf("Falha no processamento do arquivo.\n");
 }
+
+
+void le_no_arvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
+	fseek(arq_arv, 65*RRN, SEEK_SET);
+
+	readstring(arq_arv, 1, &(pagina->folha));
+
+	readint(arq_arv, &(pagina->nroChavesNo));
+	readint(arq_arv, &(pagina->alturaNo));
+	readint(arq_arv, &(pagina->RRNdoNo));
+
+	for(int i = 0; i < 4; i++){
+		readint(arq_arv, &(pagina->P[i]));
+		readint(arq_arv, &(pagina->C[i]));
+		readint(arq_arv, &(pagina->PR[i]));
+	}
+
+	readint(arq_arv, &(pagina->P[4]));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

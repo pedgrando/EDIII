@@ -17,13 +17,8 @@ memcheck:
 	valgrind a.out
 
 zip:
-<<<<<<< HEAD
-	rm -f atv2.zip
-	zip atv2.zip Makefile *.h *.c
-=======
 	rm -f atv3.zip
 	zip atv3.zip Makefile *.h *.c
->>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 
 commit:
 	git pull origin main

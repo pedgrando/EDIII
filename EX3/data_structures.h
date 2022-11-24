@@ -11,11 +11,7 @@
 #define DEL '|'
 #define LIXO '$'
 #define REM '*'
-<<<<<<< HEAD
 #define TAM_NO 65
-=======
-
->>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 
 // CODIGO HASH DOS CAMPOS
 
@@ -57,7 +53,7 @@ typedef struct registro{
     char nomePais[30];
 } Registro;
 
-<<<<<<< HEAD
+
 
 typedef struct cabecalho_arvore{
 	char status;
@@ -70,30 +66,11 @@ typedef struct cabecalho_arvore{
 typedef struct registro_arvore{
 	char folha;
 	int nroChavesNo;
-    int alturaNo;
-    int RRNdoNo;
-    int P1;
-    int C1;
-    int PR1;
-    int P2;
-    int C2;
-    int PR2;
-    int P3;
-    int C3;
-    int PR3;
-    int P4;
-    int C4;
-    int PR4;
-    int P5;
+	int alturaNo;
+    	int RRNdoNo;
+	int P[5];
+    	int C[4];
+    	int PR[4];
 } Registro_Arvore;
-=======
-typedef struct cabecalho_arv{
-} Cabecalho_arv;
-
-typedef struct no{
-} No;
-
-typedef No* raiz;
->>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 
 #endif
