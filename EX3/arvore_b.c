@@ -4,6 +4,8 @@
 
 #include "data_structures.h"
 #include "funcoes_io.h"
+#include "arvore_b.h"
+#include "funcoes_io.h"
 
 /*
 typedef struct cabecalho_arvore{
@@ -58,7 +60,81 @@ int busca_no(int chave, Registro_Arvore pagina, int* pos){
 	return 0;
 }
 
-void insere_arvore(){
+int insere_arvore(FILE *arq, int chave, int RRN_indice_chave, int RRN_atual, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido){
+	if(RRN_atual == -1){
+		*chave_promovida = chave;
+		*RRN_indice_promovido = RRN_indice_chave;
+		*RRN_filho_promovido = -1;
+		return 1;
+	} else {
+		Registro_Arvore pagina;
+		le_no_arvore(arq, &pagina, RRN_atual);
+
+		int pos;
+		int sucesso = busca_no(chave, pagina, &pos);
+			
+		if(sucesso){
+			printf("Erro. A chave ja esta inserida\n");
+			return -1;
+		}
+		
+		int chave_a_promover;
+		int RRN_a_promover;
+		int RRN_filho_a_promover;
+
+		int promocao = insere_arvore(arq, chave, RRN_indice_chave, pagina.P[pos], &chave_a_promover, &RRN_a_promover, &RRN_filho_a_promover);
+		
+		if(promocao != 1){
+			return promocao;
+		} else if(pagina.nroChavesNo < 4){
+			insere_pagina(arq, &pagina, *chave_promovida, *RRN_indice_promovido, *RRN_filho_promovido);
+			return 0;
+		} else {
+			Registro_Arvore nova_pagina;
+			split(chave_a_promover, RRN_a_promover, RRN_filho_a_promover, &pagina, chave_promovida, RRN_indice_promovido, RRN_filho_promovido, &nova_pagina); 
+			escreve_no(arq, &pagina, RRN_atual);
+ 		       	escreve_no(arq, &nova_pagina, *RRN_filho_promovido);	
+		       	return 1;
+		}
+	}
+}
+
+int split(int chave_a_promover, int RRN_a_promover, int RRN_filho_a_promover, Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido, Registro_Arvore *nova_pagina){
+}
+
+void insere_pagina(FILE* arq, Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido){
+	int i = 0;
+
+	while(chave_promovida > pagina->C[i]) i++; 
+	
+	for( int j = i; j < 3; j++){
+		pagina->C[j+1] = pagina->C[j];
+		pagina->PR[j+1] = pagina->PR[j];	
+		pagina->P[j+2] = pagina->PR[j+1];
+	}	
+
+	pagina->C[i] = chave_promovida;
+	pagina->PR[i] = RRN_indice_promovido;
+	pagina->P[i+1] = RRN_filho_promovido;
+
+	escreve_no(arq, pagina, RRN_filho_promovido);
+}
+
+void inicializa_no(Registro_Arvore *pagina){
+
+
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
