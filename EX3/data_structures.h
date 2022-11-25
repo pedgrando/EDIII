@@ -73,4 +73,10 @@ typedef struct registro_arvore{
     int PR[4];
 } Registro_Arvore;
 
+typedef struct noAux{
+	int P[6];
+    	int C[5];
+    	int PR[5];
+} NoAux;
+
 #endif

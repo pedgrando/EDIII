@@ -416,6 +416,21 @@ void le_no_arvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 	readint(arq_arv, &(pagina->P[4]));
 }
 
+void escreve_no(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
+	fseek(arq_arv, 65*RRN, SEEK_SET);
+	
+	fwrite(&pagina->folha, sizeof(char), 1, arq_arv);
+	fwrite(&pagina->nroChavesNo, sizeof(int), 1, arq_arv);
+	fwrite(&pagina->alturaNo, sizeof(int), 1, arq_arv);
+	fwrite(&pagina->RRNdoNo, sizeof(int), 1, arq_arv);
+	fwrite(&pagina->P[0], sizeof(int), 1, arq_arv);
+
+	for(int i = 0; i < 4; i++){
+		fwrite(&pagina->C[i],sizeof(int), 1, arq_arv);
+		fwrite(&pagina->PR[i],sizeof(int), 1, arq_arv);
+		fwrite(&pagina->P[i+1],sizeof(int), 1, arq_arv);
+	}
+}
 
 
 

@@ -53,4 +53,6 @@ int readstring_variavel(FILE *file, char *string);
 
 void le_no_arvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN);
 
+void escreve_no(FILE *arq_arv, Registro_Arvore *pagina, int RRN);
+
 #endif
