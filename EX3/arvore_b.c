@@ -60,18 +60,18 @@ int busca_no(int chave, Registro_Arvore pagina, int* pos){
 	return 0;
 }
 
-int insere_arvore(FILE *arq, int chave, int RRN_indice_chave, int RRN_atual, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido){
+int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice_chave, int RRN_atual, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido){
 	if(RRN_atual == -1){
 		*chave_promovida = chave;
 		*RRN_indice_promovido = RRN_indice_chave;
 		*RRN_filho_promovido = -1;
 		return 1;
 	} else {
-		Registro_Arvore pagina;
-		le_no_arvore(arq, &pagina, RRN_atual);
+		Registro_Arvore *pagina = malloc(sizeof(Registro_Arvore));
+		le_no_arvore(arq, pagina, RRN_atual);
 
 		int pos;
-		int sucesso = busca_no(chave, pagina, &pos);
+		int sucesso = busca_no(chave, *pagina, &pos);
 			
 		if(sucesso){
 			printf("Erro. A chave ja esta inserida\n");
@@ -82,27 +82,54 @@ int insere_arvore(FILE *arq, int chave, int RRN_indice_chave, int RRN_atual, int
 		int RRN_a_promover;
 		int RRN_filho_a_promover;
 
-		int promocao = insere_arvore(arq, chave, RRN_indice_chave, pagina.P[pos], &chave_a_promover, &RRN_a_promover, &RRN_filho_a_promover);
+		int promocao = insere_arvore(header, arq, chave, RRN_indice_chave, pagina->P[pos], &chave_a_promover, &RRN_a_promover, &RRN_filho_a_promover);
 		
 		if(promocao != 1){
+			free(pagina);
 			return promocao;
-		} else if(pagina.nroChavesNo < 4){
-			insere_pagina(arq, &pagina, *chave_promovida, *RRN_indice_promovido, *RRN_filho_promovido);
+		} else if(pagina->nroChavesNo < 4){
+			free(pagina);
+			insere_pagina(pagina, *chave_promovida, *RRN_indice_promovido, *RRN_filho_promovido);
+			escreve_no(arq, pagina, *RRN_filho_promovido);
 			return 0;
 		} else {
-			Registro_Arvore nova_pagina;
-			split(chave_a_promover, RRN_a_promover, RRN_filho_a_promover, &pagina, chave_promovida, RRN_indice_promovido, RRN_filho_promovido, &nova_pagina); 
-			escreve_no(arq, &pagina, RRN_atual);
- 		       	escreve_no(arq, &nova_pagina, *RRN_filho_promovido);	
+			Registro_Arvore *nova_pagina = malloc(sizeof(Registro_Arvore));
+			inicializa_no(nova_pagina);
+			split(header, chave_a_promover, RRN_a_promover, RRN_filho_a_promover, pagina, chave_promovida, RRN_indice_promovido, RRN_filho_promovido, nova_pagina); 
+			escreve_no(arq, pagina, RRN_atual);
+ 		       	escreve_no(arq, nova_pagina, *RRN_filho_promovido);
+			free(nova_pagina);	
+			free(pagina);
 		       	return 1;
 		}
 	}
 }
 
-int split(int chave_a_promover, int RRN_a_promover, int RRN_filho_a_promover, Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido, Registro_Arvore *nova_pagina){
+int split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN_filho_inserir, Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido, Registro_Arvore *nova_pagina){
+	NoAux pag_auxiliar;
+	for(int i = 0; i < 4; i++){
+		pag_auxiliar.C[i] = pagina->C[i];
+		pag_auxiliar.P[i] = pagina->P[i];
+		pag_auxiliar.PR[i] = pagina->PR[i];
+	}
+	pag_auxiliar.P[4] = pagina->P[4];
+			
+	for(int j = 0; j < 4; j++){
+		if(
+	}
+
+
+
+
+
+
+
+
+
+
 }
 
-void insere_pagina(FILE* arq, Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido){
+void insere_pagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido){
 	int i = 0;
 
 	while(chave_promovida > pagina->C[i]) i++; 
@@ -117,14 +144,19 @@ void insere_pagina(FILE* arq, Registro_Arvore *pagina, int chave_promovida, int 
 	pagina->PR[i] = RRN_indice_promovido;
 	pagina->P[i+1] = RRN_filho_promovido;
 
-	escreve_no(arq, pagina, RRN_filho_promovido);
 }
 
 void inicializa_no(Registro_Arvore *pagina){
-
-
-
-
+	pagina->folha = '0';
+	pagina->nroChavesNo = 0;
+	pagina->alturaNo = -1;
+	pagina->RRNdoNo = -1;
+	for(int i = 0; i < 4; i++){
+		pagina->P[i] = -1;
+		pagina->PR[i] = -1;
+		pagina->C[i] = -1;
+	}
+	pagina->P[4] = -1;
 }
 
 

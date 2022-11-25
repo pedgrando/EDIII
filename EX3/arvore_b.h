@@ -11,8 +11,9 @@ int busca_no(int chave, Registro_Arvore pagina, int* pos);
 
 int busca_arvore(FILE *arq, int RRN, int chave, int* RRN_chave, int* pos_chave);
 
-int insere_arvore(FILE *arq, int chave, int RRN_indice_chave, int RRN_atual, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido);
+int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice_chave, int RRN_atual, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido);
 
+void inicializa_no(Registro_Arvore *pagina);
 
 
 
