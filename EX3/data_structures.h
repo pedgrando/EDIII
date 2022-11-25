@@ -67,10 +67,10 @@ typedef struct registro_arvore{
 	char folha;
 	int nroChavesNo;
 	int alturaNo;
-    	int RRNdoNo;
-	int P[5];
-    	int C[4];
-    	int PR[4];
+    int RRNdoNo;
+    int P[5];
+    int C[4];
+    int PR[4];
 } Registro_Arvore;
 
 #endif
