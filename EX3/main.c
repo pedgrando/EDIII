@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 // PEDRO ANTONIO BRUNO GRANDO - 12547166 - 100% de contribuição
 // PEDRO ARTHUR DO PRADO FRANÇOSO - 12547301 - 100% de contribuição
 
 
-=======
->>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -17,18 +14,17 @@
 int main(int argv, char *argc[]){
     int option;
     char arq_entrada[32];
-    char arq_saida[32];
 
     scanf("%d", &option);		    
 
     FILE *file_in = NULL;
-    FILE *file_out = NULL;
 
     Cabecalho *header = malloc(sizeof(Cabecalho));
     *header = ResetaCabecalho();
     
     switch (option)
     {
+	    /*
     case 1:    
 	
 	// FUNCIONALIDADE 1
@@ -41,7 +37,7 @@ int main(int argv, char *argc[]){
         }
 		header->status = 0;
 
-	    funcionalidade1(file_in, file_out, header, arq_saida);
+	funcionalidade1(file_in, file_out, header, arq_saida);
 
     break;
     case 2:
@@ -112,7 +108,8 @@ int main(int argv, char *argc[]){
 
         funcionalidade6(file_in, arq_entrada);
 
-	break;	
+	break;
+*/	
     case 7:
 
 	// FUNCIONALIDADE 7

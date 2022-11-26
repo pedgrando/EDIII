@@ -55,4 +55,9 @@ void le_no_arvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN);
 
 void escreve_no(FILE *arq_arv, Registro_Arvore *pagina, int RRN);
 
+void le_header_arv(FILE *arq_arv, Cabecalho_Arvore *header);
+
+void escreve_header_arv(FILE* arv, Cabecalho_Arvore *header);
+
+
 #endif

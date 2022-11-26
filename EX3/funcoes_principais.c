@@ -9,6 +9,7 @@
 #include "data_structures.h"
 #include "funcionalidades.h"
 #include "funcoes_principais.h"
+#include "arvore_b.h"
 
 void TransfereDados(FILE *file, FILE *file_out, Cabecalho *header){
     while(fgetc(file) != '\n'); 					// pula a primeira linha do .csv
@@ -292,15 +293,17 @@ void RemoveRegistro(FILE *file, Cabecalho *header, int rrn){
 
 // recebe um registro pela entrada padrao e insere no arquivo binario
 
-void InsereRegistro(FILE *file, Registro *Register, Cabecalho *header){
+int InsereRegistro(FILE *file, Registro *Register, Cabecalho *header){
+	int rrn_reg;
 
 	if(header->topo == -1){
 		fseek(file, 960+64*(header->proxRRN), SEEK_SET);
+		rrn_reg = header->proxRRN;
 		(header->proxRRN)++;
-
 	} else {
 		int novo_topo;
 		fseek(file, 961+64*(header->topo), SEEK_SET);
+		rrn_reg = header->topo;
 		
 		fread(&novo_topo, sizeof(int), 1, file);
 		header->topo = novo_topo;	
@@ -311,6 +314,62 @@ void InsereRegistro(FILE *file, Registro *Register, Cabecalho *header){
 
 	EscreveRegistro(file, Register);
 
+	return rrn_reg;
 }
 
 
+void criaArvore(FILE *arq_dados, FILE *arv){
+	Registro *Register = malloc(sizeof(Registro));
+	Cabecalho *header = malloc(sizeof(Cabecalho));
+	CriaHeader(arq_dados, header);
+	
+	Cabecalho_Arvore *header_arv = malloc(sizeof(Cabecalho_Arvore));
+	le_header_arv(arv, header_arv); 
+
+	int rrn_reg = 0;
+
+	while(fread(&Register->removido, sizeof(char), 1, arq_dados) != 0){
+
+		if(Register->removido == '1'){
+
+			fseek(arq_dados, 63, SEEK_CUR); // pula registro logicamente removido
+
+		} else {
+			ResetaRegistro(Register);
+
+			// le um registro e imprime seu conteudo
+
+			LeRegistroBin(Register, arq_dados); 
+				
+			int chave_promovida;
+			int RRN_indice_promovido;
+			int RRN_filho_promovido;
+
+			if(insere_arvore(header_arv, arv, Register->idConecta, rrn_reg, header_arv->noRaiz, &chave_promovida, &RRN_indice_promovido, &RRN_filho_promovido) == 1){
+				Registro_Arvore *nova_pag = malloc(sizeof(Registro_Arvore));
+				inicializa_no(nova_pag);
+				header_arv->alturaArvore++;
+				nova_pag->alturaNo = header_arv->alturaArvore;
+				nova_pag->RRNdoNo = header_arv->RRNproxNo;
+				header_arv->RRNproxNo++;
+
+				nova_pag->C[0] = chave_promovida;
+				nova_pag->PR[0] = RRN_indice_promovido;
+				nova_pag->P[0] = header_arv->noRaiz;
+				nova_pag->P[1] = RRN_filho_promovido;
+				nova_pag->nroChavesNo++;
+				
+				escreve_no(arv, nova_pag, nova_pag->RRNdoNo);
+			}				
+		}
+
+		rrn_reg++;
+	}
+	escreve_header_arv(arv, header_arv);
+
+
+
+	free(Register);
+	free(header);
+	free(header_arv);
+}

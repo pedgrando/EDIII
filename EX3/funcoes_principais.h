@@ -14,8 +14,10 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 
 void RemoveRegistro(FILE *file, Cabecalho *header, int rrn);
 
-void InsereRegistro(FILE *file, Registro *Register, Cabecalho *header);
+int InsereRegistro(FILE *file, Registro *Register, Cabecalho *header);
 
 void PrintArquivo(FILE *file);
+
+void criaArvore(FILE *arq_dados, FILE *arv);
 
 #endif

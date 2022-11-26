@@ -28,7 +28,7 @@ typedef struct registro_arvore{
 */
 
 
-int busca_arvore(FILE *arq, int RRN, int chave, int* RRN_chave, int* pos_chave){
+int busca_arvore(FILE *arq, int RRN, int chave, int* RRN_chave, int* pos_chave, int *pos_dado, int *num_pag_disco){
 	if(RRN == -1){ 
 		return -1;
 	} else {
@@ -36,19 +36,21 @@ int busca_arvore(FILE *arq, int RRN, int chave, int* RRN_chave, int* pos_chave){
 		Registro_Arvore pagina;
 
 		le_no_arvore(arq, &pagina, RRN);
+		(*num_pag_disco)++;
 
-		if(busca_no(chave, pagina, &pos)){
+		if(busca_no(chave, pagina, &pos) == 1){
 			*RRN_chave = RRN;	
 			*pos_chave = pos;
+			*pos_dado = pagina.PR[pos];
 			return 1;
 		} else {
-			return(busca_arvore(arq, pagina.P[pos], chave, RRN_chave, pos_chave));	
+			return(busca_arvore(arq, pagina.P[pos], chave, RRN_chave, pos_chave, pos_dado, num_pag_disco));	
 		}	
 	}
 }
 
 int busca_no(int chave, Registro_Arvore pagina, int* pos){
-	for(int i = 0; i < 4; i++){
+	for(int i = 0; i < pagina.nroChavesNo; i++){
 		*pos = i;
 		if(chave < pagina.C[i]){
 			return 0;	
@@ -56,7 +58,7 @@ int busca_no(int chave, Registro_Arvore pagina, int* pos){
 			return 1;
 		}
 	}
-	*pos = 4;
+	*pos = pagina.nroChavesNo;
 	return 0;
 }
 
@@ -65,6 +67,8 @@ int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice
 		*chave_promovida = chave;
 		*RRN_indice_promovido = RRN_indice_chave;
 		*RRN_filho_promovido = -1;
+
+		header->nroChavesTotal++;
 		return 1;
 	} else {
 		Registro_Arvore *pagina = malloc(sizeof(Registro_Arvore));
@@ -74,8 +78,9 @@ int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice
 		int sucesso = busca_no(chave, *pagina, &pos);
 			
 		if(sucesso){
+			free(pagina);
 			printf("Erro. A chave ja esta inserida\n");
-			return -1;
+			exit(-1);	
 		}
 		
 		int chave_a_promover;
@@ -83,14 +88,15 @@ int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice
 		int RRN_filho_a_promover;
 
 		int promocao = insere_arvore(header, arq, chave, RRN_indice_chave, pagina->P[pos], &chave_a_promover, &RRN_a_promover, &RRN_filho_a_promover);
+
 		
 		if(promocao != 1){
 			free(pagina);
-			return promocao;
+			return 0;
 		} else if(pagina->nroChavesNo < 4){
-			free(pagina);
 			insere_pagina(pagina, *chave_promovida, *RRN_indice_promovido, *RRN_filho_promovido);
 			escreve_no(arq, pagina, *RRN_filho_promovido);
+			free(pagina);
 			return 0;
 		} else {
 			Registro_Arvore *nova_pagina = malloc(sizeof(Registro_Arvore));
@@ -105,28 +111,58 @@ int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice
 	}
 }
 
-int split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN_filho_inserir, Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido, Registro_Arvore *nova_pagina){
+void split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN_filho_inserir, Registro_Arvore *pagina, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido, Registro_Arvore *nova_pagina){
 	NoAux pag_auxiliar;
-	for(int i = 0; i < 4; i++){
+	int i;
+	for(i = 0; i < 4; i++){
 		pag_auxiliar.C[i] = pagina->C[i];
 		pag_auxiliar.P[i] = pagina->P[i];
 		pag_auxiliar.PR[i] = pagina->PR[i];
 	}
 	pag_auxiliar.P[4] = pagina->P[4];
-			
-	for(int j = 0; j < 4; j++){
-		if(
+	
+	i = 0;	
+	while(chave_inserir > pagina->C[i]) i++;
+
+	for(int j = 4; j >= i; j--){
+		pag_auxiliar.C[j] = pag_auxiliar.C[j-1];
+		pag_auxiliar.PR[j] = pag_auxiliar.PR[j-1];
+		pag_auxiliar.P[j+1] = pag_auxiliar.P[j];
 	}
+	
+	pag_auxiliar.C[i] = chave_inserir;
+	pag_auxiliar.PR[i] = RRN_inserir;
+	pag_auxiliar.P[i+1] = RRN_filho_inserir;
 
+	nova_pagina->alturaNo = pagina->alturaNo;
+	nova_pagina->RRNdoNo = header->RRNproxNo;
+	header->RRNproxNo++;
+	if(nova_pagina->alturaNo == 1) nova_pagina->folha = '1';
+	
+	*chave_promovida = pag_auxiliar.C[2];
+	*RRN_indice_promovido = pag_auxiliar.PR[2];
+	*RRN_filho_promovido = nova_pagina->RRNdoNo;
+	
+	zera_dados_no(pagina);
+	zera_dados_no(nova_pagina);
+	
+	for(i = 0; i < 2; i++){
+		pagina->C[i] = pag_auxiliar.C[i];	
+		pagina->PR[i] = pag_auxiliar.PR[i];	
+		pagina->P[i] = pag_auxiliar.P[i];	
+	}
+	pagina->P[i] = pag_auxiliar.P[i];	
+	i++;
+	for(int j = 0; j < 2; j++){
+		nova_pagina->C[j] = pag_auxiliar.C[i];
+		nova_pagina->PR[j] = pag_auxiliar.PR[i];
+		nova_pagina->P[j] = pag_auxiliar.P[i];
+		i++;
+	}
+	nova_pagina->P[2] = pag_auxiliar.P[i];
 
-
-
-
-
-
-
-
-
+	pagina->nroChavesNo = 2;
+	nova_pagina->nroChavesNo = 2;
 }
 
 void insere_pagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido){
@@ -134,10 +170,10 @@ void insere_pagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_
 
 	while(chave_promovida > pagina->C[i]) i++; 
 	
-	for( int j = i; j < 3; j++){
-		pagina->C[j+1] = pagina->C[j];
-		pagina->PR[j+1] = pagina->PR[j];	
-		pagina->P[j+2] = pagina->PR[j+1];
+	for( int j = 4; j > i; j--){
+		pagina->C[j] = pagina->C[j-1];
+		pagina->PR[j] = pagina->PR[j-1];	
+		pagina->P[j+1] = pagina->PR[j];
 	}	
 
 	pagina->C[i] = chave_promovida;
@@ -147,9 +183,9 @@ void insere_pagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_
 }
 
 void inicializa_no(Registro_Arvore *pagina){
-	pagina->folha = '0';
+	pagina->folha = '1';
 	pagina->nroChavesNo = 0;
-	pagina->alturaNo = -1;
+	pagina->alturaNo = 1;
 	pagina->RRNdoNo = -1;
 	for(int i = 0; i < 4; i++){
 		pagina->P[i] = -1;
@@ -159,8 +195,15 @@ void inicializa_no(Registro_Arvore *pagina){
 	pagina->P[4] = -1;
 }
 
-
-
+void zera_dados_no(Registro_Arvore *pagina){
+	for(int i = 0; i < pagina->nroChavesNo; i++){
+		pagina->C[i] = -1;
+		pagina->PR[i] = -1;
+		pagina->P[i] = -1;
+	}
+	pagina->P[pagina->nroChavesNo] = -1;
+	pagina->nroChavesNo = 0;
+}
 
 
 

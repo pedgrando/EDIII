@@ -9,18 +9,6 @@
 #include "data_structures.h"
 #include "funcionalidades.h"
 
-//teste parte 2
-
-Cabecalho ResetaCabecalho(){
-    Cabecalho aux;
-    aux.status = '0';
-    aux.topo = -1;
-    aux.proxRRN = 0;
-    aux.nroRegRem = 0;
-    aux.nroPagDisco = 0;
-    aux.qttCompacta = 0;
-    return aux;
-}
 
 // cria um header em memoria secundaria no arquvio
 //

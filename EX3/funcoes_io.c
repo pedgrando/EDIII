@@ -247,7 +247,7 @@ int getRegistroCsv(FILE *file_csv, Registro *Register){
  
 // imprime todos os campos nao vazios de um registro, segundo a proposta do trabalho
 
-void Imprime Registro(Registro *Register){
+void ImprimeRegistro(Registro *Register){
     if(!Register->campoVazio[0]) printf("Identificador do ponto: %d\n", Register->idConecta);
     if(!Register->campoVazio[1]) printf("Nome do ponto: %s\n", Register->nomePoPs);
     if(!Register->campoVazio[2]) printf("Pais de localizacao: %s\n", Register->nomePais);
@@ -399,7 +399,9 @@ void PrintErro(){
 
 
 void le_no_arvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
-	fseek(arq_arv, 65*RRN, SEEK_SET);
+	if(arq_arv == NULL) return;
+
+	fseek(arq_arv, 65*(RRN+1), SEEK_SET);
 
 	readstring(arq_arv, 1, &(pagina->folha));
 
@@ -433,9 +435,32 @@ void escreve_no(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 }
 
 
+void le_header_arv(FILE *arq_arv, Cabecalho_Arvore *header){
+	if(arq_arv == NULL) return;
+	
+	rewind(arq_arv);
+	readstring(arq_arv, 1, &header->status);
+	readint(arq_arv, &header->noRaiz);
+	readint(arq_arv, &header->nroChavesTotal);
+	readint(arq_arv, &header->alturaArvore);
+	readint(arq_arv, &header->RRNproxNo);
 
+	fseek(arq_arv, 49, SEEK_CUR);
+}
 
+void escreve_header_arv(FILE* arv, Cabecalho_Arvore *header){
+	fseek(arv, 0, SEEK_SET);
 
+	fwrite(&header->status, sizeof(char), 1, arv);
+	fwrite(&header->noRaiz, sizeof(int), 1, arv);
+	fwrite(&header->nroChavesTotal, sizeof(int), 1, arv);
+	fwrite(&header->alturaArvore, sizeof(int), 1, arv);
+	fwrite(&header->RRNproxNo, sizeof(int), 1, arv);
+
+	for(int i = 0; i < 48; i++){
+		fwrite("$", sizeof(char), 1, arv);
+	}
+}
 
 
 
