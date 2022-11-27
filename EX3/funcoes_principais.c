@@ -239,6 +239,7 @@ void criaArvore(FILE *arq_dados, FILE *arv){
 					header_arv->noRaiz = nova_pag->RRNdoNo;
 				
 					EscreveNo(arv, nova_pag, nova_pag->RRNdoNo);
+					free(nova_pag);
 			}
 		}
 
