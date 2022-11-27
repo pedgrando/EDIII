@@ -8,18 +8,6 @@
 
 //FUNCIONALIDADES
 
-void funcionalidade1(FILE *file_in, FILE *file_out, char *arq);
-
-void funcionalidade2(FILE *file);
-
-void funcionalidade3(FILE *file, char *arq);
-
-void funcionalidade4(FILE *file, char *arq);
-
-void funcionalidade5(FILE *file, char *arq);
-
-void funcionalidade6(FILE *file, char *arq);
-
 void funcionalidade7(FILE *file);
 
 void funcionalidade8(FILE *file);

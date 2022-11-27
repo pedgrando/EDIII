@@ -19,29 +19,19 @@ void scan_quote_string(char *string);
 
 Cabecalho *getHeader(FILE *file);
 
-int getRegistroCsv(FILE *file_csv, Registro *Register);
-
 void PreencheLixo(FILE *file);
+
+void ImprimeRegistro(Registro *Register);
+
+void ImprimePagDisco(Cabecalho *header);
 
 void EscreveHeader(FILE *file, Cabecalho *header);
 
 void EscreveRegistro(FILE *file, Registro *Register);
 
-int getRegistroCsv(FILE *file_csv, Registro *Register);
-
-void EscreveRegistro(FILE *file, Registro *Register);
-
-void PrintPagDisco(Cabecalho *header);
-
-void ImprimeRegistro(Registro *Register);
-
 void LeRegistroBin(Registro *Register, FILE *file);
 
 void LeEntradaRegistro(Registro *Register);
-
-void PrintRegistro(Registro *Register);
-
-void PrintPagDisco(Cabecalho *header);
 
 void PrintErro();
 
@@ -51,13 +41,13 @@ void readstring(FILE *file, int reading_size, char *string);
 
 int readstring_variavel(FILE *file, char *string);
 
-void le_no_arvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN);
+void LeNoArvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN);
 
-void escreve_no(FILE *arq_arv, Registro_Arvore *pagina, int RRN);
+void EscreveNo(FILE *arq_arv, Registro_Arvore *pagina, int RRN);
 
-void le_header_arv(FILE *arq_arv, Cabecalho_Arvore *header);
+void LeHeaderArvore(FILE *arq_arv, Cabecalho_Arvore *header);
 
-void escreve_header_arv(FILE* arv, Cabecalho_Arvore *header);
+void EscreveHeaderArvore(FILE* arv, Cabecalho_Arvore *header);
 
 void ImprimeRegistroCombinado(Registro *Register1, Registro *Register2);
 

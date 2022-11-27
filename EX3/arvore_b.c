@@ -7,49 +7,32 @@
 #include "arvore_b.h"
 #include "funcoes_io.h"
 
-/*
-typedef struct cabecalho_arvore{
-	char status;
-	int noRaiz;
-	int nroChavesTotal;
-    int alturaArvore;
-    int RRNproxNo;
-} Cabecalho_Arvore;
+// funcao recursiva de busca utilizando a arvore b
 
-typedef struct registro_arvore{
-	char folha;
-	int nroChavesNo;
-	int alturaNo;
-    	int RRNdoNo;
-	int P[5];
-    	int C[4];
-    	int PR[4];
-} Registro_Arvore;
-*/
-
-
-int busca_arvore(FILE *arq, int RRN, int chave, int* RRN_chave, int* pos_chave, int *pos_dado, int *num_pag_disco){
+int BuscaArvore(FILE *arq, int RRN, int chave, int* RRN_chave, int* pos_chave, int *pos_dado, int *num_pag_disco){
 	if(RRN == -1){ 
 		return 0;
 	} else {
 		int pos;  // variavel pos tem duas utilidades -> se achou, diz em que posicao do vetor esta; se não achou, diz para qual no a recursao deve seguir
 		Registro_Arvore pagina;
 
-		le_no_arvore(arq, &pagina, RRN);
+		LeNoArvore(arq, &pagina, RRN);
 		(*num_pag_disco)++;
 
-		if(busca_no(chave, pagina, &pos) == 1){
+		if(BuscaNo(chave, pagina, &pos) == 1){ 		//realiza a recursividade
 			*RRN_chave = RRN;	
 			*pos_chave = pos;
 			*pos_dado = pagina.PR[pos];
 			return 1;
 		} else {
-			return(busca_arvore(arq, pagina.P[pos], chave, RRN_chave, pos_chave, pos_dado, num_pag_disco));	
+			return(BuscaArvore(arq, pagina.P[pos], chave, RRN_chave, pos_chave, pos_dado, num_pag_disco));	
 		}	
 	}
 }
 
-int busca_no(int chave, Registro_Arvore pagina, int* pos){
+// funcao que complementa a busca recursia, lendo os nós da árvore durante a navegação recursiva
+
+int BuscaNo(int chave, Registro_Arvore pagina, int* pos){
 	for(int i = 0; i < pagina.nroChavesNo; i++){
 		*pos = i;
 		if(chave < pagina.C[i]){
@@ -62,7 +45,9 @@ int busca_no(int chave, Registro_Arvore pagina, int* pos){
 	return 0;
 }
 
-int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice_chave, int RRN_atual, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido){
+// funcao de insercao atualizando a arvore e seu cabeçalho
+
+int InsereArvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice_chave, int RRN_atual, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido){
 	if(RRN_atual == -1){
 		*chave_promovida = chave;
 		*RRN_indice_promovido = RRN_indice_chave;
@@ -72,10 +57,10 @@ int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice
 		return 1;
 	} else {
 		Registro_Arvore *pagina = malloc(sizeof(Registro_Arvore));
-		le_no_arvore(arq, pagina, RRN_atual);
+		LeNoArvore(arq, pagina, RRN_atual);
 
 		int pos;
-		int sucesso = busca_no(chave, *pagina, &pos);
+		int sucesso = BuscaNo(chave, *pagina, &pos);
 			
 		if(sucesso){
 			free(pagina);
@@ -87,29 +72,31 @@ int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice
 		int RRN_a_promover;
 		int RRN_filho_a_promover;
 
-		int promocao = insere_arvore(header, arq, chave, RRN_indice_chave, pagina->P[pos], &chave_a_promover, &RRN_a_promover, &RRN_filho_a_promover);
+		int promocao = InsereArvore(header, arq, chave, RRN_indice_chave, pagina->P[pos], &chave_a_promover, &RRN_a_promover, &RRN_filho_a_promover);
 
 		
 		if(promocao != 1){
 			free(pagina);
 			return 0;
 		} else if(pagina->nroChavesNo < 4){
-			insere_pagina(pagina, chave_a_promover, RRN_a_promover, RRN_filho_a_promover);
-			escreve_no(arq, pagina, RRN_atual);
+			InserePagina(pagina, chave_a_promover, RRN_a_promover, RRN_filho_a_promover);
+			EscreveNo(arq, pagina, RRN_atual);
 			free(pagina);
 			return 0;
 		} else {
 			Registro_Arvore *nova_pagina = malloc(sizeof(Registro_Arvore));
-			inicializa_no(nova_pagina);
+			InicializaNo(nova_pagina);
 			split(header, chave_a_promover, RRN_a_promover, RRN_filho_a_promover, pagina, chave_promovida, RRN_indice_promovido, RRN_filho_promovido, nova_pagina); 
-			escreve_no(arq, pagina, RRN_atual);
- 		       	escreve_no(arq, nova_pagina, *RRN_filho_promovido);
+			EscreveNo(arq, pagina, RRN_atual);
+			EscreveNo(arq, nova_pagina, *RRN_filho_promovido);
 			free(nova_pagina);	
 			free(pagina);
-		       	return 1;
+		    return 1;
 		}
 	}
 }
+
+// funcao de split para balancear a arvore
 
 void split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN_filho_inserir, Registro_Arvore *pagina, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido, Registro_Arvore *nova_pagina){
 	NoAux pag_auxiliar;
@@ -143,8 +130,8 @@ void split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN
 	*RRN_indice_promovido = pag_auxiliar.PR[2];
 	*RRN_filho_promovido = nova_pagina->RRNdoNo;
 	
-	zera_dados_no(pagina);
-	zera_dados_no(nova_pagina);
+	ResetaDadosNo(pagina);
+	ResetaDadosNo(nova_pagina);
 	
 	for(i = 0; i < 2; i++){
 		pagina->C[i] = pag_auxiliar.C[i];	
@@ -170,7 +157,9 @@ void split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN
 	nova_pagina->alturaNo = pagina->alturaNo;
 }
 
-void insere_pagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido){
+// funcao para preenchimento de paginas com as chaves e rrns
+
+void InserePagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido){
 	int i = 0;
 
 	while(chave_promovida > pagina->C[i] && i < 4) i++; 
@@ -191,7 +180,9 @@ void insere_pagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_
 	}
 }
 
-void inicializa_no(Registro_Arvore *pagina){
+//funcao que inicializa um nó com os dados de nó vazio
+
+void InicializaNo(Registro_Arvore *pagina){
 	pagina->folha = '1';
 	pagina->nroChavesNo = 0;
 	pagina->alturaNo = 1;
@@ -204,7 +195,9 @@ void inicializa_no(Registro_Arvore *pagina){
 	pagina->P[4] = -1;
 }
 
-void zera_dados_no(Registro_Arvore *pagina){
+// funcao que reseta os dados do nó
+
+void ResetaDadosNo(Registro_Arvore *pagina){
 	for(int i = 0; i < pagina->nroChavesNo; i++){
 		pagina->C[i] = -1;
 		pagina->PR[i] = -1;

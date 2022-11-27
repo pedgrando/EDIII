@@ -16,7 +16,7 @@ void traverse(FILE* file, int rrn){
 	if(rrn != -1){
 		Registro_Arvore* node = malloc(sizeof(Registro_Arvore));
 		fseek(file, (rrn+1)*65, SEEK_SET);
-		le_no_arvore(file, node, rrn);
+		LeNoArvore(file, node, rrn);
 
 		printf("%d ", node->RRNdoNo);
 		for(i = 0; i < node->nroChavesNo; i++){
@@ -40,92 +40,6 @@ int main(int argv, char *argc[]){
     
     switch (option)
     {
-	    /*
-    case 1:    
-	
-	// FUNCIONALIDADE 1
-	// cria a tabela (arquivo binario de dados) ---------------------------------------------------------------------------------------
-
-    	scanf("%s %s", arq_entrada, arq_saida);
-        if(!(file_out = fopen(arq_saida, "wb")) || !(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            PrintErro();
-            break;
-        }
-		header->status = 0;
-
-	funcionalidade1(file_in, file_out, header, arq_saida);
-
-    break;
-    case 2:
-
-	// FUNCIONALIDADE 2
-	// lista todos os registros de um arquivo sequencialmente ---------------------------------------------------------------------------
-	
-	    scanf("%s", arq_entrada);
-        if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            PrintErro();
-            break;
-        }
-
-    	PrintArquivo(file_in);
-    	fclose(file_in);
-
-	break;
-    case 3:
-
-	// FUNCIONALIDADE 3
-	// faz n consultas dados que atendam a uma exigencia especifica ----------------------------------------------------------------------
-
-	    scanf("%s", arq_entrada);
-        if(!(file_in = fopen(arq_entrada, "rb"))) {    // testa se o arquivo existe
-            PrintErro();
-            break;
-        }
-
-	    funcionalidade3(file_in, arq_entrada);
-		
-	break;
-    case 4:
-
-	// FUNCIONALIDADE 4
-	// remove logicamente n registros ---------------------------------------------------------------------------------------------------
-
-	    scanf("%s", arq_entrada);
-        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
-            PrintErro();
-            break;
-        }
-		
-	    funcionalidade4(file_in, arq_entrada);
-
-	break;
-    case 5:
-
-	// FUNCIONALIDADE 5
-
-	    scanf("%s", arq_entrada);
-        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe
-            PrintErro();
-            break;
-        }
-
-	    funcionalidade5(file_in, arq_entrada);
-
-	break;
-    case 6:
-
-	// FUNCIONALIDADE 6
-
-        scanf("%s", arq_entrada);
-        if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
-            PrintErro();
-            break;
-        }
-
-        funcionalidade6(file_in, arq_entrada);
-
-	break;
-*/	
     case 7:
 
 	// FUNCIONALIDADE 7
@@ -182,7 +96,7 @@ int main(int argv, char *argc[]){
 			scanf("%s", arq_entrada);
 			file_in = fopen(arq_entrada, "rb");
 			Cabecalho_Arvore *header_a = malloc(sizeof(Cabecalho_Arvore));
-			le_header_arv(file_in, header_a);
+			LeHeaderArvore(file_in, header_a);
 			traverse(file_in, header_a->noRaiz);
 			free(header_a);
  			break;

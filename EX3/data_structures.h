@@ -54,7 +54,6 @@ typedef struct registro{
 } Registro;
 
 
-
 typedef struct cabecalho_arvore{
 	char status;
 	int noRaiz;

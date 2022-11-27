@@ -11,125 +11,6 @@
 #include "funcoes_principais.h"
 #include "arvore_b.h"
 
-void TransfereDados(FILE *file, FILE *file_out, Cabecalho *header){
-    while(fgetc(file) != '\n'); 					// pula a primeira linha do .csv
-
-    Registro *Register = malloc(sizeof(Registro));
-
-    while (getRegistroCsv(file, Register)){ 				// le um registro e ja escreve ele no arquivo binario
-        EscreveRegistro(file_out, Register);
-		header->proxRRN++; 						// incrementa o prox RRN disponivel
-    }
-	header->nroPagDisco = getNumPag(header);  // atualiza o numero de paginas de disco
-	header->status = '1'; 						// define o status do arquivo como valido
-	
-	fseek(file_out, 0, SEEK_SET);
-	EscreveHeader(file_out, header);
-
-    free(Register);
-}
-
-    
-// compacta o arquivo, removendo todos os registros removidos e reescrendo os registros validos sequencialmente
-
-void CompactaArquivo(FILE *file, char *arq){    
-    fseek(file, 0, SEEK_SET);
-    Cabecalho *header = getHeader(file);
-	if(header->status == '0') {    // testa se o arquivo é consistente            
-		PrintErro();
-		return;
-	}
-	Registro *Register = malloc(sizeof(Registro));
-
-	FILE *aux = fopen("aux.bin", "w+b");			//cria um arquivo auxiliar que receberá os registros não removidos
-	CriaHeader(aux, header);
-    fseek(aux, 960, SEEK_SET);
-
-	char removido;
-	fseek(file, 960, SEEK_SET);
-	while(fread(&removido, sizeof(char), 1, file) != 0){
-
-		if(removido == '0'){
-
-			ResetaRegistro(Register);
-
-			LeRegistroBin(Register, file);				//le o registro nao removido
-				
-			EscreveRegistro(aux, Register);				//escreve o registro lido no arquivo auxiliar
-
-		} else {
-
-			header->nroRegRem--;
-			header->proxRRN--;
-			fseek(file, 63, SEEK_CUR); // pula registro logicamente removido
-
-		}
-	}
-
-	header->status = '1';
-	header->topo = -1;
-	header->qttCompacta++;
-	header->nroPagDisco = getNumPag(header);
-	fseek(aux, 0, SEEK_SET);
-	EscreveHeader(aux, header);
-
-	fclose(aux);
-    fclose(file);
-   	free(header);
-	free(Register);
-
-	remove(arq);
-	rename("aux.bin", arq); 
-
-	binarioNaTela(arq);
-}
-
-// imprime todos os registros validos de um arquivo
-
-void PrintArquivo(FILE *file){
-	Registro *Register = malloc(sizeof(Registro));
-	Cabecalho *header = getHeader(file);
-
-	if(header->status == '0'){  // confere se o arquivo eh valido
-		PrintErro();
-		free(Register);
-		return;
-	}
-
-	int tem_registro = 0; // flag para descobrir se algum registro foi encontrado
-
-	fseek(file, 960, SEEK_SET); // pula o header
-
-	while(fread(&Register->removido, sizeof(char), 1, file) != 0){
-
-		if(Register->removido == '1'){
-
-			fseek(file, 63, SEEK_CUR); // pula registro logicamente removido
-
-		} else {
-
-			tem_registro = 1;  // foi encontrado ao menos um registro
-
-			ResetaRegistro(Register);
-
-			// le um registro e imprime seu conteudo
-
-			LeRegistroBin(Register, file); 
-				
-			ImprimeRegistro(Register);
-					
-		}
-	}
-
-	if(!tem_registro){ 				// se nao tem registros
-		printf("Registro inexistente.\n\n");
-	}
-	PrintPagDisco(header); // mostra o numero de paginas de disco
-	free(Register);
-
-}
-
-
 // busca um registro em especifico para executar uma funcionalidade
 /*
  Essa funcao eh comum as funcionalidades 3 e 4; nela sao passados um arquivo com suas informacoes de header, um campo de busca e um valor buscado, qual das funcionalidades
@@ -260,19 +141,13 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 		printf("Registro inexistente.\n\n");
 
 	if(funcionalidade){                               // se for consulta -> imprime o numero de paginas de disco
-		PrintPagDisco(header);
+		ImprimePagDisco(header);
 	}
 
 	free(Register);	
 
 	return 0;
 }
-
-
-// remove um registro de um arquivo binario
-//
-// atribui o rrn do registro ao topo e guarda o topo antigo como encadeamento
-// o status do registro fica como removido ("1")  o resto eh preenchido com lixo
 
 void RemoveRegistro(FILE *file, Cabecalho *header, int rrn){
 	int topo = header->topo;
@@ -324,7 +199,7 @@ void criaArvore(FILE *arq_dados, FILE *arv){
 	CriaHeader(arq_dados, header);
 	
 	Cabecalho_Arvore *header_arv = malloc(sizeof(Cabecalho_Arvore));
-	le_header_arv(arv, header_arv); 
+	LeHeaderArvore(arv, header_arv); 
 
 	int rrn_reg = 0;
 
@@ -345,9 +220,9 @@ void criaArvore(FILE *arq_dados, FILE *arv){
 			int RRN_indice_promovido;
 			int RRN_filho_promovido;
 
-			if(insere_arvore(header_arv, arv, Register->idConecta, rrn_reg, header_arv->noRaiz, &chave_promovida, &RRN_indice_promovido, &RRN_filho_promovido) == 1){
+			if(InsereArvore(header_arv, arv, Register->idConecta, rrn_reg, header_arv->noRaiz, &chave_promovida, &RRN_indice_promovido, &RRN_filho_promovido) == 1){
 				Registro_Arvore *nova_pag = malloc(sizeof(Registro_Arvore));
-				inicializa_no(nova_pag);
+				InicializaNo(nova_pag);
 				header_arv->alturaArvore++;
 				nova_pag->alturaNo = header_arv->alturaArvore;
 				nova_pag->RRNdoNo = header_arv->RRNproxNo;
@@ -359,15 +234,13 @@ void criaArvore(FILE *arq_dados, FILE *arv){
 				nova_pag->P[1] = RRN_filho_promovido;
 				nova_pag->nroChavesNo++;
 				
-				escreve_no(arv, nova_pag, nova_pag->RRNdoNo);
+				EscreveNo(arv, nova_pag, nova_pag->RRNdoNo);
 			}				
 		}
 
 		rrn_reg++;
 	}
-	escreve_header_arv(arv, header_arv);
-
-
+	EscreveHeaderArvore(arv, header_arv);
 
 	free(Register);
 	free(header);

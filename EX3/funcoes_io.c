@@ -133,118 +133,6 @@ void PreencheLixo(FILE *file){
     fwrite(lixo, sizeof(lixo), 1, file);  
 }
 
-// le um registro de um arquivo .csv e passa para memoria primaria
-
-int getRegistroCsv(FILE *file_csv, Registro *Register){
-    char aux;
-    char aux2[5];
-    ResetaRegistro(Register); 		// reseta a variavel registro
-    
-    int j = 0;
-
-
-    // para cada campo, le-se ate a virgula e depois o valor e passado para o campo correspondente da variavel Registro
-    // tambem se testa se o campo esta vazio ou nao
-
-    int i = 0;
-    while(1) {
-        aux = fgetc(file_csv);
-        if (aux == ',') break;
-        if (aux == EOF) return 0;
-        aux2[i] = aux;
-        i++;
-    }
-    if(i > 0){
-        aux2[i] = '\0';
-        Register->idConecta = atoi(aux2);
-        Register->campoVazio[j] = 0;
-    }
-
-    j++;
-    i = 0;
-    while(1) {
-        aux = fgetc(file_csv);
-        if (aux == ',') break;
-        Register->nomePoPs[i] = aux;
-        i++;
-    }
-    if (i > 0) {
-	    Register->nomePoPs[i] = '\0'; 
-		while(Register->nomePoPs[i-1] == ' ' ) Register->nomePoPs[--i] = '\0'; // tira espaço caso tenha no final
-        Register->campoVazio[j] = 0;
-    }
-
-    j++;
-    i = 0;
-    while(1) {
-        aux = fgetc(file_csv);
-        if (aux == ',') break;
-        Register->nomePais[i] = aux;
-        i++;
-    } 
-    if (i > 0){
-		Register->nomePais[i] = '\0';
-		while(Register->nomePais[i-1] == ' ' ) Register->nomePais[--i] = '\0';
-		Register->campoVazio[j] = 0;
-    }
-
-    j++;
-    i = 0;
-    while(1) {
-        aux = fgetc(file_csv);
-        if (aux == ',') break;
-        Register->siglaPais[i] = aux;
-        i++;
-    }
-    if (i > 0) {
-        Register->siglaPais[i] = '\0';
-        Register->campoVazio[j] = 0;
-    }
-
-    j++;
-    i = 0;
-    while(1) {
-        aux = fgetc(file_csv);
-        if (aux == ',') break;
-        aux2[i] = aux;
-        i++;
-    }
-    if(i > 0){
-        aux2[i] = '\0';
-        Register->idPoPsConectado = atoi(aux2);
-        Register->campoVazio[j] = 0;
-    }
-
-    j++;
-    i = 0;
-    while(1) {
-        aux = fgetc(file_csv);
-        if (aux == ',') break;
-        aux2[i] = aux;
-        i++;
-    }
-    if(i > 0){
-        Register->unidadeMedida = aux2[0];
-        Register->campoVazio[j] = 0;
-    }
-
-    j++;
-    i = 0;
-    while(1) {
-        aux = fgetc(file_csv);
-        if (aux == '\n' || aux == '\r' || aux == '\0') break;
-        aux2[i] = aux;
-        i++;
-    }
-    if(i > 0) {
-        aux2[i] = '\0';
-        Register->velocidade = atoi(aux2);
-        Register->campoVazio[j] = 0;
-    }
-
-    return 1;
-}   
- 
 // imprime todos os campos nao vazios de um registro, segundo a proposta do trabalho
 
 void ImprimeRegistro(Registro *Register){
@@ -283,7 +171,7 @@ void EscreveRegistro(FILE *file, Registro *Register){
 
 // imprime o numero de paginas de disco do arquivo
 
-void PrintPagDisco(Cabecalho *header){
+void ImprimePagDisco(Cabecalho *header){
 	printf("Numero de paginas de disco: %d\n\n", header->nroPagDisco);
 }
 
@@ -398,7 +286,7 @@ void PrintErro(){
 }
 
 
-void le_no_arvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
+void LeNoArvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 	if(arq_arv == NULL) return;
 
 	fseek(arq_arv, 65*(RRN+1), SEEK_SET);
@@ -418,7 +306,7 @@ void le_no_arvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 	readint(arq_arv, &(pagina->P[4]));
 }
 
-void escreve_no(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
+void EscreveNo(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 	fseek(arq_arv, 65*(RRN+1), SEEK_SET);
 	
 	fwrite(&pagina->folha, sizeof(char), 1, arq_arv);
@@ -435,7 +323,7 @@ void escreve_no(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 }
 
 
-void le_header_arv(FILE *arq_arv, Cabecalho_Arvore *header){
+void LeHeaderArvore(FILE *arq_arv, Cabecalho_Arvore *header){
 	if(arq_arv == NULL) return;
 	
 	rewind(arq_arv);
@@ -448,7 +336,7 @@ void le_header_arv(FILE *arq_arv, Cabecalho_Arvore *header){
 	fseek(arq_arv, 49, SEEK_CUR);
 }
 
-void escreve_header_arv(FILE* arv, Cabecalho_Arvore *header){
+void EscreveHeaderArvore(FILE* arv, Cabecalho_Arvore *header){
 	fseek(arv, 0, SEEK_SET);
 
 	fwrite(&header->status, sizeof(char), 1, arv);
