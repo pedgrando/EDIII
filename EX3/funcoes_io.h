@@ -59,5 +59,6 @@ void le_header_arv(FILE *arq_arv, Cabecalho_Arvore *header);
 
 void escreve_header_arv(FILE* arv, Cabecalho_Arvore *header);
 
+void ImprimeRegistroCombinado(Registro *Register1, Registro *Register2);
 
 #endif

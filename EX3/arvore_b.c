@@ -30,7 +30,7 @@ typedef struct registro_arvore{
 
 int busca_arvore(FILE *arq, int RRN, int chave, int* RRN_chave, int* pos_chave, int *pos_dado, int *num_pag_disco){
 	if(RRN == -1){ 
-		return -1;
+		return 0;
 	} else {
 		int pos;  // variavel pos tem duas utilidades -> se achou, diz em que posicao do vetor esta; se não achou, diz para qual no a recursao deve seguir
 		Registro_Arvore pagina;
@@ -94,8 +94,8 @@ int insere_arvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice
 			free(pagina);
 			return 0;
 		} else if(pagina->nroChavesNo < 4){
-			insere_pagina(pagina, *chave_promovida, *RRN_indice_promovido, *RRN_filho_promovido);
-			escreve_no(arq, pagina, *RRN_filho_promovido);
+			insere_pagina(pagina, chave_a_promover, RRN_a_promover, RRN_filho_a_promover);
+			escreve_no(arq, pagina, RRN_atual);
 			free(pagina);
 			return 0;
 		} else {
@@ -163,12 +163,17 @@ void split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN
 
 	pagina->nroChavesNo = 2;
 	nova_pagina->nroChavesNo = 2;
+	if(pagina->alturaNo <= 1){
+		pagina->folha = '1';
+	}
+	nova_pagina->folha = pagina->folha;
+	nova_pagina->alturaNo = pagina->alturaNo;
 }
 
 void insere_pagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido){
 	int i = 0;
 
-	while(chave_promovida > pagina->C[i]) i++; 
+	while(chave_promovida > pagina->C[i] && i < 4) i++; 
 	
 	for( int j = 4; j > i; j--){
 		pagina->C[j] = pagina->C[j-1];
@@ -180,6 +185,10 @@ void insere_pagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_
 	pagina->PR[i] = RRN_indice_promovido;
 	pagina->P[i+1] = RRN_filho_promovido;
 
+	pagina->nroChavesNo++;
+	if(pagina->nroChavesNo == 1){
+		pagina->alturaNo++;
+	}
 }
 
 void inicializa_no(Registro_Arvore *pagina){

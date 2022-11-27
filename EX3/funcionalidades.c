@@ -240,6 +240,7 @@ void funcionalidade8(FILE *file){
 
 		if(hash_campo[i] == IDCONECTA){
 			falha_de_processamento = !busca_arvore(index_in, header_arv->noRaiz, atoi(valorCampo[i]), &RRN_chave, &pos_chave, &pos_dados, &num_pag_disco);
+			if(falha_de_processamento) break;
 
 			fseek(file, 960 + 64*pos_dados, SEEK_SET);
 			if(fread(&Register->removido, sizeof(char), 1, file) != 0 && Register->removido == '0'){
@@ -254,9 +255,9 @@ void funcionalidade8(FILE *file){
 			
 		} else {
 			falha_de_processamento = BuscaRegistro(file, header, hash_campo[i], valorCampo[i], CONSULTA, i+1);
+			if(falha_de_processamento) break;
 		}
 
-		if(falha_de_processamento) break;
 	}
 		
 	free(Register);
@@ -329,6 +330,8 @@ void funcionalidade9(FILE *file, char *arq){
 				nova_pag->P[1] = RRN_filho_promovido;
 				nova_pag->nroChavesNo++;
 
+				nova_pag->folha = '0';
+
 				header_arv->noRaiz = nova_pag->RRNdoNo;
 				
 				escreve_no(index_in, nova_pag, nova_pag->RRNdoNo);
@@ -363,19 +366,31 @@ void funcionalidade10(FILE *file){
 	
 	Cabecalho *header1 = NULL;
 	header1 = getHeader(file);
+	if(header1->status == '0'){
+		PrintErro();
+		free(header1);
+		return;
+	}
 
 	Cabecalho *header2 = NULL;
 	header2 = getHeader(file_in2);
+	if(header2->status == '0'){
+		PrintErro();
+		free(header1);
+		free(header2);
+		return;
+	}
+
 
 	char campo1[32];
 	char campo2[32];
 	scanf("%s", campo1);
 	scanf("%s", campo2);
 	
-	//int hash_campo1;
-	//int hash_campo2;
-	//hash_campo1 = hashfunction(campo1);
-	//hash_campo2 = hashfunction(campo2);
+	int hash_campo1;
+	int hash_campo2;
+	hash_campo1 = hashfunction(campo1);
+	hash_campo2 = hashfunction(campo2);
 
 	FILE *index_in;
 	char indice_entrada[32];
@@ -384,12 +399,51 @@ void funcionalidade10(FILE *file){
 		PrintErro();
 		return;
 	}
+	
+	Cabecalho_Arvore *header_arv = malloc(sizeof(Cabecalho_Arvore));
+	le_header_arv(index_in, header_arv);
+	if(header_arv->status == '0'){
+		PrintErro();
+		free(header1);
+		free(header2);
+		free(header_arv);
+		return;
+	}
+	
+	fseek(file, 960, SEEK_SET);
+	Registro Register1;
+	Registro Register2;
+	int falha_de_processamento, encontrou_reg = 0;
 
-	for(int i = 0; i < header1->proxRRN; i++){
-		for(int j = 0; j < header2->proxRRN; j++){
-			//BUSCAR REGISTROS COMPATIVEIS
+	
+	while(fread(&Register1.removido, sizeof(char), 1, file) != 0){
+	
+		if(Register1.removido == '1'){
+			fseek(file, 63, SEEK_CUR);
+		} else { 
+			
+			LeRegistroBin(&Register1, file);
+			if(!Register1.campoVazio[4]){ 
+
+				int RRN_chave, pos_chave, pos_dados, num_pag_disco = 2;
+				falha_de_processamento = !busca_arvore(index_in, header_arv->noRaiz, Register1.idPoPsConectado, &RRN_chave, &pos_chave, &pos_dados, &num_pag_disco);
+				if(!falha_de_processamento){
+
+					fseek(file_in2, 960 + 64*pos_dados, SEEK_SET);
+					if(fread(&Register2.removido, sizeof(char), 1, file_in2) != 0 && Register2.removido == '0'){
+						LeRegistroBin(&Register2, file_in2);
+						ImprimeRegistroCombinado(&Register1, &Register2);
+						encontrou_reg = 1;
+					}
+				}
+			}
+			
 		}
 	}
+
+	if(!encontrou_reg) printf("Registro inexistente.\n");
+	
+	
 }
 
 

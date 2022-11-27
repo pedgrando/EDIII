@@ -14,7 +14,7 @@ debug:
 
 memcheck:
 	gcc -g3 *.c -Wall -Werror -pedantic 
-	valgrind --leak-check=yes a.out
+	valgrind --leak-check=yes ./a.out
 
 zip:
 	rm -f atv3.zip

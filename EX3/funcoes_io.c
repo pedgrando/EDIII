@@ -419,7 +419,7 @@ void le_no_arvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 }
 
 void escreve_no(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
-	fseek(arq_arv, 65*RRN, SEEK_SET);
+	fseek(arq_arv, 65*(RRN+1), SEEK_SET);
 	
 	fwrite(&pagina->folha, sizeof(char), 1, arq_arv);
 	fwrite(&pagina->nroChavesNo, sizeof(int), 1, arq_arv);
@@ -461,6 +461,23 @@ void escreve_header_arv(FILE* arv, Cabecalho_Arvore *header){
 		fwrite("$", sizeof(char), 1, arv);
 	}
 }
+
+
+void ImprimeRegistroCombinado(Registro *Register1, Registro *Register2){
+	
+	if(!Register1->campoVazio[0]) printf("Identificador do ponto: %d\n", Register1->idConecta);
+	if(!Register1->campoVazio[1]) printf("Nome do ponto: %s\n", Register1->nomePoPs);
+	if(!Register1->campoVazio[2]) printf("Pais de localizacao: %s\n", Register1->nomePais);
+	if(!Register1->campoVazio[3]) printf("Sigla do pais: %s\n", Register1->siglaPais);
+	if(!Register1->campoVazio[4]) printf("Identificador do ponto conectado: %d\n", Register1->idPoPsConectado);
+	if(!Register2->campoVazio[1]) printf("Nome do ponto conectado: %s\n", Register2->nomePoPs);
+	if(!Register2->campoVazio[2]) printf("Nome do pais conectado: %s\n", Register2->nomePais);
+	if(!Register2->campoVazio[3]) printf("Sigla do pais: %s\n", Register2->siglaPais);
+	if(!Register1->campoVazio[5] && !Register1->campoVazio[6]) printf("Velocidade de transmissao: %d %cbps\n", Register1->velocidade, Register1->unidadeMedida);
+	printf("\n");
+}
+
+
 
 
 
