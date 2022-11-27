@@ -15,10 +15,11 @@ int InsereArvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice_
 
 void InicializaNo(Registro_Arvore *pagina);
 
-void split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN_filho_inserir, Registro_Arvore *pagina, int* chave_promovida, int* RRN_indice_promovido, int* RRN_filho_promovido, Registro_Arvore *nova_pagina);
+void split(FILE* arq, Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN_filho_inserir, Registro_Arvore *pagina, int* chave_promovida, int* RRN_indice_promovido, int* RRN_filho_promovido, Registro_Arvore *nova_pagina);
 
 void ResetaDadosNo(Registro_Arvore *pagina);
 
+void InicializaHeaderArvore(Cabecalho_Arvore *header);
 
 
 #endif

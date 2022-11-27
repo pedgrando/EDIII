@@ -16,7 +16,7 @@ void funcionalidade7(FILE *file){
 	FILE *index_in;
 	char indice_entrada[32];
 	scanf("%s", indice_entrada);
-	if(!(index_in = fopen(indice_entrada, "w+b"))) {    // testa se o arquivo foi criado            
+	if(!(index_in = fopen(indice_entrada, "wb+"))) {    // testa se o arquivo foi criado            
 		PrintErro();
 		return;
 	}
@@ -228,11 +228,13 @@ void funcionalidade10(FILE *file){
 	char campo2[32];
 	scanf("%s", campo1);
 	scanf("%s", campo2);
-	
+
+	/*	
 	int hash_campo1;
 	int hash_campo2;
 	hash_campo1 = hashfunction(campo1);
 	hash_campo2 = hashfunction(campo2);
+	*/
 
 	FILE *index_in;
 	char indice_entrada[32];

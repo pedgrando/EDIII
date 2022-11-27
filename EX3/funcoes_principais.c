@@ -195,13 +195,13 @@ int InsereRegistro(FILE *file, Registro *Register, Cabecalho *header){
 
 void criaArvore(FILE *arq_dados, FILE *arv){
 	Registro *Register = malloc(sizeof(Registro));
-	Cabecalho *header = malloc(sizeof(Cabecalho));
-	CriaHeader(arq_dados, header);
+	Cabecalho *header = getHeader(arq_dados);
 	
 	Cabecalho_Arvore *header_arv = malloc(sizeof(Cabecalho_Arvore));
-	LeHeaderArvore(arv, header_arv); 
+	InicializaHeaderArvore(header_arv); 
 
 	int rrn_reg = 0;
+	fseek(arq_dados, 960, SEEK_SET);
 
 	while(fread(&Register->removido, sizeof(char), 1, arq_dados) != 0){
 
@@ -221,21 +221,25 @@ void criaArvore(FILE *arq_dados, FILE *arv){
 			int RRN_filho_promovido;
 
 			if(InsereArvore(header_arv, arv, Register->idConecta, rrn_reg, header_arv->noRaiz, &chave_promovida, &RRN_indice_promovido, &RRN_filho_promovido) == 1){
-				Registro_Arvore *nova_pag = malloc(sizeof(Registro_Arvore));
-				InicializaNo(nova_pag);
-				header_arv->alturaArvore++;
-				nova_pag->alturaNo = header_arv->alturaArvore;
-				nova_pag->RRNdoNo = header_arv->RRNproxNo;
-				header_arv->RRNproxNo++;
+					Registro_Arvore *nova_pag = malloc(sizeof(Registro_Arvore));
+					InicializaNo(nova_pag);
+					header_arv->alturaArvore++;
+					nova_pag->alturaNo = header_arv->alturaArvore;
+					nova_pag->RRNdoNo = header_arv->RRNproxNo;
+					header_arv->RRNproxNo++;
 
-				nova_pag->C[0] = chave_promovida;
-				nova_pag->PR[0] = RRN_indice_promovido;
-				nova_pag->P[0] = header_arv->noRaiz;
-				nova_pag->P[1] = RRN_filho_promovido;
-				nova_pag->nroChavesNo++;
+					nova_pag->C[0] = chave_promovida;
+					nova_pag->PR[0] = RRN_indice_promovido;
+					nova_pag->P[0] = header_arv->noRaiz;
+					nova_pag->P[1] = RRN_filho_promovido;
+					nova_pag->nroChavesNo++;
+
+					nova_pag->folha = '0';
+
+					header_arv->noRaiz = nova_pag->RRNdoNo;
 				
-				EscreveNo(arv, nova_pag, nova_pag->RRNdoNo);
-			}				
+					EscreveNo(arv, nova_pag, nova_pag->RRNdoNo);
+			}
 		}
 
 		rrn_reg++;

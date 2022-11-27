@@ -86,8 +86,8 @@ int InsereArvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice_
 		} else {
 			Registro_Arvore *nova_pagina = malloc(sizeof(Registro_Arvore));
 			InicializaNo(nova_pagina);
-			split(header, chave_a_promover, RRN_a_promover, RRN_filho_a_promover, pagina, chave_promovida, RRN_indice_promovido, RRN_filho_promovido, nova_pagina); 
-			EscreveNo(arq, pagina, RRN_atual);
+			split(arq, header, chave_a_promover, RRN_a_promover, RRN_filho_a_promover, pagina, chave_promovida, RRN_indice_promovido, RRN_filho_promovido, nova_pagina); 
+			EscreveNo(arq, pagina, pagina->RRNdoNo);
 			EscreveNo(arq, nova_pagina, *RRN_filho_promovido);
 			free(nova_pagina);	
 			free(pagina);
@@ -98,7 +98,7 @@ int InsereArvore(Cabecalho_Arvore *header, FILE *arq, int chave, int RRN_indice_
 
 // funcao de split para balancear a arvore
 
-void split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN_filho_inserir, Registro_Arvore *pagina, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido, Registro_Arvore *nova_pagina){
+void split(FILE* arq, Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN_filho_inserir, Registro_Arvore *pagina, int *chave_promovida, int *RRN_indice_promovido, int *RRN_filho_promovido, Registro_Arvore *nova_pagina){
 	NoAux pag_auxiliar;
 	int i;
 	for(i = 0; i < 4; i++){
@@ -109,7 +109,7 @@ void split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN
 	pag_auxiliar.P[4] = pagina->P[4];
 	
 	i = 0;	
-	while(chave_inserir > pagina->C[i]) i++;
+	while(chave_inserir > pagina->C[i] && i < pagina->nroChavesNo) i++;
 
 	for(int j = 4; j >= i; j--){
 		pag_auxiliar.C[j] = pag_auxiliar.C[j-1];
@@ -162,12 +162,12 @@ void split(Cabecalho_Arvore *header, int chave_inserir, int RRN_inserir, int RRN
 void InserePagina(Registro_Arvore *pagina, int chave_promovida, int RRN_indice_promovido, int RRN_filho_promovido){
 	int i = 0;
 
-	while(chave_promovida > pagina->C[i] && i < 4) i++; 
+	while(chave_promovida > pagina->C[i] && i < pagina->nroChavesNo) i++; 
 	
-	for( int j = 4; j > i; j--){
+	for( int j = 3; j > i; j--){
 		pagina->C[j] = pagina->C[j-1];
 		pagina->PR[j] = pagina->PR[j-1];	
-		pagina->P[j+1] = pagina->PR[j];
+		pagina->P[j+1] = pagina->P[j];
 	}	
 
 	pagina->C[i] = chave_promovida;
@@ -193,6 +193,16 @@ void InicializaNo(Registro_Arvore *pagina){
 		pagina->C[i] = -1;
 	}
 	pagina->P[4] = -1;
+}
+
+// funcao que inicializa o cabecalho de uma arvore com os valores de uma arvore vazia
+
+void InicializaHeaderArvore(Cabecalho_Arvore *header){
+	header->status = '1';
+	header->noRaiz = -1;
+	header->nroChavesTotal = 0;
+	header->alturaArvore = 0;
+	header->RRNproxNo = 0;
 }
 
 // funcao que reseta os dados do nó

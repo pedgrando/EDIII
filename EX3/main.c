@@ -18,7 +18,7 @@ void traverse(FILE* file, int rrn){
 		fseek(file, (rrn+1)*65, SEEK_SET);
 		LeNoArvore(file, node, rrn);
 
-		printf("%d ", node->RRNdoNo);
+		printf("%d ", node->alturaNo);
 		for(i = 0; i < node->nroChavesNo; i++){
 			traverse(file, node->P[i]);
 		}
