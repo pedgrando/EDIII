@@ -11,6 +11,7 @@
 #include "funcoes_principais.h"
 #include "arvore_b.h"
 
+// FUNCIONALIDADE 7 - cria o arquivo de indice (arvore b)
 
 void funcionalidade7(FILE *file){
 	FILE *index_in;
@@ -29,6 +30,8 @@ void funcionalidade7(FILE *file){
 	binarioNaTela(indice_entrada);
 }
 
+// FUNCIONALIDADE 8 - realiza uma busca pelo arquivo de indice com base no IdConecta do registro
+
 void funcionalidade8(FILE *file){
 	FILE *index_in;
 	char indice_entrada[32];
@@ -39,26 +42,28 @@ void funcionalidade8(FILE *file){
 	}
 
 	int n;
-	scanf("%d", &n);
+	scanf("%d", &n);       // le o numero de buscas a serem realizadas
 
 	char (*valorCampo)[32] = malloc(sizeof(*valorCampo)*n);
 	int *hash_campo = malloc(sizeof(int)*n);
 
 	Cabecalho *header = NULL;
-	header = getHeader(file);
-	if(header->status == '0'){	// testa se o arquivo é consistente    	
+	header = getHeader(file); 	// le o header do arquivo de dados
+	if(header->status == '0'){	// testa se o arquivo de dados é consistente    	
 		PrintErro();
 		return;
 	}
 
 	Cabecalho_Arvore *header_arv = malloc(sizeof(Cabecalho_Arvore)); 
-	LeHeaderArvore(index_in, header_arv);
-	if(header_arv->status == '0'){	// testa se o arquivo é consistente    	
+	LeHeaderArvore(index_in, header_arv); 		// le o header do arquivo de indice
+	if(header_arv->status == '0'){	// testa se o arquivo de indice é consistente    	
 		PrintErro();
 		return;
 	}
 
 	Registro *Register = malloc(sizeof(Registro));
+
+	// le o nome do campo consultado e o valor da consulta
 
 	for(int i = 0; i < n; i++){	
 		char aux[32];
@@ -75,16 +80,17 @@ void funcionalidade8(FILE *file){
 	
 	
 	int falha_de_processamento;
-	int RRN_chave, pos_chave, pos_dados, num_pag_disco;
+	int RRN_chave, pos_chave, pos_dados, num_pag_disco; 
 
 	for(int i = 0; i < n; i++){
 		num_pag_disco = 2;       // paginas dos headers
 
 		if(hash_campo[i] == IDCONECTA){				//se o campo a ser buscado é a chave, faz a busca via arvore
-			falha_de_processamento = !BuscaArvore(index_in, header_arv->noRaiz, atoi(valorCampo[i]), &RRN_chave, &pos_chave, &pos_dados, &num_pag_disco);
+			falha_de_processamento = !BuscaArvore(index_in, header_arv->noRaiz, atoi(valorCampo[i]), &RRN_chave, &pos_chave, &pos_dados, &num_pag_disco);  // busca o rrn pos_dado da chave consultada no arquivo de indice
 			if(falha_de_processamento) break;
 
 			fseek(file, 960 + 64*pos_dados, SEEK_SET);
+			// acessa o registro no arquivo de dados com base no rrn encontrado na busca
 			if(fread(&Register->removido, sizeof(char), 1, file) != 0 && Register->removido == '0'){
 				LeRegistroBin(Register, file);
 				num_pag_disco++; 	// pagina de disco do registro de dados
@@ -96,7 +102,7 @@ void funcionalidade8(FILE *file){
 			printf("Numero de paginas de disco: %d\n\n", num_pag_disco);
 			
 		} else {									//se o campo a ser buscado nao é a chave, faz a busca comum
-			falha_de_processamento = BuscaRegistro(file, header, hash_campo[i], valorCampo[i], CONSULTA, i+1);
+			falha_de_processamento = BuscaRegistro(file, header, hash_campo[i], valorCampo[i], CONSULTA, i+1);  // faz a busca convencional
 			if(falha_de_processamento) break;
 		}
 
@@ -111,16 +117,18 @@ void funcionalidade8(FILE *file){
 	fclose(index_in);
 }
 
+// FUNCIONALIDADE 9 - insere um registro no arquivo de dados e atualiza o arquivo de registros
+
 void funcionalidade9(FILE *file, char *arq){
 	FILE *index_in;
 	char indice_entrada[32];
-	scanf("%s", indice_entrada);
+	scanf("%s", indice_entrada); 			    
 	if(!(index_in = fopen(indice_entrada, "rb+"))) {    // testa se o arquivo foi aberto corretamente            
 		PrintErro();
 		return;
 	}
 
-	Cabecalho *header = getHeader(file);
+	Cabecalho *header = getHeader(file); 		// le o header do arquivo de dados
 	if(header->status == '0'){	// testa se o arquivo é consistente    	
 		PrintErro();
 		fclose(file);
@@ -131,7 +139,7 @@ void funcionalidade9(FILE *file, char *arq){
 
 
 	Cabecalho_Arvore *header_arv = malloc(sizeof(Cabecalho_Arvore));
-	LeHeaderArvore(index_in, header_arv);
+	LeHeaderArvore(index_in, header_arv); 	// le o header do arquivo de indices
 	if(header_arv->status == '0'){	// testa se o arquivo é consistente    	
 		PrintErro();
 		fclose(file);
@@ -142,7 +150,7 @@ void funcionalidade9(FILE *file, char *arq){
 	}
 
 	int n;
-	scanf("%d", &n);
+	scanf("%d", &n);  	// le o numero de insercoes a serem realizadas
 
 	//ATUALIZAR ARVORE E INSERIR NO INDICE
 	
@@ -158,18 +166,28 @@ void funcionalidade9(FILE *file, char *arq){
 		int chave_promovida, RRN_indice_promovido, RRN_filho_promovido;
 
 
-		if(InsereArvore(header_arv, index_in, Register.idConecta, rrn_reg, header_arv->noRaiz, &chave_promovida, &RRN_indice_promovido, &RRN_filho_promovido) == 1){
+		if(InsereArvore(header_arv, index_in, Register.idConecta, rrn_reg, header_arv->noRaiz, &chave_promovida, &RRN_indice_promovido, &RRN_filho_promovido) == 1){    // insere o registro no arquivo de indices
+
+				// se o retorno da insercao na raiz retornar 1, significa que a raiz sofreu um split e uma chave foi promovida dela
+				// nesse caso, cria-se um novo no e insere-se a chave promovida nela
+				//
+				// no algoritmo, a chave promovida eh o valor medio de dois nos da arvore, nesse caso, do root (com valores menores que o valor promovido) e do novo no criado no split (com valores maiores
+				// que o promovido); portanto, os filhos desse novo no serao o root (filho da esquerda) e o no produzido no split (filho da direita) 
+
 				Registro_Arvore *nova_pag = malloc(sizeof(Registro_Arvore));
 				InicializaNo(nova_pag);
-				header_arv->alturaArvore++;
+
+				// atualiza as informacoes do header e insere os valores no novo no raiz
+
+				header_arv->alturaArvore++; 
 				nova_pag->alturaNo = header_arv->alturaArvore;
 				nova_pag->RRNdoNo = header_arv->RRNproxNo;
 				header_arv->RRNproxNo++;
 
-				nova_pag->C[0] = chave_promovida;
-				nova_pag->PR[0] = RRN_indice_promovido;
-				nova_pag->P[0] = header_arv->noRaiz;
-				nova_pag->P[1] = RRN_filho_promovido;
+				nova_pag->C[0] = chave_promovida; 		// insere a chave promovida
+				nova_pag->PR[0] = RRN_indice_promovido; 	// insere o rrn do arquivo de dados relativa a chave
+				nova_pag->P[0] = header_arv->noRaiz; 		// insere o ponteiro da antiga raiz como filho esquerdo 
+				nova_pag->P[1] = RRN_filho_promovido; 		// insere o ponteiro do no criado no split como filho direito
 				nova_pag->nroChavesNo++;
 
 				nova_pag->folha = '0';
@@ -197,6 +215,8 @@ void funcionalidade9(FILE *file, char *arq){
 	binarioNaTela(indice_entrada);
 }
 
+// FUNCIONALIDADE 10 - faz a juncao de dois arquivos
+
 void funcionalidade10(FILE *file){
 	FILE *file_in2;
 	char arq_entrada2[32];
@@ -207,34 +227,33 @@ void funcionalidade10(FILE *file){
 	}
 	
 	Cabecalho *header1 = NULL;
-	header1 = getHeader(file);
-	if(header1->status == '0'){
+	header1 = getHeader(file); 	// le o header do arquivo de dados 1
+	if(header1->status == '0'){     // verifica a integridade do arquivo
 		PrintErro();
 		free(header1);
 		return;
 	}
 
 	Cabecalho *header2 = NULL;
-	header2 = getHeader(file_in2);
-	if(header2->status == '0'){
+	header2 = getHeader(file_in2);  // le o header do arquivo de dados 2
+	if(header2->status == '0'){     // verifica a integridade do arquivo
 		PrintErro();
 		free(header1);
 		free(header2);
 		return;
 	}
 
+	// le os campos a serem buscados e comparados na juncao
 
 	char campo1[32];
 	char campo2[32];
 	scanf("%s", campo1);
 	scanf("%s", campo2);
 
-	/*	
 	int hash_campo1;
 	int hash_campo2;
 	hash_campo1 = hashfunction(campo1);
 	hash_campo2 = hashfunction(campo2);
-	*/
 
 	FILE *index_in;
 	char indice_entrada[32];
@@ -245,8 +264,8 @@ void funcionalidade10(FILE *file){
 	}
 	
 	Cabecalho_Arvore *header_arv = malloc(sizeof(Cabecalho_Arvore));
-	LeHeaderArvore(index_in, header_arv);
-	if(header_arv->status == '0'){
+	LeHeaderArvore(index_in, header_arv); 		    // le o header do arquivo de indices
+	if(header_arv->status == '0'){ 			    // verifica a integridade do arquivo
 		PrintErro();
 		free(header1);
 		free(header2);
@@ -258,7 +277,8 @@ void funcionalidade10(FILE *file){
 	Registro Register1;
 	Registro Register2;
 	int falha_de_processamento, encontrou_reg = 0;
-
+	
+	// realiza o cruzamento dos dados 
 	
 	while(fread(&Register1.removido, sizeof(char), 1, file) != 0){
 	
@@ -266,17 +286,19 @@ void funcionalidade10(FILE *file){
 			fseek(file, 63, SEEK_CUR);
 		} else { 
 			
+			// le um registro do arquivo 1
 			LeRegistroBin(&Register1, file);
 			if(!Register1.campoVazio[4]){ 
-
+				// se ele tiver o campo idPoPsConectado
 				int RRN_chave, pos_chave, pos_dados, num_pag_disco = 2;
-				falha_de_processamento = !BuscaArvore(index_in, header_arv->noRaiz, Register1.idPoPsConectado, &RRN_chave, &pos_chave, &pos_dados, &num_pag_disco);
+				falha_de_processamento = !BuscaArvore(index_in, header_arv->noRaiz, Register1.idPoPsConectado, &RRN_chave, &pos_chave, &pos_dados, &num_pag_disco); // busca o registro do arquivo 2 que tem
+																						    //  iConecta == arquivo1.idPoPsConectado
 				if(!falha_de_processamento){
-
+					// se a busca deu certo
 					fseek(file_in2, 960 + 64*pos_dados, SEEK_SET);
 					if(fread(&Register2.removido, sizeof(char), 1, file_in2) != 0 && Register2.removido == '0'){
 						LeRegistroBin(&Register2, file_in2);
-						ImprimeRegistroCombinado(&Register1, &Register2);
+						ImprimeRegistroCombinado(&Register1, &Register2); // imprime conforme as especificacoes
 						encontrou_reg = 1;
 					}
 				}
@@ -287,6 +309,10 @@ void funcionalidade10(FILE *file){
 
 	if(!encontrou_reg) printf("Registro inexistente.\n");
 	
+	free(header_arv);
+	free(header1);
+	free(header2);
+	fclose(index_in);
 }
 
 

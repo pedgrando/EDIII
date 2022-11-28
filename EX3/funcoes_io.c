@@ -285,6 +285,7 @@ void PrintErro(){
 	printf("Falha no processamento do arquivo.\n");
 }
 
+// le um no do arquivo de indices 
 
 void LeNoArvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 	if(arq_arv == NULL) return;
@@ -306,6 +307,8 @@ void LeNoArvore(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 	readint(arq_arv, &(pagina->P[4]));
 }
 
+// escreve um no no arquivo de indices
+
 void EscreveNo(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 	fseek(arq_arv, 65*(RRN+1), SEEK_SET);
 	
@@ -322,6 +325,7 @@ void EscreveNo(FILE *arq_arv, Registro_Arvore *pagina, int RRN){
 	fwrite(&pagina->P[4], sizeof(int), 1, arq_arv);
 }
 
+// le o header do arquivo de indices 
 
 void LeHeaderArvore(FILE *arq_arv, Cabecalho_Arvore *header){
 	if(arq_arv == NULL) return;
@@ -335,6 +339,8 @@ void LeHeaderArvore(FILE *arq_arv, Cabecalho_Arvore *header){
 
 	fseek(arq_arv, 49, SEEK_CUR);
 }
+
+// escreve o header do arquivo de indices 
 
 void EscreveHeaderArvore(FILE* arv, Cabecalho_Arvore *header){
 	fseek(arv, 0, SEEK_SET);
@@ -350,6 +356,7 @@ void EscreveHeaderArvore(FILE* arv, Cabecalho_Arvore *header){
 	}
 }
 
+// imprime os valores de dois registros de acordo com as especificacoes da funcionalidade 10 
 
 void ImprimeRegistroCombinado(Registro *Register1, Registro *Register2){
 	
@@ -364,12 +371,6 @@ void ImprimeRegistroCombinado(Registro *Register1, Registro *Register2){
 	if(!Register1->campoVazio[5] && !Register1->campoVazio[6]) printf("Velocidade de transmissao: %d %cbps\n", Register1->velocidade, Register1->unidadeMedida);
 	printf("\n");
 }
-
-
-
-
-
-
 
 
 

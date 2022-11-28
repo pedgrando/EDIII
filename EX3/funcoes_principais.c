@@ -13,10 +13,11 @@
 
 // busca um registro em especifico para executar uma funcionalidade
 /*
- Essa funcao eh comum as funcionalidades 3 e 4; nela sao passados um arquivo com suas informacoes de header, um campo de busca e um valor buscado, qual das funcionalidades
+ Essa funcao era comum as funcionalidades 3 e 4; nela sao passados um arquivo com suas informacoes de header, um campo de busca e um valor buscado, qual das funcionalidades
  sera executada (CONSULTA = 1, referente a funcionalidade 3, e REMOCAO = 0, referente a funcionalidade 4), alem de um inteiro indentificando o numero da operacao, e.g., 3
  referente a terceira busca.
- 
+ Agora, ela eh utilizada como na funcionalidade 3 para buscas que nao sejam a partir do idConectado
+
  ela se utiliza de um esquema de hash para identificar qual o campo buscado, os valores tabelados podem ser encontrados nos arquivos de header, e mais informacoes estao na
  funcao de hash
  */
@@ -149,22 +150,6 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 	return 0;
 }
 
-void RemoveRegistro(FILE *file, Cabecalho *header, int rrn){
-	int topo = header->topo;
-
-	header->topo = rrn;
-	header->nroRegRem++;
-
-	fseek(file, -64, SEEK_CUR);
-
-	char lixo[59];
-
-	for(int i = 0; i < 59; i++) lixo[i] = LIXO;
-	
-	fwrite("1", sizeof(char), 1, file);
-	fwrite(&topo, sizeof(int), 1, file);
-	fwrite(lixo, sizeof(char), 59, file);
-}
 
 // recebe um registro pela entrada padrao e insere no arquivo binario
 
@@ -192,13 +177,18 @@ int InsereRegistro(FILE *file, Registro *Register, Cabecalho *header){
 	return rrn_reg;
 }
 
+// cria um arquivo de indices (arvore b)
 
 void criaArvore(FILE *arq_dados, FILE *arv){
 	Registro *Register = malloc(sizeof(Registro));
-	Cabecalho *header = getHeader(arq_dados);
+	Cabecalho *header = getHeader(arq_dados); 	// le o header do arquivo de dados
+	if(header->status == '0'){ 			// verifica a integridade do arquivo de dados
+		PrintErro();
+		exit(-1);
+	}
 	
 	Cabecalho_Arvore *header_arv = malloc(sizeof(Cabecalho_Arvore));
-	InicializaHeaderArvore(header_arv); 
+	InicializaHeaderArvore(header_arv);  	// cria e inicializa o header da arvore
 
 	int rrn_reg = 0;
 	fseek(arq_dados, 960, SEEK_SET);
@@ -210,36 +200,42 @@ void criaArvore(FILE *arq_dados, FILE *arv){
 			fseek(arq_dados, 63, SEEK_CUR); // pula registro logicamente removido
 
 		} else {
-			ResetaRegistro(Register);
+			ResetaRegistro(Register);     // reseta o registro
 
 			// le um registro e imprime seu conteudo
 
-			LeRegistroBin(Register, arq_dados); 
+			LeRegistroBin(Register, arq_dados);  // le um registro do arquivo binario
 				
 			int chave_promovida;
 			int RRN_indice_promovido;
 			int RRN_filho_promovido;
 
-			if(InsereArvore(header_arv, arv, Register->idConecta, rrn_reg, header_arv->noRaiz, &chave_promovida, &RRN_indice_promovido, &RRN_filho_promovido) == 1){
-					Registro_Arvore *nova_pag = malloc(sizeof(Registro_Arvore));
-					InicializaNo(nova_pag);
-					header_arv->alturaArvore++;
-					nova_pag->alturaNo = header_arv->alturaArvore;
-					nova_pag->RRNdoNo = header_arv->RRNproxNo;
-					header_arv->RRNproxNo++;
+			if(InsereArvore(header_arv, arv, Register->idConecta, rrn_reg, header_arv->noRaiz, &chave_promovida, &RRN_indice_promovido, &RRN_filho_promovido) == 1){   // 
+				// se o retorno da insercao na raiz retornar 1, significa que a raiz sofreu um split e uma chave foi promovida dela
+				// nesse caso, cria-se um novo no e insere-se a chave promovida nela
+				//
+				// no algoritmo, a chave promovida eh o valor medio de dois nos da arvore, nesse caso, do root (com valores menores que o valor promovido) e do novo no criado no split (com valores maiores
+				// que o promovido); portanto, os filhos desse novo no serao o root (filho da esquerda) e o no produzido no split (filho da direita) 
 
-					nova_pag->C[0] = chave_promovida;
-					nova_pag->PR[0] = RRN_indice_promovido;
-					nova_pag->P[0] = header_arv->noRaiz;
-					nova_pag->P[1] = RRN_filho_promovido;
-					nova_pag->nroChavesNo++;
+				Registro_Arvore *nova_pag = malloc(sizeof(Registro_Arvore));
+				InicializaNo(nova_pag);
+				header_arv->alturaArvore++;
+				nova_pag->alturaNo = header_arv->alturaArvore;
+				nova_pag->RRNdoNo = header_arv->RRNproxNo;
+				header_arv->RRNproxNo++;
 
-					nova_pag->folha = '0';
+				nova_pag->C[0] = chave_promovida;
+				nova_pag->PR[0] = RRN_indice_promovido;
+				nova_pag->P[0] = header_arv->noRaiz;
+				nova_pag->P[1] = RRN_filho_promovido;
+				nova_pag->nroChavesNo++;
 
-					header_arv->noRaiz = nova_pag->RRNdoNo;
+				nova_pag->folha = '0';
+
+				header_arv->noRaiz = nova_pag->RRNdoNo;
 				
-					EscreveNo(arv, nova_pag, nova_pag->RRNdoNo);
-					free(nova_pag);
+				EscreveNo(arv, nova_pag, nova_pag->RRNdoNo);
+				free(nova_pag);
 			}
 		}
 
