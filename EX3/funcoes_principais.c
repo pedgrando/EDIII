@@ -60,8 +60,6 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
-						} else {
-							RemoveRegistro(file, header, rrn);
 						}
 					
 					}
@@ -71,8 +69,6 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
-						} else {
-							RemoveRegistro(file, header, rrn);
 						}
 					
 					}
@@ -82,8 +78,6 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
-						} else {
-							RemoveRegistro(file, header, rrn);
 						}
 					
 					}
@@ -93,8 +87,6 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
-						} else {
-							RemoveRegistro(file, header, rrn);
 						}
 					
 					}
@@ -104,8 +96,6 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
-						} else {
-							RemoveRegistro(file, header, rrn);
 						}
 					
 					}
@@ -115,8 +105,6 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
-						} else {
-							RemoveRegistro(file, header, rrn);
 						}
 					
 					}
@@ -126,8 +114,6 @@ int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCa
 						encontrou_reg = 1;
 						if(funcionalidade){
 							ImprimeRegistro(Register);
-						} else {
-							RemoveRegistro(file, header, rrn);
 						}
 					
 					}
