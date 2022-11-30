@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "string.h": "c",
+<<<<<<< HEAD
+        "funcoes.h": "c",
+        "data_structures.h": "c"
+=======
+        "funcoes.h": "c"
+>>>>>>> 3232f41462f2656ad959c1414b3144c4cd146683
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
+}
