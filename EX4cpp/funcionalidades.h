@@ -12,7 +12,7 @@ void funcionalidade11(FILE *file);
 
 void funcionalidade12(FILE *file);
 
-void funcionalidade13(FILE *file, char *arq);
+void funcionalidade13(FILE *file, char* arq);
 
 void funcionalidade14(FILE *file);
 

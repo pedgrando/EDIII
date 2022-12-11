@@ -1,0 +1,28 @@
+all:
+	g++ -c *.cpp
+	g++ -march=native -o prog *.o
+
+run:   all
+	./prog
+
+clear: 
+	rm *.o a.out prog
+
+debug:
+	gcc -g3 *.c -Wall -Werror -pedantic 
+	gdb a.out
+
+memcheck:
+	gcc -g3 *.c -Wall -Werror -pedantic 
+	valgrind --leak-check=yes ./a.out
+
+zip:
+	rm -f atv4.zip
+	zip atv4.zip Makefile *.h *.cpp
+
+commit:
+	git pull origin main
+	git add .
+	git commit -m "automatic make commit"
+	git push origin main
+
