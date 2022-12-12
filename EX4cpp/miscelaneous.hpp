@@ -1,18 +1,10 @@
-#ifndef __MISCELANEOUS_H__
-#define __MISCELANEOUS_H__
+#ifndef __MISCELANEOUS_HPP__
+#define __MISCELANEOUS_HPP__
 
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 
-#include "data_structures.h"
-
-#define IDCONECTA 906
-#define SIGLAPAIS 925
-#define IDPOPSCONECTADO 1503
-#define UNIDADEMEDIDA 1310
-#define VELOCIDADE 1040
-#define NOMEPOPS 817
-#define NOMEPAIS 828
+#include "data_structures.hpp"
 
 void CriaHeader(FILE *file, Cabecalho *header);
 

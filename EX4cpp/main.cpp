@@ -1,15 +1,11 @@
-// PEDRO ANTONIO BRUNO GRANDO - 12547166 - 100% de contribuição
-// PEDRO ARTHUR DO PRADO FRANÇOSO - 12547301 - 100% de contribuição
+#include <iostream>
+#include <list>
 
+#include "grafo.hpp"
+#include "funcoes_io.hpp"
+#include "data_structures.hpp"
 
-#include<stdio.h>
-#include<stdlib.h>
-
-#include "miscelaneous.h"
-#include "funcoes_io.h"
-#include "data_structures.h"
-#include "funcionalidades.h"
-#include "funcoes_principais.h"
+using namespace std;
 
 int main(int argv, char *argc[]){
     int option;
@@ -19,9 +15,13 @@ int main(int argv, char *argc[]){
 
     FILE *file_in = NULL;
 
+    Registro *Register = (Registro*) malloc(sizeof(Registro));
+
     Cabecalho *header = (Cabecalho*) malloc(sizeof(Cabecalho));
     *header = ResetaCabecalho();
-    
+
+    Grafo grafo;
+ 
     switch (option)
     {
     case 11:
@@ -34,7 +34,32 @@ int main(int argv, char *argc[]){
             break;
         }
 
-        funcionalidade11(file_in);
+        header = getHeader(file_in);
+        grafo.InicializaGrafo(header->proxRRN);
+
+        fseek(file_in, 960, SEEK_SET); // pula o header
+
+        while(fread(&Register->removido, sizeof(char), 1, file_in) != 0){
+
+            if(Register->removido == '1'){
+
+                fseek(file_in, 63, SEEK_CUR); // pula registro logicamente removido
+
+            } else {
+
+                ResetaRegistro(Register);
+
+                // le um registro e imprime seu conteudo
+
+                LeRegistroBin(Register, file_in); 
+                    
+                grafo.adicionarAresta(Register);
+
+                ImprimeRegistro(Register);
+                        
+            }
+        }
+
 
 	break;	
     case 12:
@@ -47,7 +72,9 @@ int main(int argv, char *argc[]){
             break;
         }
 
-        funcionalidade12(file_in);
+        header = getHeader(file_in);
+        grafo.InicializaGrafo(header->proxRRN);
+
 
 	break;	
     case 13:
@@ -60,7 +87,9 @@ int main(int argv, char *argc[]){
             break;
         }
 
-        funcionalidade13(file_in, arq_entrada);
+        header = getHeader(file_in);
+        grafo.InicializaGrafo(header->proxRRN);
+
 
 	break;	
     case 14:
@@ -73,7 +102,9 @@ int main(int argv, char *argc[]){
             break;
         }
 
-        funcionalidade14(file_in);
+        header = getHeader(file_in);
+        grafo.InicializaGrafo(header->proxRRN);
+
 
 	break;	
     default:

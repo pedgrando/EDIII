@@ -1,11 +1,11 @@
-#ifndef __FUNCOES_IO_H__
-#define __FUNCOES_IO_H__
+#ifndef __FUNCOES_IO_HPP__
+#define __FUNCOES_IO_HPP__
 
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 
-#include "data_structures.h"
-#include "miscelaneous.h"
+#include "data_structures.hpp"
+#include "miscelaneous.hpp"
 
 //FUNCOES FORNECIDAS 
 
@@ -40,7 +40,6 @@ void readint(FILE *file, int *integer);
 void readstring(FILE *file, int reading_size, char *string);
 
 int readstring_variavel(FILE *file, char *string);
-
 
 
 #endif

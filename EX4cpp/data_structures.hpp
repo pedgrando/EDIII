@@ -1,8 +1,8 @@
-#ifndef __DATA_STRUCTURES_H__
-#define __DATA_STRUCTURES_H__
+#ifndef __DATA_STRUCTURES_HPP__
+#define __DATA_STRUCTURES_HPP__
 
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 
 // CONSTANTES IMPORTANTES
 
@@ -28,7 +28,6 @@
 #define CONSULTA 1
 #define REMOCAO 0
 
-
 //STRUCTS DOS DADOS
 
 typedef struct cabecalho{
@@ -53,12 +52,5 @@ typedef struct registro{
     char nomePais[30];
 } Registro;
 
-typedef struct grafo{
-    int numVertices;
-    int grauMax;
-    int** arestas;
-    float** pesos;
-    int* grau;
-} Grafo;
 
 #endif
