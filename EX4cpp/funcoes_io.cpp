@@ -135,6 +135,7 @@ void PreencheLixo(FILE *file){
 // imprime todos os campos nao vazios de um registro, segundo a proposta do trabalho
 
 void ImprimeRegistro(Registro *Register){
+	//if(Register->unidadeMedida == 'G' || Register->campoVazio[6]) return;
     if(!Register->campoVazio[0]) printf("Identificador do ponto: %d\n", Register->idConecta);
     if(!Register->campoVazio[1]) printf("Nome do ponto: %s\n", Register->nomePoPs);
     if(!Register->campoVazio[2]) printf("Pais de localizacao: %s\n", Register->nomePais);

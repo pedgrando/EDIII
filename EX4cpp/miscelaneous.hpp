@@ -12,6 +12,8 @@ Cabecalho ResetaCabecalho();
 
 void ResetaRegistro(Registro *Register);
 
+void ConverteVelocidade(Registro *Register);
+
 int getNumPag(Cabecalho *header);
 
 int campovazio_int(int interger);

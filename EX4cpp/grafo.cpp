@@ -9,7 +9,7 @@ void Aresta::InicializaAresta(Registro *reg)
 	this->Register = reg;
 	vertice1 = Register->idConecta;
 	vertice2 = Register->idPoPsConectado;
-	this->peso = Register->velocidade;		//fazer conta da velocidade
+	this->peso = Register->velocidade;
 }
 
 int Aresta::obterVertice1()

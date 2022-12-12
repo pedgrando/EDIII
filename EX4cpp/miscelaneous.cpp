@@ -35,6 +35,13 @@ void ResetaRegistro(Registro *Register){
     Register->velocidade = -1;
 }
 
+// altera velocidade de MBps para GBps
+
+void ConverteVelocidade(Registro *Register){
+	Register->velocidade = Register->velocidade * 1024; 
+	Register->unidadeMedida = 'M';
+}
+
 // volta uma variavel Cabecalho em que todos os campos sao vazios
 
 Cabecalho ResetaCabecalho(){

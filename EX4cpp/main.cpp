@@ -52,6 +52,8 @@ int main(int argv, char *argc[]){
                 // le um registro e imprime seu conteudo
 
                 LeRegistroBin(Register, file_in); 
+
+                if(Register->unidadeMedida == 'G') ConverteVelocidade(Register);
                     
                 grafo.adicionarAresta(Register);
 
