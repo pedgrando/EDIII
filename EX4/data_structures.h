@@ -67,4 +67,9 @@ typedef struct elemento{
 
 typedef struct elemento *lista;
 
+typedef struct {
+	lista *listaAdj;
+	int numVerticesAdj;	
+} listaAdj;
+
 #endif

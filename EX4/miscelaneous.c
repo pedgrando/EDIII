@@ -92,6 +92,18 @@ void ConverteVelocidade(Registro *Register){
 	Register->unidadeMedida = 'M';
 }
 
+lista *cria_lista(){
+	lista *li = malloc(sizeof(lista));
+	if(li == NULL){
+		exit(-1);
+	}
+	return li;
+}
+
+void libera_lista(){
+
+}
+
 int insereLista(lista *li, struct Dados info){
 	if(li == NULL || *li == NULL) return -1;
 
