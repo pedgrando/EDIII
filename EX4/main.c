@@ -4,6 +4,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 #include "miscelaneous.h"
 #include "funcoes_io.h"
@@ -25,7 +26,7 @@ int main(int argv, char *argc[]){
     scanf("%s", arq_entrada);
     if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
         PrintErro();
-        return 0;
+        exit(0);
     }
 
     header = getHeader(file_in);
