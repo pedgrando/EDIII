@@ -62,7 +62,6 @@ int main(int argv, char *argc[]){
                     
                 if(!insereLista(grafo[Register->idConecta].listaAdj, *Register)) PrintErro();
 
-
             }
         }
 
