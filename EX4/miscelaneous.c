@@ -91,3 +91,51 @@ void ConverteVelocidade(Registro *Register){
 	Register->velocidade = Register->velocidade * 1024; 
 	Register->unidadeMedida = 'M';
 }
+
+int insereLista(lista *li, struct Dados info){
+	if(li == NULL || *li == NULL) return -1;
+
+	no *novo_dado = malloc(sizeof(no));
+
+	// copia dos dados a inserir para o novo no
+	novo_dado->dados.idConecta = info.idConecta;
+	novo_dado->dados.idPoPsConectado = info.idPoPsConectado;
+	strcpy(info.siglaPais, novo_dado->dados.siglaPais);
+	strcpy(info.nomePoPs, novo_dado->dados.nomePoPs);
+	strcpy(info.nomePais, novo_dado->dados.nomePais);
+
+	no *aux1 = *li;
+	no *aux2 = aux1;
+
+	while(aux1 != NULL && aux1->dados.idConecta < info.idConecta){
+		aux2 = aux1;
+		aux1 = aux1->prox;	
+	}
+
+	if(aux1 == NULL){
+		aux2->prox = novo_dado;
+		novo_dado->prox = NULL;
+		return 1;
+	} else {
+		aux2->prox = novo_dado;
+		novo_dado->prox = aux1;		
+		return 1;
+	}
+}
+
+int buscaLista(lista *li, int idConectaBuscado){
+	if(li == NULL || *li == NULL) return -1;
+
+	no *aux = *li;
+	
+	while(aux != NULL && aux->dados.idConecta != idConectaBuscado){
+		aux = aux->prox;
+	}
+
+	if( aux == NULL){
+	       	return -1;
+	} else {
+		return 1;
+	}
+}
+
