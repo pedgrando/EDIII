@@ -25,7 +25,7 @@ int main(int argv, char *argc[]){
     scanf("%s", arq_entrada);
     if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
         PrintErro();
-        exit(-1);
+        return 0;
     }
 
     header = getHeader(file_in);
@@ -44,6 +44,7 @@ int main(int argv, char *argc[]){
         fseek(file_in, 960, SEEK_SET); // pula o header
         
         while(fread(&Register->removido, sizeof(char), 1, file_in) != 0){
+		printf("deu certo\n");
 
             if(Register->removido == '1'){
 

@@ -17,8 +17,8 @@ memcheck:
 	valgrind --leak-check=yes ./a.out
 
 zip:
-	rm -f atv3.zip
-	zip atv3.zip Makefile *.h *.c
+	rm -f atv4.zip
+	zip atv4.zip Makefile *.h *.c
 
 commit:
 	git pull origin main
