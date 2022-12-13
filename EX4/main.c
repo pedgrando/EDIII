@@ -34,7 +34,9 @@ int main(int argv, char *argc[]){
             break;
         }
 
-        funcionalidade11(file_in);
+	    header = getHeader(file_in);
+
+        funcionalidade11(file_in, header);
 
 	break;	
     case 12:

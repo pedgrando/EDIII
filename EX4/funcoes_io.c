@@ -114,65 +114,16 @@ Cabecalho *getHeader(FILE *file){
 
 //FUNCOES DE MANIPULAÇÃO DE ARQUIVOS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// escreve os campos do header no arquivo
-
-void EscreveHeader(FILE *file, Cabecalho *header){
-    fwrite(&header->status, sizeof(char), 1, file);
-    fwrite(&header->topo, sizeof(int), 1, file);
-    fwrite(&header->proxRRN, sizeof(int), 1, file);
-    fwrite(&header->nroRegRem, sizeof(int), 1, file);
-    fwrite(&header->nroPagDisco, sizeof(int), 1, file);
-    fwrite(&header->qttCompacta, sizeof(int), 1, file);
-}
-
-// preenche o espaço restante de um header com lixo ate completar 960 bytes ( 1 pag de disco )
-
-void PreencheLixo(FILE *file){
-	char lixo[PAG_DISCO - 21];
-    for (int i = 0; i < PAG_DISCO - 21; i++) lixo[i] = LIXO;
-    fwrite(lixo, sizeof(lixo), 1, file);  
-}
 
 // imprime todos os campos nao vazios de um registro, segundo a proposta do trabalho
 
 void ImprimeRegistro(Registro *Register){
-    if(!Register->campoVazio[0]) printf("Identificador do ponto: %d\n", Register->idConecta);
-    if(!Register->campoVazio[1]) printf("Nome do ponto: %s\n", Register->nomePoPs);
-    if(!Register->campoVazio[2]) printf("Pais de localizacao: %s\n", Register->nomePais);
-    if(!Register->campoVazio[3]) printf("Sigla do pais: %c%c\n", Register->siglaPais[0], Register->siglaPais[1]);
-    if(!Register->campoVazio[4]) printf("Identificador do ponto conectado: %d\n", Register->idPoPsConectado);
-    if(!Register->campoVazio[5] && !Register->campoVazio[6]) printf("Velocidade de transmissao: %d %cbps\n", Register->velocidade, Register->unidadeMedida);
-    printf("\n");
-}
-
-
-// escreve o registro da memoria primaria no arquivo binario, incluindo o lixo
-
-void EscreveRegistro(FILE *file, Registro *Register){
-	int bytes_ocupados = 22 + strlen(Register->nomePoPs) + strlen(Register->nomePais); 	// descobre o numero de bytes ocupados pelo registro (apesar do strlen retornar 1 a mais por conta do '\0', ele eh compensado pelo '|')
-
-	fwrite(&Register->removido, sizeof(char), 1, file);
-	fwrite(&Register->encadeamento, sizeof(int), 1, file);
-	fwrite(&Register->idConecta, sizeof(int), 1, file);
-	fwrite(Register->siglaPais, sizeof(char), 2, file);
-	fwrite(&Register->idPoPsConectado, sizeof(int), 1, file);
-	fwrite(&Register->unidadeMedida, sizeof(char), 1, file);
-	fwrite(&Register->velocidade, sizeof(int), 1, file);
-	fwrite(Register->nomePoPs, sizeof(char), strlen(Register->nomePoPs), file);
-	fwrite("|", sizeof(char), 1, file);
-	fwrite(Register->nomePais, sizeof(char), strlen(Register->nomePais), file);
-	fwrite("|", sizeof(char), 1, file);
-
-	for(int i = 0; i < (64 - bytes_ocupados); i++){  	// preenche o que nao foi ocupado pelos dados com lixo
-		fwrite("$", sizeof(char), 1, file);
-	}
-    
-}
-
-// imprime o numero de paginas de disco do arquivo
-
-void ImprimePagDisco(Cabecalho *header){
-	printf("Numero de paginas de disco: %d\n\n", header->nroPagDisco);
+    printf("%d ", Register->idConecta);
+    printf("%s ", Register->nomePoPs);
+    printf("%s ", Register->nomePais);
+    printf("%c%c ", Register->siglaPais[0], Register->siglaPais[1]);
+    printf("%d ", Register->idPoPsConectado);
+    printf("%d %cbps\n", Register->velocidade, Register->unidadeMedida);
 }
 
 // le um registro de um arquivo binario e passa ele para memoria primaria
@@ -239,48 +190,10 @@ int readstring_variavel(FILE *file, char *string){
 	return i+1;
 }
 
-// le cada campo de um registro pela entrada padrao e atribui esses valores a um registro
-// os valores de entrada podem estar entre " ", serem inteiros ou serem nulos (NULO)
-
-void LeEntradaRegistro(Registro *Register){
-	ResetaRegistro(Register);
-
-	char aux[64];
-	
-	scanf("%d", &Register->idConecta);
-	
-	scan_quote_string(aux);
-	if(strcmp(aux, "")){
-		strcpy(Register->nomePoPs, aux);
-	}
-
-	scan_quote_string(aux);
-	if(strcmp(aux, "")){
-		strcpy(Register->nomePais, aux);
-	}
-
-	scan_quote_string(aux);
-	if(strcmp(aux, "")){
-		strcpy(Register->siglaPais, aux);
-	}
-
-	scan_quote_string(aux);
-	if(strcmp(aux, "")){
-		Register->idPoPsConectado = atoi(aux);
-	}
-
-	scan_quote_string(aux);
-	if(strcmp(aux, "")){
-		Register->unidadeMedida = aux[0];
-	}
-
-	scan_quote_string(aux);
-	if(strcmp(aux, "")){
-		Register->velocidade = atoi(aux);
-	}
-
-}
-
 void PrintErro(){
 	printf("Falha no processamento do arquivo.\n");
+}
+
+void imprimeLista(lista *li){
+	
 }

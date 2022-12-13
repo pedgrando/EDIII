@@ -19,19 +19,9 @@ void scan_quote_string(char *string);
 
 Cabecalho *getHeader(FILE *file);
 
-void PreencheLixo(FILE *file);
-
 void ImprimeRegistro(Registro *Register);
 
-void ImprimePagDisco(Cabecalho *header);
-
-void EscreveHeader(FILE *file, Cabecalho *header);
-
-void EscreveRegistro(FILE *file, Registro *Register);
-
 void LeRegistroBin(Registro *Register, FILE *file);
-
-void LeEntradaRegistro(Registro *Register);
 
 void PrintErro();
 
@@ -41,5 +31,6 @@ void readstring(FILE *file, int reading_size, char *string);
 
 int readstring_variavel(FILE *file, char *string);
 
+void imprimeLista(lista *li);
 
 #endif

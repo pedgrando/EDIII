@@ -10,18 +10,6 @@
 #include "funcionalidades.h"
 
 
-// cria um header em memoria secundaria no arquvio
-//
-// escreve o header da memoria primaria no arquivo, colocando o lixo e mantendo o ponteiro do arquivo no inicio
-//
-
-void CriaHeader(FILE *file, Cabecalho *header){
-	fseek(file, 0, SEEK_SET);
-    EscreveHeader(file, header);
-	PreencheLixo(file);
-	fseek(file, 0, SEEK_END);
-}
-
 // volta uma variavel Registro em memoria primaria a situacao em que todos os campos sao vazios
 
 void ResetaRegistro(Registro *Register){
@@ -85,7 +73,6 @@ int campovazio_string_var(char *string){
 	}	
 }
 
-
 // HASH FUNCTION PARA DESCOBRIR O CAMPO
 // uma funcao hash simples: ela soma os valores dos caracteres de uma string ate o '\0' e retorna o resultado
 
@@ -100,6 +87,7 @@ int hashfunction(char *str){
 }
 
 
-
-
-
+void ConverteVelocidade(Registro *Register){
+	Register->velocidade = Register->velocidade * 1024; 
+	Register->unidadeMedida = 'M';
+}
