@@ -3,7 +3,9 @@
         "funcoes.h": "c",
         "list": "cpp",
         "xstring": "cpp",
-        "miscelaneous.h": "c"
+        "miscelaneous.h": "c",
+        "vector": "cpp",
+        "iostream": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

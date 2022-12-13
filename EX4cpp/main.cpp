@@ -55,10 +55,11 @@ int main(int argv, char *argc[]){
 
                 if(Register->unidadeMedida == 'G') ConverteVelocidade(Register);
                     
-                grafo.adicionarAresta(Register);
+                if(grafo.VerticeVago(Register->idPoPsConectado)) grafo.adicionarAresta(Register);
 
-                ImprimeRegistro(Register);
-                        
+                //ImprimeRegistro(Register);
+
+                grafo.ImprimeGrafo();      
             }
         }
 

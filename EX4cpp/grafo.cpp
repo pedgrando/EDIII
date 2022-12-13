@@ -35,7 +35,8 @@ bool Aresta::operator < (const Aresta& aresta2) const
 
 void Grafo::InicializaGrafo(int V)
 {
-	this->vertices = V;
+	this->num_vertices = V;
+	this->adjacentes = new list<Registro*>[V];
 }
 
 // função que adiciona uma aresta
@@ -44,6 +45,7 @@ void Grafo::adicionarAresta(Registro *reg)
 	Aresta aresta;
 	aresta.InicializaAresta(reg);
 	arestas.push_back(aresta);
+	adjacentes[reg->idPoPsConectado].push_back(reg);
 }
 
 // função que busca o subconjunto de um elemento "i"
@@ -72,10 +74,10 @@ void Grafo::kruskal()
 	sort(arestas.begin(), arestas.end());
 
 	// aloca memória para criar "V" subconjuntos
-	int * subset = new int[vertices];
+	int * subset = new int[num_vertices];
 
 	// inicializa todos os subconjuntos como conjuntos de um único elemento
-	memset(subset, -1, sizeof(int) * vertices);
+	memset(subset, -1, sizeof(int) * num_vertices);
 
 	for(int i = 0; i < size_arestas; i++)
 	{
@@ -99,4 +101,19 @@ void Grafo::kruskal()
 		char v2 = 'A' + arvore[i].obterVertice2();
 		cout << "(" << v1 << ", " << v2 << ") = " << arvore[i].obterPeso() << endl;
 	}
+}
+
+void Grafo::ImprimeGrafo(){
+	for(int i = 0; i < this->num_vertices; i++){
+		//adjacentes[i].sort;
+		std::list<Registro*>::iterator it = adjacentes[i].begin();
+    	while(it != adjacentes[i].end()) {
+			std::cout << (*it)->idConecta << ' ';
+			it++;
+    }
+	}
+}
+
+bool Grafo::VerticeVago(int v){
+	return (adjacentes[v].empty());
 }

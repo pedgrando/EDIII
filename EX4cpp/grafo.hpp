@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <list>
+
 using namespace std;
 
 #include "data_structures.hpp"
@@ -26,8 +28,9 @@ public:
 
 class Grafo
 {
-	int vertices; // número de vértices
+	int num_vertices; // número de vértices
 	vector<Aresta> arestas; // vetor de arestas
+	list<Registro*> *adjacentes;
 
 public:
 
@@ -40,5 +43,9 @@ public:
     void unir(int subset[], int v1, int v2);
 
 	void kruskal();
+
+	void ImprimeGrafo();
+
+	bool VerticeVago(int v);
 
 };
