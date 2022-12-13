@@ -227,6 +227,7 @@ void criaArvore(FILE *arq_dados, FILE *arv){
 
 		rrn_reg++;
 	}
+	printf("%d %d %d\n", header_arv->alturaArvore, header_arv->RRNproxNo, header_arv->noRaiz);
 	EscreveHeaderArvore(arv, header_arv);
 
 	free(Register);
