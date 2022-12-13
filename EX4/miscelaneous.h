@@ -22,4 +22,12 @@ int hashfunction(char *str);
 
 void ConverteVelocidade(Registro *Register);
 
+lista *cria_lista();
+
+void libera_lista(lista *li);
+
+int insereLista(lista *li, Registro info);
+
+int buscaLista(lista *li, int idConectaBuscado);
+
 #endif

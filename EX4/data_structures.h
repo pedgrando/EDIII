@@ -58,13 +58,13 @@ typedef struct elemento{
 } no;
 
 typedef struct {
-	struct elemento *inicio;
-	int numElem;
+    int numDados;
+    struct elemento *inicio;
 }lista;
 
 typedef struct {
 	lista *listaAdj;
 	int numVerticesAdj;	
-} listaAdj;
+} ListaAdj;
 
 #endif

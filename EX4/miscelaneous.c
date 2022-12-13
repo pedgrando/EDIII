@@ -89,7 +89,7 @@ int hashfunction(char *str){
 
 void ConverteVelocidade(Registro *Register){
 	Register->velocidade = Register->velocidade * 1024; 
-	Register->unidadeMedida = 'M';
+	Register->unidadeMedida = 'M'; 
 }
 
 lista *cria_lista(){
@@ -107,7 +107,7 @@ void libera_lista(lista *li){
 }
 
 int insereLista(lista *li, Registro info){
-	if(li == NULL || li->inicio == NULL) return -1;
+	if(li == NULL) return 0;
 
 	no *novo_dado = malloc(sizeof(no));
 
@@ -130,6 +130,10 @@ int insereLista(lista *li, Registro info){
 		aux2->prox = novo_dado;
 		novo_dado->prox = NULL;
 		return 1;
+	} else if (aux2 == li->inicio){
+		li->inicio = novo_dado;
+		novo_dado->prox = aux1;
+		return 1;
 	} else {
 		aux2->prox = novo_dado;
 		novo_dado->prox = aux1;		
@@ -138,7 +142,7 @@ int insereLista(lista *li, Registro info){
 }
 
 int buscaLista(lista *li, int idConectaBuscado){
-	if(li == NULL || li->inicio == NULL) return -1;
+	if(li == NULL || li->inicio == NULL) return 0;
 
 	no *aux = li->inicio;
 	
@@ -147,7 +151,7 @@ int buscaLista(lista *li, int idConectaBuscado){
 	}
 
 	if( aux == NULL){
-	       	return -1;
+	       	return 0;
 	} else {
 		return 1;
 	}
