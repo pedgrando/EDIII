@@ -95,5 +95,6 @@ int main(int argv, char *argc[]){
     break;
     }
     free(header);
+    fclose(file_in);
 
 }
