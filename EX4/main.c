@@ -58,9 +58,10 @@ int main(int argv, char *argc[]){
                 LeRegistroBin(Register, file_in); 
 
                 if(Register->unidadeMedida == 'G') ConverteVelocidade(Register);
-                ImprimeRegistro(Register);
                     
                 if(!insereLista(grafo[Register->idConecta].listaAdj, *Register)) PrintErro();
+
+                ImprimeRegistro(Register);
 
             }
         }
