@@ -31,5 +31,6 @@ void readstring(FILE *file, int reading_size, char *string);
 
 int readstring_variavel(FILE *file, char *string);
 
+void imprimeLista(lista *li);
 
 #endif

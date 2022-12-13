@@ -193,3 +193,7 @@ int readstring_variavel(FILE *file, char *string){
 void PrintErro(){
 	printf("Falha no processamento do arquivo.\n");
 }
+
+void imprimeLista(lista *li){
+	
+}
