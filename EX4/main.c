@@ -25,6 +25,10 @@ int main(int argv, char *argc[]){
     scanf("%s", arq_entrada);
     if(!(file_in = fopen(arq_entrada, "rb+"))) {    // testa se o arquivo existe            
         PrintErro();
+<<<<<<< HEAD
+=======
+        return 0;
+>>>>>>> 9a53bfe99d26d38e2876fcf64c1af2ec1a0d2f23
     }
 
     header = getHeader(file_in);
@@ -42,7 +46,37 @@ int main(int argv, char *argc[]){
 
 	// FUNCIONALIDADE 11
 
+<<<<<<< HEAD
         funcionalidade11(file_in, header, grafo);
+=======
+        fseek(file_in, 960, SEEK_SET); // pula o header
+        
+        while(fread(&Register->removido, sizeof(char), 1, file_in) != 0){
+		printf("deu certo\n");
+
+            if(Register->removido == '1'){
+
+                fseek(file_in, 63, SEEK_CUR); // pula registro logicamente removido
+
+            } else {
+
+                ResetaRegistro(Register);
+
+                // le um registro e imprime seu conteudo
+
+                LeRegistroBin(Register, file_in); 
+
+                if(Register->unidadeMedida == 'G') ConverteVelocidade(Register);
+                    
+                if(!insereLista(grafo[Register->idConecta].listaAdj, *Register)) PrintErro();
+
+                ImprimeRegistro(Register);
+
+            }
+        }
+
+        funcionalidade11(file_in, header);
+>>>>>>> 9a53bfe99d26d38e2876fcf64c1af2ec1a0d2f23
 
 	break;	
     case 12:

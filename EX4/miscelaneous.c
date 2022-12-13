@@ -118,9 +118,6 @@ int insereLista(lista *li, Registro info){
 	strcpy(info.nomePoPs, novo_dado->dados.nomePoPs);
 	strcpy(info.nomePais, novo_dado->dados.nomePais);
 
-	no *aux1 = (li->inicio);
-	no *aux2 = aux1;
-
 	if(li->inicio == NULL){
 		novo_dado->prox = li->inicio;
 		li->inicio = novo_dado;
