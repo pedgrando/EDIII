@@ -59,10 +59,10 @@ int main(int argv, char *argc[]){
 
                 //ImprimeRegistro(Register);
 
-                grafo.ImprimeGrafo();      
             }
         }
 
+        grafo.ImprimeGrafo();      
 
 	break;	
     case 12:

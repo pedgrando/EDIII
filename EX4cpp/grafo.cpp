@@ -6,10 +6,9 @@
 
 void Aresta::InicializaAresta(Registro *reg)
 {
-	this->Register = reg;
-	vertice1 = Register->idConecta;
-	vertice2 = Register->idPoPsConectado;
-	this->peso = Register->velocidade;
+	vertice1 = reg->idConecta;
+	vertice2 = reg->idPoPsConectado;
+	this->peso = reg->velocidade;
 }
 
 int Aresta::obterVertice1()
@@ -105,12 +104,16 @@ void Grafo::kruskal()
 
 void Grafo::ImprimeGrafo(){
 	for(int i = 0; i < this->num_vertices; i++){
-		//adjacentes[i].sort;
+
+		adjacentes[i].sort([](const Registro *f, const Registro *s) { 
+		return f->idConecta < s->idConecta; });
+		
 		std::list<Registro*>::iterator it = adjacentes[i].begin();
     	while(it != adjacentes[i].end()) {
 			std::cout << (*it)->idConecta << ' ';
 			it++;
-    }
+    	}
+
 	}
 }
 

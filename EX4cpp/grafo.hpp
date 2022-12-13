@@ -9,7 +9,6 @@ using namespace std;
 class Aresta
 {
 	int vertice1, vertice2, peso;
-	Registro *Register;
 
 public:
 
