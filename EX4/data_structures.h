@@ -52,20 +52,15 @@ typedef struct registro{
     char nomePais[30];
 } Registro;
 
-struct Dados{
-    int idConecta; 	//sem valores repetidos
-    char siglaPais[2];
-    int idPoPsConectado;
-    char nomePoPs[30];
-    char nomePais[30];
-};
-
 typedef struct elemento{
-	struct Dados dados;
+	Registro dados;
 	struct elemento *prox;
 } no;
 
-typedef struct elemento *lista;
+typedef struct {
+	struct elemento *inicio;
+	int numElem;
+}lista;
 
 typedef struct {
 	lista *listaAdj;

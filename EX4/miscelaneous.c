@@ -100,12 +100,14 @@ lista *cria_lista(){
 	return li;
 }
 
-void libera_lista(){
-
+void libera_lista(lista *li){
+	if(li == NULL || li->inicio == NULL){
+		
+	}
 }
 
-int insereLista(lista *li, struct Dados info){
-	if(li == NULL || *li == NULL) return -1;
+int insereLista(lista *li, Registro info){
+	if(li == NULL || li->inicio == NULL) return -1;
 
 	no *novo_dado = malloc(sizeof(no));
 
@@ -116,7 +118,7 @@ int insereLista(lista *li, struct Dados info){
 	strcpy(info.nomePoPs, novo_dado->dados.nomePoPs);
 	strcpy(info.nomePais, novo_dado->dados.nomePais);
 
-	no *aux1 = *li;
+	no *aux1 = (li->inicio);
 	no *aux2 = aux1;
 
 	while(aux1 != NULL && aux1->dados.idConecta < info.idConecta){
@@ -136,9 +138,9 @@ int insereLista(lista *li, struct Dados info){
 }
 
 int buscaLista(lista *li, int idConectaBuscado){
-	if(li == NULL || *li == NULL) return -1;
+	if(li == NULL || li->inicio == NULL) return -1;
 
-	no *aux = *li;
+	no *aux = li->inicio;
 	
 	while(aux != NULL && aux->dados.idConecta != idConectaBuscado){
 		aux = aux->prox;
