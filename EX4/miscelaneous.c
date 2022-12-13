@@ -121,24 +121,26 @@ int insereLista(lista *li, Registro info){
 	no *aux1 = (li->inicio);
 	no *aux2 = aux1;
 
-	while(aux1 != NULL && aux1->dados.idConecta < info.idConecta){
-		aux2 = aux1;
-		aux1 = aux1->prox;	
-	}
-
-	if(aux1 == NULL){
-		aux2->prox = novo_dado;
-		novo_dado->prox = NULL;
-		return 1;
-	} else if (aux2 == li->inicio){
+	if(li->inicio == NULL){
+		novo_dado->prox = li->inicio;
 		li->inicio = novo_dado;
-		novo_dado->prox = aux1;
-		return 1;
 	} else {
-		aux2->prox = novo_dado;
-		novo_dado->prox = aux1;		
-		return 1;
+		no *aux1 = (li->inicio);
+		no *aux2 = aux1;
+		while(aux1 != NULL && aux1->dados.idConecta < info.idConecta){
+			aux2 = aux1;
+			aux1 = aux1->prox;	
+		}
+
+		if (aux1 == li->inicio){
+			novo_dado->prox = aux1;
+			li->inicio = novo_dado;
+		} else {
+			novo_dado->prox = aux2->prox;		
+			aux2->prox = novo_dado;
+		}
 	}
+		return 1;
 }
 
 int buscaLista(lista *li, int idConectaBuscado){
