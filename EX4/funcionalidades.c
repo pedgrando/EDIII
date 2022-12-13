@@ -12,8 +12,33 @@
 
 // FUNCIONALIDADE 11
 
-void funcionalidade11(FILE *file){
-	
+void funcionalidade11(FILE *file, Cabecalho *header){
+
+	Registro *Register = malloc(sizeof(Registro));
+
+	fseek(file, 960, SEEK_SET); // pula o header
+
+	while(fread(&Register->removido, sizeof(char), 1, file) != 0){
+
+		if(Register->removido == '1'){
+
+			fseek(file, 63, SEEK_CUR); // pula registro logicamente removido
+
+		} else {
+
+			ResetaRegistro(Register);
+
+			// le um registro e imprime seu conteudo
+
+			LeRegistroBin(Register, file); 
+
+			if(Register->unidadeMedida == 'G') ConverteVelocidade(Register);
+
+			ImprimeRegistro(Register);
+
+		}
+	}
+
 }
 
 // FUNCIONALIDADE 12
@@ -31,7 +56,7 @@ void funcionalidade13(FILE *file){
 // FUNCIONALIDADE 14
 
 void funcionalidade14(FILE *file){
-	
+
 }
 
 

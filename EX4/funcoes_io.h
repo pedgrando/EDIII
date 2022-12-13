@@ -19,19 +19,9 @@ void scan_quote_string(char *string);
 
 Cabecalho *getHeader(FILE *file);
 
-void PreencheLixo(FILE *file);
-
 void ImprimeRegistro(Registro *Register);
 
-void ImprimePagDisco(Cabecalho *header);
-
-void EscreveHeader(FILE *file, Cabecalho *header);
-
-void EscreveRegistro(FILE *file, Registro *Register);
-
 void LeRegistroBin(Registro *Register, FILE *file);
-
-void LeEntradaRegistro(Registro *Register);
 
 void PrintErro();
 

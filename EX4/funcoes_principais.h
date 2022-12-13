@@ -6,8 +6,4 @@
 
 #include "data_structures.h"
 
-int BuscaRegistro(FILE *file, Cabecalho *header, int campoBuscado, char *valorCampo, int funcionalidade, int n);
-
-int InsereRegistro(FILE *file, Registro *Register, Cabecalho *header);
-
 #endif

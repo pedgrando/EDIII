@@ -6,8 +6,6 @@
 
 #include "data_structures.h"
 
-void CriaHeader(FILE *file, Cabecalho *header);
-
 Cabecalho ResetaCabecalho();
 
 void ResetaRegistro(Registro *Register);
@@ -21,5 +19,7 @@ int campovazio_string(char *string);
 int campovazio_string_var(char *string);
 
 int hashfunction(char *str);
+
+void ConverteVelocidade(Registro *Register);
 
 #endif
