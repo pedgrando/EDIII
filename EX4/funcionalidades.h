@@ -8,7 +8,7 @@
 
 //FUNCIONALIDADES
 
-void funcionalidade11(FILE *file, Cabecalho *header);
+void funcionalidade11(FILE *file, Cabecalho *header, ListaAdj *grafo);
 
 void funcionalidade12(FILE *file);
 
