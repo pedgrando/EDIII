@@ -99,4 +99,13 @@ int hashfunction(char *str){
 	return result;
 }
 
+void imprimeLista(lista *li){
+	
+	
+	
+	
+}
+
+
+
 

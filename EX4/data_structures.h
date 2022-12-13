@@ -52,4 +52,11 @@ typedef struct registro{
     char nomePais[30];
 } Registro;
 
+typedef struct elemento{
+	Registro *reg;
+	struct elemento *prox;
+} no;
+
+typedef struct elemento *lista;
+
 #endif
