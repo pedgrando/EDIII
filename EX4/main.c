@@ -31,44 +31,20 @@ int main(int argv, char *argc[]){
 
     header = getHeader(file_in);
 
-    Registro *Register = (Registro*) malloc(sizeof(Registro));
     ListaAdj grafo[header->proxRRN];
 
-    for (int i = 0; i < header->proxRRN; i++) grafo[i].listaAdj = cria_lista();
-
+    for (int i = 0; i < header->proxRRN; i++) {
+        grafo[i].listaAdj = cria_lista();
+        grafo[i].numVerticesAdj = -1;
+    }
+    
     switch (option)
     {
     case 11:
 
 	// FUNCIONALIDADE 11
 
-        fseek(file_in, 960, SEEK_SET); // pula o header
-        
-        while(fread(&Register->removido, sizeof(char), 1, file_in) != 0){
-		printf("deu certo\n");
-
-            if(Register->removido == '1'){
-
-                fseek(file_in, 63, SEEK_CUR); // pula registro logicamente removido
-
-            } else {
-
-                ResetaRegistro(Register);
-
-                // le um registro e imprime seu conteudo
-
-                LeRegistroBin(Register, file_in); 
-
-                if(Register->unidadeMedida == 'G') ConverteVelocidade(Register);
-                    
-                if(!insereLista(grafo[Register->idConecta].listaAdj, *Register)) PrintErro();
-
-                ImprimeRegistro(Register);
-
-            }
-        }
-
-        funcionalidade11(file_in, header);
+        funcionalidade11(file_in, header, grafo);
 
 	break;	
     case 12:

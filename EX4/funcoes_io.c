@@ -195,5 +195,10 @@ void PrintErro(){
 }
 
 void imprimeLista(lista *li){
-	
+    no *aux = (li->inicio);
+	while(aux != NULL)
+    {
+        ImprimeRegistro(&aux->dados);
+        aux = aux->prox;
+    }
 }
