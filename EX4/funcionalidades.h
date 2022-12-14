@@ -10,10 +10,10 @@
 
 void funcionalidade11(FILE *file, Cabecalho *header, ListaAdj *grafo);
 
-void funcionalidade12(FILE *file);
+void funcionalidade12(FILE *file, Cabecalho *header, ListaAdj *grafo);
 
-void funcionalidade13(FILE *file);
+void funcionalidade13(FILE *file, Cabecalho *header, ListaAdj *grafo);
 
-void funcionalidade14(FILE *file);
+void funcionalidade14(FILE *file, Cabecalho *header, ListaAdj *grafo);
 
 #endif

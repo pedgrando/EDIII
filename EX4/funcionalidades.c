@@ -34,6 +34,7 @@ void funcionalidade11(FILE *file, Cabecalho *header, ListaAdj *grafo){
             if(Register->unidadeMedida == 'G') ConverteVelocidade(Register);
                 
             if(!insereLista(grafo[Register->idConecta - 1].listaAdj, *Register)) PrintErro();
+	    grafo[Register->idConecta -1].numVerticesAdj++;
 
             //ImprimeRegistro(Register);
 
@@ -41,26 +42,29 @@ void funcionalidade11(FILE *file, Cabecalho *header, ListaAdj *grafo){
     }
 
     for(int i = 0; i < header->proxRRN; i++){
-        if(grafo[i].numVerticesAdj != -1) imprimeLista(grafo[i].listaAdj);
+        if(grafo[i].numVerticesAdj != -1){
+		
+		imprimeLista(grafo[i].listaAdj);
+	}
     }
 
 }
 
 // FUNCIONALIDADE 12
 
-void funcionalidade12(FILE *file){
+void funcionalidade12(FILE *file, Cabecalho *header, ListaAdj *grafo){
 	
 }
 
 // FUNCIONALIDADE 13
 
-void funcionalidade13(FILE *file){
+void funcionalidade13(FILE *file, Cabecalho *header, ListaAdj *grafo){
 
 }
 
 // FUNCIONALIDADE 14
 
-void funcionalidade14(FILE *file){
+void funcionalidade14(FILE *file, Cabecalho *header, ListaAdj *grafo){
 
 }
 

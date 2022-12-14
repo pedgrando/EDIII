@@ -194,11 +194,20 @@ void PrintErro(){
 	printf("Falha na execução da funcionalidade.\n");
 }
 
-void imprimeLista(lista *li){
+void imprimeLista(lista *li, int velocidade, char unidade){
     no *aux = (li->inicio);
 	while(aux != NULL)
     {
-        ImprimeRegistro(&aux->dados);
+	    ImprimeVertice(&aux->dados, velocidade, unidade);
         aux = aux->prox;
     }
 }
+
+void ImprimeVertice(Registro *Register, int velocidade, char unidade){
+    if(velocidade > Register->velocidade){
+    	printf("%d %cbps\n", Register->velocidade, Register->unidadeMedida);
+    } else {
+    	printf("%d %cbps\n", velocidade, unidade);
+    }
+}
+

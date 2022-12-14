@@ -51,14 +51,14 @@ int main(int argv, char *argc[]){
 
 	// FUNCIONALIDADE 12
 
-        funcionalidade12(file_in);
+        funcionalidade12(file_in, header, grafo);
 
 	break;	
     case 13:
 
 	// FUNCIONALIDADE 13
 
-        funcionalidade13(file_in);
+        funcionalidade13(file_in, header, grafo);
 
 	break;	
     case 14:
@@ -66,7 +66,7 @@ int main(int argv, char *argc[]){
 	// FUNCIONALIDADE 14
 
 
-        funcionalidade14(file_in);
+        funcionalidade14(file_in, header, grafo);
 
 	break;	
     default:
