@@ -13,11 +13,9 @@
 // volta uma variavel Registro em memoria primaria a situacao em que todos os campos sao vazios
 
 void ResetaRegistro(Registro *Register){
-    for (int i = 0; i < 7; i++) Register->campoVazio[i] = 1;
-    Register->removido = '0';
-    Register->encadeamento = -1;
     Register->nomePoPs[0] = '\0';
     Register->nomePais[0] = '\0';
+    Register->idConecta = -1;
     strcpy(Register->siglaPais, "$$\0");
     Register->idPoPsConectado = -1;
     Register->unidadeMedida = '$';
@@ -101,37 +99,41 @@ lista *cria_lista(){
 }
 
 void libera_lista(lista *li){
-	if(li == NULL || li->inicio == NULL){
+	if(li == NULL || *li == NULL){
 		
 	}
 }
 
-int insereLista(lista *li, Registro info){
+int insereLista(lista *li, int idPoPs, int velocidade, char unidadeMedida){
 	if(li == NULL) return 0;
 
 	no *novo_dado = malloc(sizeof(no));
 
 	// copia dos dados a inserir para o novo no
-	novo_dado->dados.idConecta = info.idConecta;
-	novo_dado->dados.idPoPsConectado = info.idPoPsConectado;
-	strcpy(info.siglaPais, novo_dado->dados.siglaPais);
-	strcpy(info.nomePoPs, novo_dado->dados.nomePoPs);
-	strcpy(info.nomePais, novo_dado->dados.nomePais);
+	
+	novo_dado->idPoPs = idPoPs;
+	novo_dado->velocidade = velocidade;
+	novo_dado->unidadeMedida = unidadeMedida;
 
-	if(li->inicio == NULL){
-		novo_dado->prox = li->inicio;
-		li->inicio = novo_dado;
+	if(*li == NULL){
+		novo_dado->prox = *li;
+		*li = novo_dado;
 	} else {
-		no *aux1 = (li->inicio);
+		no *aux1 = *li;
 		no *aux2 = aux1;
-		while(aux1 != NULL && aux1->dados.idConecta < info.idConecta){
+		while(aux1 != NULL && aux1->idPoPs < idPoPs){
 			aux2 = aux1;
 			aux1 = aux1->prox;	
 		}
 
-		if (aux1 == li->inicio){
+		if(aux1 != NULL && aux1->idPoPs == idPoPs){
+			if((aux1->velocidade > velocidade && velocidade != -1) || aux1->velocidade == -1){
+				aux1->velocidade = velocidade;
+				aux1->unidadeMedida = unidadeMedida;
+			}
+		} else if (aux1 == *li){
 			novo_dado->prox = aux1;
-			li->inicio = novo_dado;
+			*li = novo_dado;
 		} else {
 			novo_dado->prox = aux2->prox;		
 			aux2->prox = novo_dado;
@@ -141,11 +143,11 @@ int insereLista(lista *li, Registro info){
 }
 
 int buscaLista(lista *li, int idConectaBuscado){
-	if(li == NULL || li->inicio == NULL) return 0;
+	if(li == NULL || *li == NULL) return 0;
 
-	no *aux = li->inicio;
+	no *aux = *li;
 	
-	while(aux != NULL && aux->dados.idConecta != idConectaBuscado){
+	while(aux != NULL && aux->idPoPs != idConectaBuscado){
 		aux = aux->prox;
 	}
 
@@ -155,4 +157,5 @@ int buscaLista(lista *li, int idConectaBuscado){
 		return 1;
 	}
 }
+
 

@@ -26,8 +26,11 @@ lista *cria_lista();
 
 void libera_lista(lista *li);
 
-int insereLista(lista *li, Registro info);
+int insereLista(lista *li, int idPoPs, int velocidade, char unidadeMedida);
+
+int insereListaInicio(lista *li, int idPoPs, int velocidade, char unidadeMedida);
 
 int buscaLista(lista *li, int idConectaBuscado);
+
 
 #endif

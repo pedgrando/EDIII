@@ -8,12 +8,12 @@
 
 //FUNCIONALIDADES
 
-void funcionalidade11(FILE *file, Cabecalho *header, ListaAdj *grafo);
+int funcionalidade11(FILE *file, Cabecalho *header, Grafo *grafo);
 
-void funcionalidade12(FILE *file, Cabecalho *header, ListaAdj *grafo);
+void funcionalidade12(FILE *file, Cabecalho *header, Grafo *grafo);
 
-void funcionalidade13(FILE *file, Cabecalho *header, ListaAdj *grafo);
+void funcionalidade13(FILE *file, Cabecalho *header, Grafo *grafo);
 
-void funcionalidade14(FILE *file, Cabecalho *header, ListaAdj *grafo);
+void funcionalidade14(FILE *file, Cabecalho *header, Grafo *grafo);
 
 #endif

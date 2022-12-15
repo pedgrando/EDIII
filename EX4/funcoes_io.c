@@ -133,28 +133,22 @@ void LeRegistroBin(Registro *Register, FILE *file){
 
 	int byteoffset = 20; // byteoffset comeca em 20 porque ja se considera os campos de tamanho fixo, mas o status do registro ja foi lido, entao o ponteiro de arquivo ja esta no primeiro byte
 
-	readint(file, &(Register->encadeamento)); 				// le o encadeamento do registro
+	int aux;
+	readint(file, &aux); 				// le o encadeamento do registro
 
 	readint(file, &(Register->idConecta)); 					// le o idConecta e confere se ele eh vazio 
-	Register->campoVazio[0] = campovazio_int(Register->idConecta);
 
 	readstring(file, 2, Register->siglaPais);				// le a siglaPais e confere se ela eh vazia
-	Register->campoVazio[3] = campovazio_string(Register->siglaPais);
 
 	readint(file, &(Register->idPoPsConectado)); 				// le o idPoPsConectado e confere se ele eh vazio
-	Register->campoVazio[4] = campovazio_int(Register->idPoPsConectado);
 
 	readstring(file, 1, &(Register->unidadeMedida));                         // le a unidadeMedida e confere se ela eh vazia
-	Register->campoVazio[6] = campovazio_string(&(Register->unidadeMedida));
 
 	readint(file, &(Register->velocidade)); 					// le a velocidade e confere se ela eh vazia
-	Register->campoVazio[5] = campovazio_int(Register->velocidade);
 
 	byteoffset += readstring_variavel(file, Register->nomePoPs);  		// le o nomePoPs, incrementa o byteoffset e testa se ele eh vazio
-	Register->campoVazio[1] = campovazio_string_var(Register->nomePoPs);
 
 	byteoffset += readstring_variavel(file, Register->nomePais); 		// le o nomePais, incrementa o byteoffset e testa se ele eh vazio
-	Register->campoVazio[2] = campovazio_string_var(Register->nomePais);
 
 	fseek(file, 64 - byteoffset, SEEK_CUR); 					// pula o restante de lixo no registro
 
@@ -194,20 +188,20 @@ void PrintErro(){
 	printf("Falha na execução da funcionalidade.\n");
 }
 
-void imprimeLista(lista *li, int velocidade, char unidade){
-    no *aux = (li->inicio);
-	while(aux != NULL)
-    {
-	    ImprimeVertice(&aux->dados, velocidade, unidade);
-        aux = aux->prox;
-    }
+void imprimeLista(lista *li, Grafo vertice){
+	no *aux = *li;
+
+	while(aux != NULL){
+		printf("%d ", vertice.idConecta);
+		printf("%s ", vertice.nomePoPs);
+		printf("%s ", vertice.nomePais);
+		printf("%c%c ", vertice.siglaPais[0], vertice.siglaPais[1]);
+		printf("%d ", aux->idPoPs);	
+		printf("%d%cbps\n", aux->velocidade, aux->unidadeMedida);	
+
+		aux = aux->prox;
+	}
+
 }
 
-void ImprimeVertice(Registro *Register, int velocidade, char unidade){
-    if(velocidade > Register->velocidade){
-    	printf("%d %cbps\n", Register->velocidade, Register->unidadeMedida);
-    } else {
-    	printf("%d %cbps\n", velocidade, unidade);
-    }
-}
 

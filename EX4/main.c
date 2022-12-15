@@ -10,7 +10,6 @@
 #include "funcoes_io.h"
 #include "data_structures.h"
 #include "funcionalidades.h"
-#include "funcoes_principais.h"
 
 int main(int argv, char *argc[]){
     int option;
@@ -31,11 +30,12 @@ int main(int argv, char *argc[]){
 
     header = getHeader(file_in);
 
-    ListaAdj grafo[header->proxRRN];
+    Grafo grafo[header->proxRRN];
 
     for (int i = 0; i < header->proxRRN; i++) {
         grafo[i].listaAdj = cria_lista();
-        grafo[i].numVerticesAdj = -1;
+        grafo[i].numVerticesAdj = 0;
+	grafo[i].idConecta = -1;
     }
     
     switch (option)
@@ -46,6 +46,12 @@ int main(int argv, char *argc[]){
 
         funcionalidade11(file_in, header, grafo);
 
+    	for(int i = 0; i < header->proxRRN; i++){
+        	if(grafo[i].idConecta != -1){
+		
+			imprimeLista(grafo[i].listaAdj, grafo[i]);
+		}
+    	}
 	break;	
     case 12:
 

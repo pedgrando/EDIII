@@ -40,31 +40,32 @@ typedef struct cabecalho{
 } Cabecalho;
 
 typedef struct registro{
-    int campoVazio[7];
-    char removido;
-    int encadeamento;
     int idConecta; 	//sem valores repetidos
     char siglaPais[2];
+    char nomePoPs[30];
+    char nomePais[30];
     int idPoPsConectado;
     char unidadeMedida;
     int velocidade;
-    char nomePoPs[30];
-    char nomePais[30];
 } Registro;
 
 typedef struct elemento{
-	Registro dados;
+    	int idPoPs;
+    	char unidadeMedida;
+    	int velocidade;
 	struct elemento *prox;
 } no;
 
-typedef struct {
-    int numDados;
-    struct elemento *inicio;
-}lista;
+typedef struct elemento *lista;
 
 typedef struct {
 	lista *listaAdj;
 	int numVerticesAdj;	
-} ListaAdj;
+    	int idConecta; 	//sem valores repetidos
+ 	char siglaPais[2];
+    	char nomePoPs[30];
+    	char nomePais[30];
+} Grafo;
+
 
 #endif

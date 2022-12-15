@@ -1,29 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <math.h>
+#include <stdbool.h>
 
 #include "miscelaneous.h"
 #include "funcoes_io.h"
 #include "data_structures.h"
 #include "funcionalidades.h"
-#include "funcoes_principais.h"
+#include "limits.h"
 
 // FUNCIONALIDADE 11
 
-void funcionalidade11(FILE *file, Cabecalho *header, ListaAdj *grafo){
+int funcionalidade11(FILE *file, Cabecalho *header, Grafo *grafo){
     Registro *Register = (Registro*) malloc(sizeof(Registro));
+    int num_vertices = 0;
 
     fseek(file, 960, SEEK_SET); // pula o header
-        
-    while(fread(&Register->removido, sizeof(char), 1, file) != 0){
+    
+    char aux;    
+    while(fread(&aux, sizeof(char), 1, file) != 0){
 
-        if(Register->removido == '1'){
-
-            fseek(file, 63, SEEK_CUR); // pula registro logicamente removido
-
-        } else {
 
             ResetaRegistro(Register);
 
@@ -32,40 +28,81 @@ void funcionalidade11(FILE *file, Cabecalho *header, ListaAdj *grafo){
             LeRegistroBin(Register, file); 
 
             if(Register->unidadeMedida == 'G') ConverteVelocidade(Register);
-                
-            if(!insereLista(grafo[Register->idConecta - 1].listaAdj, *Register)) PrintErro();
-	    grafo[Register->idConecta -1].numVerticesAdj++;
+            
+	    if(grafo[Register->idConecta - 1].idConecta == - 1){    
+	    	grafo[Register->idConecta - 1].idConecta = Register->idConecta;
+	    	strcpy(grafo[Register->idConecta - 1].nomePoPs, Register->nomePoPs);
+	    	strcpy(grafo[Register->idConecta - 1].nomePais, Register->nomePais);
+	    	strcpy(grafo[Register->idConecta - 1].siglaPais, Register->siglaPais);
+		num_vertices++;
+	    }
 
-            //ImprimeRegistro(Register);
+	    if(Register->idPoPsConectado != -1){
+            	if(!insereLista(grafo[Register->idPoPsConectado - 1].listaAdj, Register->idConecta, Register->velocidade, Register->unidadeMedida)){ 
+			    PrintErro();
+		   	 return -1;
+	    	}
+            	if(!insereLista(grafo[Register->idConecta - 1].listaAdj, Register->idPoPsConectado, Register->velocidade, Register->unidadeMedida)){ 
+			    PrintErro();
+		   	 return -1;
+	    	}
 
-        }
+	    	grafo[Register->idPoPsConectado -1].numVerticesAdj++;
+	    	grafo[Register->idConecta -1].numVerticesAdj++;
+	    }
     }
-
-    for(int i = 0; i < header->proxRRN; i++){
-        if(grafo[i].numVerticesAdj != -1){
-		
-		imprimeLista(grafo[i].listaAdj);
-	}
-    }
-
+    return num_vertices;
 }
 
 // FUNCIONALIDADE 12
 
-void funcionalidade12(FILE *file, Cabecalho *header, ListaAdj *grafo){
-	
+void funcionalidade12(FILE *file, Cabecalho *header, Grafo *grafo){
+	funcionalidade11(file, header, grafo);	
+
+
+
+
+
+
+
+
+
+
+
 }
 
 // FUNCIONALIDADE 13
 
-void funcionalidade13(FILE *file, Cabecalho *header, ListaAdj *grafo){
+void funcionalidade13(FILE *file, Cabecalho *header, Grafo *grafo){
+	funcionalidade11(file, header, grafo);	
 
 }
 
 // FUNCIONALIDADE 14
 
-void funcionalidade14(FILE *file, Cabecalho *header, ListaAdj *grafo){
+void funcionalidade14(FILE *file, Cabecalho *header, Grafo *grafo){
+	int num_vertices = funcionalidade11(file, header, grafo);	
 
+	int dist = 0;
+	
+	int origem, parada, destino;
+	int antecessor[header->proxRRN], pesos[header->proxRRN];
+	bool aberto[header->proxRRN];
+
+	scanf("%d", &origem);
+	scanf("%d", &destino);
+	scanf("%d", &parada);
+	
+	for(int i = 0; i < num_vertices; i++){
+		pesos[i] = INT_MAX/2;
+		antecessor[i] = -1;
+		aberto[i] = true;
+	}
+	pesos[origem - 1] = 0;	
+	
+	
+
+	// busca de 
 }
 
 
