@@ -30,7 +30,7 @@ int main(int argv, char *argc[]){
 
     header = getHeader(file_in);
 
-    Grafo grafo[header->proxRRN];
+    Grafo *grafo = malloc(sizeof(Grafo) * header->proxRRN);
 
     for (int i = 0; i < header->proxRRN; i++) {
         grafo[i].listaAdj = cria_lista();
@@ -70,14 +70,18 @@ int main(int argv, char *argc[]){
     case 14:
 
 	// FUNCIONALIDADE 14
+	
 
 
-        funcionalidade14(file_in, header, grafo);
+	funcionalidade14(file_in, header, grafo);
 
 	break;	
     default:
     break;
     }
+	
+
+    free(grafo);
     free(header);
     fclose(file_in);
 

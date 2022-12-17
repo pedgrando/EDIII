@@ -5,6 +5,8 @@
 #include<stdlib.h>
 
 #include "data_structures.h"
+#include "pilha.h"
+
 
 Cabecalho ResetaCabecalho();
 
@@ -32,5 +34,12 @@ int insereListaInicio(lista *li, int idPoPs, int velocidade, char unidadeMedida)
 
 int buscaLista(lista *li, int idConectaBuscado);
 
+int temAberto(int *a, int i);
+
+int menorDist(int *pesos, int *aberto, int num_vertices);
+	
+void troca(dado *x, dado *y);
+
+void trocaInt(int *x, int *y);
 
 #endif

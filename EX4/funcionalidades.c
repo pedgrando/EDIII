@@ -8,6 +8,8 @@
 #include "data_structures.h"
 #include "funcionalidades.h"
 #include "limits.h"
+#include "pilha.h"
+#include "funcoes_principais.h"
 
 // FUNCIONALIDADE 11
 
@@ -81,28 +83,43 @@ void funcionalidade13(FILE *file, Cabecalho *header, Grafo *grafo){
 // FUNCIONALIDADE 14
 
 void funcionalidade14(FILE *file, Cabecalho *header, Grafo *grafo){
-	int num_vertices = funcionalidade11(file, header, grafo);	
+	int num_vertices = funcionalidade11(file, header, grafo), n;	
+	int *distancia = malloc(num_vertices* sizeof(int));
+	int *predecessor = malloc(num_vertices* sizeof(int));
 
-	int dist = 0;
-	
-	int origem, parada, destino;
-	int antecessor[header->proxRRN], pesos[header->proxRRN];
-	bool aberto[header->proxRRN];
+	scanf("%d", &n);
 
-	scanf("%d", &origem);
-	scanf("%d", &destino);
-	scanf("%d", &parada);
-	
-	for(int i = 0; i < num_vertices; i++){
-		pesos[i] = INT_MAX/2;
-		antecessor[i] = -1;
-		aberto[i] = true;
+	for(int i = 0; i < n; i++){
+
+		int dist = 0;
+
+		int origem, parada, destino;
+
+		scanf("%d", &origem);
+		scanf("%d", &destino);
+		scanf("%d", &parada);
+
+		Dijkstra(grafo, origem, distancia, predecessor, num_vertices);
+		if(distancia[parada - 1] == INT_MAX){
+			printf("Comprimento do caminho entre %d e %d parando em %d: -1\n", origem, destino, parada);
+			break;
+		}
+
+		dist += distancia[parada - 1];
+
+		Dijkstra(grafo, parada, distancia, predecessor, num_vertices);
+		if(distancia[destino - 1] == INT_MAX){
+			printf("Comprimento do caminho entre %d e %d parando em %d: -1\n", origem, destino, parada);
+			break;
+		}
+
+		dist += distancia[destino - 1];
+
+		printf("Comprimento do caminho entre %d e %d parando em %d: %dMbps\n", origem, destino, parada, dist);
 	}
-	pesos[origem - 1] = 0;	
-	
-	
 
-	// busca de 
+	free(distancia);
+	free(predecessor);
 }
 
 

@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <math.h>
+#include <limits.h>
+#include <stdbool.h>
 
 #include "miscelaneous.h"
 #include "funcoes_io.h"
 #include "data_structures.h"
 #include "funcionalidades.h"
+#include "pilha.h"
 
 
 // volta uma variavel Registro em memoria primaria a situacao em que todos os campos sao vazios
@@ -99,9 +100,17 @@ lista *cria_lista(){
 }
 
 void libera_lista(lista *li){
+	no *aux1, *aux2;
 	if(li == NULL || *li == NULL){
-		
+		return;		
 	}
+	aux1 = *li;
+	while(aux1 != NULL){
+		aux2 = aux1;
+		aux1 = aux1->prox;
+		free(aux2);
+	}
+	free(aux2);
 }
 
 int insereLista(lista *li, int idPoPs, int velocidade, char unidadeMedida){
@@ -157,5 +166,35 @@ int buscaLista(lista *li, int idConectaBuscado){
 		return 1;
 	}
 }
+
+void troca(dado *x, dado *y){
+	int aux1 = x->idConecta;
+	int aux2 = x->velocidade;
+	x->idConecta = y->idConecta;
+	x->velocidade = y->velocidade;
+	y->idConecta = aux1;
+	y->velocidade = aux2;
+}
+
+void trocaInt(int *x, int *y){
+	int aux = *x;
+	*x = *y;
+	*y = aux;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
