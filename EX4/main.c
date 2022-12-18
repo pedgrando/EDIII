@@ -82,8 +82,6 @@ int main(int argv, char *argc[]){
     break;
     }
 	
-    libera_grafo(grafo, header->proxRRN);
-
     free(header);
     fclose(file_in);
 

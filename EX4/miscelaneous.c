@@ -85,13 +85,6 @@ int hashfunction(char *str){
 	return result;
 }
 
-void libera_grafo(Grafo *g, int tam){
-	for(int i = 0; i < tam; i++){
-		libera_lista(g[i].listaAdj);
-	}	
-	free(g);
-}
-
 void ConverteVelocidade(Registro *Register){
 	Register->velocidade = Register->velocidade * 1024; 
 	Register->unidadeMedida = 'M'; 
@@ -117,8 +110,6 @@ void libera_lista(lista *li){
 		free(aux2);
 	}
 	free(aux2);
-
-	free(li);
 }
 
 int insereLista(lista *li, int idPoPs, int velocidade, char unidadeMedida){
