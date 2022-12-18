@@ -113,7 +113,7 @@ void libera_lista(lista *li){
 		aux1 = aux1->prox;
 		free(aux2);
 	}
-	free(aux2);
+	free(li);
 }
 
 int insereLista(lista *li, int idPoPs, int velocidade, char unidadeMedida){

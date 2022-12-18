@@ -140,8 +140,16 @@ void dfs_loop(Grafo *grafo, int *ciclos, int x, int *cor){
 }
 
 // Algoritmo de Edmond-Karp -> busca o fluxo maximo entre dois vertices do grafo
+//
+// O algoritmo funciona com base nos conceitos de capacidade e fluxo. A capacidade eh o maximo que uma aresta consegue transmitir, nesse caso, a velocidade de conexao dela; ja o fluxo eh o que esta sendo transmitido no momento.
+// Ele realiza buscas em largura para encontrar os caminhos mais curtos validos, i.e., os caminhos mais curtos que nao esta com sua capacidade no maximo. Assim que cada caminho eh encontrado, faz se a atribuicao de um fluxo 
+// a ele, que eh igual a menor capacidade disponivel de todo caminho. Ao final de cada execucao, soma-se essa menor capacidade disponivel ao fluxo maximo.
+// O algoritmo termina quando nao houver mais caminhos validos para se trafegar da origem ate o destino.
+//
 
 void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
+	// fluxo e capacidade sao matrizes que associam o fluxo e capacidade direcionados (i.e. fluxo[a][b] != fluxo[b][a])
+	// isso eh importante de se considerar pelo conceito de fluxo de volta, que eh o fluxo oposto em uma aresta 
 	int **fluxo = malloc(sizeof(int *) * num_vertices);	
 	int **capacidade = malloc(sizeof(int *) * num_vertices);
 
@@ -153,7 +161,8 @@ void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
 
 
 	no *aux = NULL;
-
+	
+	// inicializa-se as capacidades como as velocidades de cada aresta e os fluxos como 	
 	for(int i = 0; i < num_vertices; i++){
 		aux = *grafo[i].listaAdj;	
 		while(aux != NULL){
@@ -163,22 +172,33 @@ void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
 		}
 	}
 
-
+	// cria uma fila em que serao inseridos os proximos vertices a serem analisados
 	queue *q = cria_queue();
 
+	// cria-se um vetor de antecessores, que guarda o vertice v[x] que leva ao vertice de idConecta x+1
 	int *antecessores = malloc(sizeof(int) * num_vertices);
+
+	// fluxo maximo sera a saida do algoritmo
 	int fluxo_max = 0;
 	
+	// o loop infinito se da pelo fato de que o algoritmo roda ate achar um caminho invalido, verificacao que eh feita dentro do while antes de se fazer as devidads atribuicoes para calculo de fluxo
 	while(1){
+		// para cada execucao, define-se os antecessores como -1, valor invalido
 		for(int i = 0; i < num_vertices; i++){
 			antecessores[i] = -1;
 		}	
 
+		// insere a origem na fila para ser analisada
 		push(q, origem);	
 		
+		// o procedimento abaixo eh uma implementacao da busca em largura
+		// enquanto a fila nao estiver vazia, i.e., enquanto nao se chegar ao fim de um caminho
 		while(*q != NULL){
+			// pega o idConecta do primeiro valor da lista e remove ele
 			int id = pop(q);		
-
+	
+			// varre-se a lista de adjacencia desse vertice ate o fim; se o vertice nao tiver sido incluido em um caminho e o fluxo da aresta ate ele for menor que capacidade da aresta
+			// ou seja, se o vertice for valido, inclui-o no caminho e insere-no na lista para ser analisado
 			no *atual = *grafo[id - 1].listaAdj;
 			while(atual != NULL){
 				if(antecessores[atual->idPoPs - 1] == -1 && fluxo[id -1][atual->idPoPs - 1] < capacidade[id - 1][atual->idPoPs - 1]){
@@ -189,15 +209,20 @@ void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
 			}
 		}
 
+		// condicao de saida -> nao foi possivel definir um caminho ate o destino
 		if(antecessores[destino - 1] == -1){
 			break;
 		} else {
+
+			// define-se o fluxo minimo no caminho como infinito, para se buscar o menor
 			int fluxo_min = INT_MAX;
 
 			int filho = destino;
 			int pai = antecessores[filho - 1];
 			
+			// enquanto o caminho nao chegar a origem, varre-se cada no que antecede destino e precede origem no caminho;
 			while(filho != origem){
+				// fluxo minimo recebe o menor entre o fluxo que ja se tem como minimo ou a capacidade util dessa aresta
 				fluxo_min = min(fluxo_min, capacidade[pai - 1][filho - 1] - fluxo[pai - 1][filho - 1]);
 				filho = pai;
 				pai = antecessores[pai - 1];
@@ -207,6 +232,7 @@ void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
 			filho = destino;
 			pai = antecessores[filho - 1];
 	
+			// novamente, refaz-se o caminho, mas agora para definir os fluxos e contrafluxos de cada caminho
 			while(filho != origem){
 				fluxo[pai - 1][filho - 1] += fluxo_min;
 				fluxo[filho - 1][pai - 1] -= fluxo_min;
@@ -215,6 +241,7 @@ void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
 				
 			}	
 			
+			// incrementa-se o fluxo com o fluxo minimo desse caminho
 			fluxo_max += fluxo_min;
 		}
 	}

@@ -83,7 +83,7 @@ void funcionalidade13(FILE *file, Cabecalho *header, Grafo *grafo){
 	}
 
 	for(int i = 0; i < n; i++){
-		edmondkarp(grafo,num_vertices, origem[i], destino[i]);
+		EdmondKarp(grafo,num_vertices, origem[i], destino[i]);
 	}
 
 }
