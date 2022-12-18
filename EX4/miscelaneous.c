@@ -250,7 +250,7 @@ queue *cria_queue(){
 
 void liberaGrafo(Grafo *grafo){
 	for (int i = 0; i < grafo->numVerticesAdj; i++){
-		libera_lista(grafo->listaAdj[i]);
+		libera_lista(grafo[i].listaAdj);
 	}
 }
 

@@ -171,10 +171,7 @@ void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
 		}
 	}
 
-<<<<<<< HEAD
-=======
 	// cria uma fila em que serao inseridos os proximos vertices a serem analisados
->>>>>>> 335a1aca63eb4b935e3a28d6916489e581e9e6c5
 	queue *q = cria_queue();
 
 	// cria-se um vetor de antecessores, que guarda o vertice v[x] que leva ao vertice de idConecta x+1
