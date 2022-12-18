@@ -59,10 +59,10 @@ typedef struct elemento{
 typedef struct elemento *lista;
 
 typedef struct {
-	lista *listaAdj;
-	int numVerticesAdj;	
+		lista *listaAdj;
+		int numVerticesAdj;	
     	int idConecta; 	//sem valores repetidos
- 	char siglaPais[2];
+ 		char siglaPais[2];
     	char nomePoPs[30];
     	char nomePais[30];
 } Grafo;
