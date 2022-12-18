@@ -33,7 +33,7 @@ void sobeHeap(Heap *h, int *pos_heap, int pos_dado){
 	int x = pos_dado;
 
 	while(x > 0 && h->dados[pai(x)].velocidade > h->dados[x].velocidade){
-		troca(&h->dados[pai(x)], &h->dados[x]);
+		trocaDados(&h->dados[pai(x)], &h->dados[x]);
 		trocaInt(&pos_heap[h->dados[x].idConecta - 1], &pos_heap[h->dados[pai(x)].idConecta - 1]);
 		x = pai(x);
 	}
@@ -53,7 +53,7 @@ void desceHeap(Heap *h, int *pos_heap, int pos_dado){
 		if(filhoDireita(x) < h->tam_heap && h->dados[filhoDireita(x)].velocidade < h->dados[y].velocidade){
 			y = filhoDireita(x);
 		}
-		troca(&h->dados[x], &h->dados[y]);
+		trocaDados(&h->dados[x], &h->dados[y]);
 		trocaInt(&pos_heap[h->dados[x].idConecta - 1], &pos_heap[h->dados[y].idConecta - 1]);
 		x = y;
 	}
@@ -62,7 +62,7 @@ void desceHeap(Heap *h, int *pos_heap, int pos_dado){
 void removeMin(Heap *h, int *pos_heap, dado *elem){
 	elem->idConecta = h->dados[0].idConecta;
 	elem->velocidade = h->dados[0].velocidade;
-	troca(&h->dados[0], &h->dados[h->tam_heap - 1]);
+	trocaDados(&h->dados[0], &h->dados[h->tam_heap - 1]);
 	trocaInt(&pos_heap[h->dados[0].idConecta - 1], &pos_heap[h->dados[h->tam_heap - 1].idConecta - 1]);
 	h->tam_heap--;
 	desceHeap(h, pos_heap, 0);

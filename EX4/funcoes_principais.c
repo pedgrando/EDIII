@@ -151,7 +151,6 @@ void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
 		
 	}
 
-
 	no *aux = NULL;
 
 	for(int i = 0; i < num_vertices; i++){
@@ -162,7 +161,6 @@ void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
 			aux = aux->prox;
 		}
 	}
-
 
 	queue *q = cria_queue();
 

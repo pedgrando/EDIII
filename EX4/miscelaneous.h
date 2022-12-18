@@ -52,4 +52,6 @@ queue *cria_queue();
 
 int min(int x, int y);
 
+void liberaGrafo(Grafo *grafo);
+
 #endif
