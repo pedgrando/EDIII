@@ -29,6 +29,10 @@ int main(int argv, char *argc[]){
     }
 
     header = getHeader(file_in);
+    if(header->status == '0'){
+	    PrintErro();
+	    exit(-1);
+    }
 
     Grafo *grafo = malloc(sizeof(Grafo) * header->proxRRN);
 
@@ -71,8 +75,6 @@ int main(int argv, char *argc[]){
 
 	// FUNCIONALIDADE 14
 	
-
-
 	funcionalidade14(file_in, header, grafo);
 
 	break;	
@@ -80,8 +82,8 @@ int main(int argv, char *argc[]){
     break;
     }
 	
+    libera_grafo(grafo, header->proxRRN);
 
-    free(grafo);
     free(header);
     fclose(file_in);
 

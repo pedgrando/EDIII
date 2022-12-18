@@ -67,5 +67,11 @@ typedef struct {
     	char nomePais[30];
 } Grafo;
 
+typedef struct elem{
+	int id;
+	struct elem *prox;
+} elemento_queue;
+
+typedef elemento_queue *queue;
 
 #endif

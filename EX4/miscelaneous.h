@@ -42,4 +42,16 @@ void troca(dado *x, dado *y);
 
 void trocaInt(int *x, int *y);
 
+void push(queue *q, int id);
+
+int pop(queue *q);
+
+void libera_queue(queue *q);
+
+queue *cria_queue();
+
+int min(int x, int y);
+
+void libera_grafo(Grafo *g, int tam);
+
 #endif

@@ -85,6 +85,12 @@ int hashfunction(char *str){
 	return result;
 }
 
+void libera_grafo(Grafo *g, int tam){
+	for(int i = 0; i < tam; i++){
+		libera_lista(g[i].listaAdj);
+	}	
+	free(g);
+}
 
 void ConverteVelocidade(Registro *Register){
 	Register->velocidade = Register->velocidade * 1024; 
@@ -111,6 +117,8 @@ void libera_lista(lista *li){
 		free(aux2);
 	}
 	free(aux2);
+
+	free(li);
 }
 
 int insereLista(lista *li, int idPoPs, int velocidade, char unidadeMedida){
@@ -182,11 +190,65 @@ void trocaInt(int *x, int *y){
 	*y = aux;
 }
 
+int min(int x, int y){
+	if(x < y){
+		return x;
+	} else {
+		return y;
+	}
+}
 
+void push(queue *q, int id){
+	if(q == NULL){
+		return;
+	}
 
+	elemento_queue *no = malloc(sizeof(elemento_queue));
+	no->id = id;
 
+	if(*q == NULL){
+		*q = no;
+		no->prox = NULL;
+	} else {
+		no->prox = *q;
+		*q = no;
+	}
+}
 
+int pop(queue *q){
+	if(q == NULL || *q == NULL){
+		return -1;
+	}
 
+	int id = (*q)->id;
+
+	elemento_queue *aux = (*q);
+	(*q) = (*q)->prox;
+
+	free(aux);
+	return id;
+}
+
+void libera_queue(queue *q){
+	if(q == NULL || *q == NULL){
+		return;
+	}
+
+	elemento_queue *aux1 = (*q), *aux2;
+	while(aux1 != NULL){
+		aux2 = aux1;
+		aux1 = aux1->prox;
+		free(aux2);
+	}
+}
+
+queue *cria_queue(){
+	queue *q = malloc(sizeof(queue));
+
+	*q = NULL;
+	return q;
+
+}
 
 
 

@@ -59,24 +59,32 @@ int funcionalidade11(FILE *file, Cabecalho *header, Grafo *grafo){
 // FUNCIONALIDADE 12
 
 void funcionalidade12(FILE *file, Cabecalho *header, Grafo *grafo){
-	funcionalidade11(file, header, grafo);	
+	int num_vertices = funcionalidade11(file, header, grafo);	
 
+	int *cor = malloc(sizeof(int) * num_vertices);
 
+	dfs(grafo, num_vertices, cor);
 
-
-
-
-
-
-
-
-
+	free(cor);
 }
 
 // FUNCIONALIDADE 13
 
 void funcionalidade13(FILE *file, Cabecalho *header, Grafo *grafo){
-	funcionalidade11(file, header, grafo);	
+	int num_vertices = funcionalidade11(file, header, grafo), n;	
+	
+	scanf("%d", &n);
+
+	int origem[n], destino[n];
+
+	for(int i = 0; i < n; i++){
+		scanf("%d", &origem[i]);
+		scanf("%d", &destino[i]);
+	}
+
+	for(int i = 0; i < n; i++){
+		edmondkarp(grafo,num_vertices, origem[i], destino[i]);
+	}
 
 }
 
@@ -89,33 +97,36 @@ void funcionalidade14(FILE *file, Cabecalho *header, Grafo *grafo){
 
 	scanf("%d", &n);
 
+	int origem[n], destino[n], parada[n];
+
+	for(int i = 0; i < n; i++){
+		scanf("%d", &origem[i]);
+		scanf("%d", &destino[i]);
+		scanf("%d", &parada[i]);
+	}
+
 	for(int i = 0; i < n; i++){
 
 		int dist = 0;
 
-		int origem, parada, destino;
 
-		scanf("%d", &origem);
-		scanf("%d", &destino);
-		scanf("%d", &parada);
+		Dijkstra(grafo, origem[i], distancia, predecessor, num_vertices);
+		if(distancia[parada[i] - 1] == INT_MAX){
+			printf("Comprimento do caminho entre %d e %d parando em %d: -1\n", origem[i], destino[i], parada[i]);
+		} else {
 
-		Dijkstra(grafo, origem, distancia, predecessor, num_vertices);
-		if(distancia[parada - 1] == INT_MAX){
-			printf("Comprimento do caminho entre %d e %d parando em %d: -1\n", origem, destino, parada);
-			break;
+			dist += distancia[parada[i] - 1];
+
+			Dijkstra(grafo, parada[i], distancia, predecessor, num_vertices);
+			if(distancia[destino[i] - 1] == INT_MAX){
+				printf("Comprimento do caminho entre %d e %d parando em %d: -1\n", origem[i], destino[i], parada[i]);
+			} else {
+
+				dist += distancia[destino[i] - 1];
+
+				printf("Comprimento do caminho entre %d e %d parando em %d: %dMbps\n", origem[i], destino[i], parada[i], dist);
+			}
 		}
-
-		dist += distancia[parada - 1];
-
-		Dijkstra(grafo, parada, distancia, predecessor, num_vertices);
-		if(distancia[destino - 1] == INT_MAX){
-			printf("Comprimento do caminho entre %d e %d parando em %d: -1\n", origem, destino, parada);
-			break;
-		}
-
-		dist += distancia[destino - 1];
-
-		printf("Comprimento do caminho entre %d e %d parando em %d: %dMbps\n", origem, destino, parada, dist);
 	}
 
 	free(distancia);
