@@ -52,10 +52,10 @@ int main(int argv, char *argc[]){
 
     	for(int i = 0; i < header->proxRRN; i++){
         	if(grafo[i].idConecta != -1){
-		
-			imprimeLista(grafo[i].listaAdj, grafo[i]);
-		}
+			    imprimeLista(grafo[i].listaAdj, grafo[i]);
+		    }
     	}
+
 	break;	
     case 12:
 
@@ -75,7 +75,7 @@ int main(int argv, char *argc[]){
 
 	// FUNCIONALIDADE 14
 	
-	funcionalidade14(file_in, header, grafo);
+	    funcionalidade14(file_in, header, grafo);
 
 	break;	
     default:

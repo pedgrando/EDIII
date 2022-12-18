@@ -45,7 +45,7 @@ void Dijkstra(Grafo *grafo, int origem, int *distancia, int *predecessor, int nu
 	h->tam_heap = num_vertices;
 	
 	// coloca-se o vertice de origem como primeiro da lista de prioridades, mantendo-na ordenada	
-	troca(&h->dados[origem - 1], &h->dados[0]);
+	trocaDados(&h->dados[origem - 1], &h->dados[0]);
 	trocaInt(&pos_heap[origem - 1], &pos_heap[0]);
 
 	// enquanto nao forem percorridos todos os nos
@@ -141,7 +141,7 @@ void dfs_loop(Grafo *grafo, int *ciclos, int x, int *cor){
 
 // Algoritmo de Edmond-Karp -> busca o fluxo maximo entre dois vertices do grafo
 
-void edmondkarp(Grafo *grafo, int num_vertices, int origem, int destino){
+void EdmondKarp(Grafo *grafo, int num_vertices, int origem, int destino){
 	int **fluxo = malloc(sizeof(int *) * num_vertices);	
 	int **capacidade = malloc(sizeof(int *) * num_vertices);
 
@@ -174,7 +174,6 @@ void edmondkarp(Grafo *grafo, int num_vertices, int origem, int destino){
 			antecessores[i] = -1;
 		}	
 
-		
 		push(q, origem);	
 		
 		while(*q != NULL){
@@ -237,7 +236,6 @@ void edmondkarp(Grafo *grafo, int num_vertices, int origem, int destino){
 	}
 	free(fluxo);
 	free(capacidade);
-
 }
 
 

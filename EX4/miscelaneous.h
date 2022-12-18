@@ -38,7 +38,7 @@ int temAberto(int *a, int i);
 
 int menorDist(int *pesos, int *aberto, int num_vertices);
 	
-void troca(dado *x, dado *y);
+void trocaDados(dado *x, dado *y);
 
 void trocaInt(int *x, int *y);
 

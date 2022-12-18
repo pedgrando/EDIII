@@ -85,10 +85,14 @@ int hashfunction(char *str){
 	return result;
 }
 
+// funcao que converte os Gbps em Mbps
 void ConverteVelocidade(Registro *Register){
 	Register->velocidade = Register->velocidade * 1024; 
 	Register->unidadeMedida = 'M'; 
 }
+
+// FUNÇÕES RELACIONADAS À CRIAÇÃO E MANIPULAÇÃO DE LISTAS
+// tad simples usado para fazer a lista de vértices adjacentes a um vértice
 
 lista *cria_lista(){
 	lista *li = malloc(sizeof(lista));
@@ -166,7 +170,10 @@ int buscaLista(lista *li, int idConectaBuscado){
 	}
 }
 
-void troca(dado *x, dado *y){
+// FUNÇÕES AUXILIARES DO ALGORITMO DE DIJKSTRA
+
+// inverte o conteudo de duas estruturas "dado"
+void trocaDados(dado *x, dado *y){
 	int aux1 = x->idConecta;
 	int aux2 = x->velocidade;
 	x->idConecta = y->idConecta;

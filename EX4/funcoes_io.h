@@ -19,8 +19,6 @@ void scan_quote_string(char *string);
 
 Cabecalho *getHeader(FILE *file);
 
-void ImprimeRegistro(Registro *Register);
-
 void LeRegistroBin(Registro *Register, FILE *file);
 
 void PrintErro();
