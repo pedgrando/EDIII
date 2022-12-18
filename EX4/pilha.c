@@ -4,6 +4,7 @@
 #include "miscelaneous.h"
 #include "pilha.h"
 
+// Funcoes relacionadas à pilha, usada no algoritmo de Djikstra
 
 Heap *criaHeap(int capacidade){
 	Heap *h = malloc(sizeof(Heap));

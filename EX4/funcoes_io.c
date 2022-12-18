@@ -114,18 +114,6 @@ Cabecalho *getHeader(FILE *file){
 
 //FUNCOES DE MANIPULAÇÃO DE ARQUIVOS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-// imprime todos os campos nao vazios de um registro, segundo a proposta do trabalho
-
-void ImprimeRegistro(Registro *Register){
-    printf("%d ", Register->idConecta);
-    printf("%s ", Register->nomePoPs);
-    printf("%s ", Register->nomePais);
-    printf("%c%c ", Register->siglaPais[0], Register->siglaPais[1]);
-    printf("%d ", Register->idPoPsConectado);
-    printf("%d %cbps\n", Register->velocidade, Register->unidadeMedida);
-}
-
 // le um registro de um arquivo binario e passa ele para memoria primaria
 //  o vetor campo vazio dessa funcao pode ser melhor compreendido com a explicacao presente no arquivos .h
 

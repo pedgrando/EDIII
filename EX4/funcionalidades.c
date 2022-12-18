@@ -25,21 +25,21 @@ int funcionalidade11(FILE *file, Cabecalho *header, Grafo *grafo){
 
             ResetaRegistro(Register);
 
-            // le um registro e imprime seu conteudo
+            // le um registro nulo
 
             LeRegistroBin(Register, file); 
 
-            if(Register->unidadeMedida == 'G') ConverteVelocidade(Register);
+            if(Register->unidadeMedida == 'G') ConverteVelocidade(Register); 	// converte a velocidade que estiver em Gbps para Mbps
             
-	    if(grafo[Register->idConecta - 1].idConecta == - 1){    
+	    if(grafo[Register->idConecta - 1].idConecta == - 1){	// se a lista do vértice de número idConecta tiver vazia, preenche esse vértice com os dados do Registro lido
 	    	grafo[Register->idConecta - 1].idConecta = Register->idConecta;
 	    	strcpy(grafo[Register->idConecta - 1].nomePoPs, Register->nomePoPs);
 	    	strcpy(grafo[Register->idConecta - 1].nomePais, Register->nomePais);
 	    	strcpy(grafo[Register->idConecta - 1].siglaPais, Register->siglaPais);
-		num_vertices++;
+			num_vertices++;
 	    }
 
-	    if(Register->idPoPsConectado != -1){
+	    if(Register->idPoPsConectado != -1){	// verifica se o registro está conectado a algum outro id -> se o campo idPoPsConectado nao esta vazio
             	if(!insereLista(grafo[Register->idPoPsConectado - 1].listaAdj, Register->idConecta, Register->velocidade, Register->unidadeMedida)){ 
 			    PrintErro();
 		   	 return -1;
